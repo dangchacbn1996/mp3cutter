@@ -1,0 +1,22 @@
+{
+  "images" : [
+    {
+      "filename" : "sharp_arrow_drop_down_black_48dp.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "sharp_arrow_drop_down_black_48dp-1.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

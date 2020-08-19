@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="87" id="KGk-i7-Jjw" customClass="ItemTableViewCell" customModule="Mp3Cutter" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="438" height="87"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="438" height="87"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KJq-r6-eQl" userLabel="vIcon">
+                        <rect key="frame" x="8" y="8" width="71" height="71"/>
+                        <color key="backgroundColor" systemColor="systemIndigoColor" red="0.34509803919999998" green="0.33725490200000002" blue="0.83921568629999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="KJq-r6-eQl" secondAttribute="height" id="SMS-f4-mbt"/>
+                        </constraints>
+                    </view>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jzq-ES-sxp" userLabel="lbName">
+                        <rect key="frame" x="95" y="22.5" width="295" height="17"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3w6-TW-STn" userLabel="lbSub">
+                        <rect key="frame" x="95" y="47.5" width="295" height="17"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2XD-IU-tUy" userLabel="vCheckbox">
+                        <rect key="frame" x="398" y="31.5" width="24" height="24"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="2XD-IU-tUy" secondAttribute="height" id="LgS-uJ-xba"/>
+                            <constraint firstAttribute="height" constant="24" id="gU2-V1-IC1"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="2XD-IU-tUy" secondAttribute="trailing" constant="16" id="32g-aK-eFh"/>
+                    <constraint firstItem="KJq-r6-eQl" firstAttribute="height" secondItem="H2p-sc-9uM" secondAttribute="height" constant="-16" id="7F7-tf-884"/>
+                    <constraint firstItem="KJq-r6-eQl" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="7Wd-6p-LAx"/>
+                    <constraint firstItem="2XD-IU-tUy" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="B4A-Bq-dWk"/>
+                    <constraint firstItem="3w6-TW-STn" firstAttribute="bottom" relation="lessThanOrEqual" secondItem="H2p-sc-9uM" secondAttribute="bottom" constant="-8" id="FQE-FH-pGS"/>
+                    <constraint firstItem="2XD-IU-tUy" firstAttribute="leading" secondItem="Jzq-ES-sxp" secondAttribute="trailing" constant="8" id="RHE-rF-ap2"/>
+                    <constraint firstItem="3w6-TW-STn" firstAttribute="centerX" secondItem="Jzq-ES-sxp" secondAttribute="centerX" id="Tdd-as-czF"/>
+                    <constraint firstItem="KJq-r6-eQl" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="UXM-zE-O2k"/>
+                    <constraint firstItem="Jzq-ES-sxp" firstAttribute="bottom" secondItem="H2p-sc-9uM" secondAttribute="centerY" constant="-4" id="ZIV-sa-HoZ"/>
+                    <constraint firstItem="3w6-TW-STn" firstAttribute="top" secondItem="Jzq-ES-sxp" secondAttribute="bottom" constant="8" id="ksK-ve-ymH"/>
+                    <constraint firstItem="Jzq-ES-sxp" firstAttribute="leading" secondItem="KJq-r6-eQl" secondAttribute="trailing" constant="16" id="lrY-9K-EUj"/>
+                    <constraint firstItem="3w6-TW-STn" firstAttribute="width" secondItem="Jzq-ES-sxp" secondAttribute="width" id="pi2-Rd-zRr"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="lbName" destination="Jzq-ES-sxp" id="VKU-n1-KDC"/>
+                <outlet property="lbSub" destination="3w6-TW-STn" id="Qfy-L4-Bht"/>
+                <outlet property="vCheckBox" destination="2XD-IU-tUy" id="rlX-t2-cnz"/>
+                <outlet property="vIcon" destination="KJq-r6-eQl" id="ljN-xb-g2W"/>
+            </connections>
+            <point key="canvasLocation" x="194.20289855072465" y="146.98660714285714"/>
+        </tableViewCell>
+    </objects>
+</document>

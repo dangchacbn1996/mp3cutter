@@ -1,0 +1,6 @@
+framework module Pods_Mp3Cutter_Mp3CutterUITests {
+  umbrella header "Pods-Mp3Cutter-Mp3CutterUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}

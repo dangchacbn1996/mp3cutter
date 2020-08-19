@@ -1,0 +1,843 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 51;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2832198B7EF4C6C8CA8288E6 /* Pods_Mp3Cutter_Mp3CutterUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BAA3F17B032532577CBC2A5F /* Pods_Mp3Cutter_Mp3CutterUITests.framework */; };
+		3521BD0124EADD4400279A45 /* File 14.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3521BD0024EADD4400279A45 /* File 14.mp3 */; };
+		3521BD0324EAE45B00279A45 /* MediaParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3521BD0224EAE45B00279A45 /* MediaParser.swift */; };
+		354C538124E849250093AE65 /* PopupFinalFileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354C538024E849250093AE65 /* PopupFinalFileViewController.swift */; };
+		354C538B24E84A380093AE65 /* DropDownPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354C538A24E84A380093AE65 /* DropDownPickerViewController.swift */; };
+		354C539524E84C760093AE65 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354C539424E84C760093AE65 /* Extensions.swift */; };
+		354C539724E8531C0093AE65 /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354C539624E8531C0093AE65 /* Constant.swift */; };
+		359F7BE824E58CFB00C09929 /* UserDefaultManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359F7BE624E58CFA00C09929 /* UserDefaultManager.swift */; };
+		359F7BE924E58CFB00C09929 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359F7BE724E58CFA00C09929 /* Extension.swift */; };
+		359F7BEB24E58D1300C09929 /* PlayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359F7BEA24E58D1300C09929 /* PlayViewController.swift */; };
+		359F7BED24E5AF5F00C09929 /* ActionCutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359F7BEC24E5AF5F00C09929 /* ActionCutViewController.swift */; };
+		359F7BF724E5BF6200C09929 /* Presentations.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 359F7BF624E5BF6200C09929 /* Presentations.mp3 */; };
+		35E03BB324E2DFE0009CFC8D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E03BB224E2DFE0009CFC8D /* AppDelegate.swift */; };
+		35E03BB524E2DFE0009CFC8D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E03BB424E2DFE0009CFC8D /* SceneDelegate.swift */; };
+		35E03BB724E2DFE0009CFC8D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E03BB624E2DFE0009CFC8D /* ViewController.swift */; };
+		35E03BBA24E2DFE0009CFC8D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 35E03BB824E2DFE0009CFC8D /* Main.storyboard */; };
+		35E03BBC24E2DFE1009CFC8D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 35E03BBB24E2DFE1009CFC8D /* Assets.xcassets */; };
+		35E03BBF24E2DFE1009CFC8D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 35E03BBD24E2DFE1009CFC8D /* LaunchScreen.storyboard */; };
+		35E03BCA24E2DFE2009CFC8D /* Mp3CutterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E03BC924E2DFE2009CFC8D /* Mp3CutterTests.swift */; };
+		35E03BD524E2DFE2009CFC8D /* Mp3CutterUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E03BD424E2DFE2009CFC8D /* Mp3CutterUITests.swift */; };
+		35E03BE424E2E78C009CFC8D /* Pods_Mp3Cutter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC165F78EC710C4072D1A28C /* Pods_Mp3Cutter.framework */; };
+		35E03BE524E2E78C009CFC8D /* Pods_Mp3Cutter.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CC165F78EC710C4072D1A28C /* Pods_Mp3Cutter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		35E03BF324E2EFB7009CFC8D /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E03BF224E2EFB7009CFC8D /* ListViewController.swift */; };
+		35E03BF724E2F9DD009CFC8D /* ItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E03BF524E2F9DD009CFC8D /* ItemTableViewCell.swift */; };
+		35E03BF824E2F9DD009CFC8D /* ItemTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 35E03BF624E2F9DD009CFC8D /* ItemTableViewCell.xib */; };
+		68C8A8989535632CDEBCDB7B /* Pods_Mp3CutterTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88D82A9337DBF229E246E797 /* Pods_Mp3CutterTests.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		35E03BC624E2DFE2009CFC8D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 35E03BA724E2DFE0009CFC8D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 35E03BAE24E2DFE0009CFC8D;
+			remoteInfo = Mp3Cutter;
+		};
+		35E03BD124E2DFE2009CFC8D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 35E03BA724E2DFE0009CFC8D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 35E03BAE24E2DFE0009CFC8D;
+			remoteInfo = Mp3Cutter;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		35E03BE624E2E78C009CFC8D /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				35E03BE524E2E78C009CFC8D /* Pods_Mp3Cutter.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0634B929693B050E3EB07C61 /* Pods-Mp3Cutter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mp3Cutter.release.xcconfig"; path = "Target Support Files/Pods-Mp3Cutter/Pods-Mp3Cutter.release.xcconfig"; sourceTree = "<group>"; };
+		3521BD0024EADD4400279A45 /* File 14.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "File 14.mp3"; sourceTree = "<group>"; };
+		3521BD0224EAE45B00279A45 /* MediaParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaParser.swift; sourceTree = "<group>"; };
+		354C538024E849250093AE65 /* PopupFinalFileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupFinalFileViewController.swift; sourceTree = "<group>"; };
+		354C538A24E84A380093AE65 /* DropDownPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownPickerViewController.swift; sourceTree = "<group>"; };
+		354C539424E84C760093AE65 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		354C539624E8531C0093AE65 /* Constant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
+		359F7BE624E58CFA00C09929 /* UserDefaultManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaultManager.swift; sourceTree = "<group>"; };
+		359F7BE724E58CFA00C09929 /* Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
+		359F7BEA24E58D1300C09929 /* PlayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayViewController.swift; sourceTree = "<group>"; };
+		359F7BEC24E5AF5F00C09929 /* ActionCutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionCutViewController.swift; sourceTree = "<group>"; };
+		359F7BF624E5BF6200C09929 /* Presentations.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Presentations.mp3; sourceTree = "<group>"; };
+		35E03BAF24E2DFE0009CFC8D /* Mp3Cutter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mp3Cutter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		35E03BB224E2DFE0009CFC8D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		35E03BB424E2DFE0009CFC8D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		35E03BB624E2DFE0009CFC8D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		35E03BB924E2DFE0009CFC8D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		35E03BBB24E2DFE1009CFC8D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		35E03BBE24E2DFE1009CFC8D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		35E03BC024E2DFE1009CFC8D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		35E03BC524E2DFE2009CFC8D /* Mp3CutterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Mp3CutterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		35E03BC924E2DFE2009CFC8D /* Mp3CutterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mp3CutterTests.swift; sourceTree = "<group>"; };
+		35E03BCB24E2DFE2009CFC8D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		35E03BD024E2DFE2009CFC8D /* Mp3CutterUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Mp3CutterUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		35E03BD424E2DFE2009CFC8D /* Mp3CutterUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mp3CutterUITests.swift; sourceTree = "<group>"; };
+		35E03BD624E2DFE2009CFC8D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		35E03BE724E2E7CA009CFC8D /* SnapKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SnapKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		35E03BF224E2EFB7009CFC8D /* ListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
+		35E03BF524E2F9DD009CFC8D /* ItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemTableViewCell.swift; sourceTree = "<group>"; };
+		35E03BF624E2F9DD009CFC8D /* ItemTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ItemTableViewCell.xib; sourceTree = "<group>"; };
+		4C16E9775C3D7BDF217FB3D4 /* Pods-Mp3CutterTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mp3CutterTests.release.xcconfig"; path = "Target Support Files/Pods-Mp3CutterTests/Pods-Mp3CutterTests.release.xcconfig"; sourceTree = "<group>"; };
+		7EB6332BC2A07817BD0A8A99 /* Pods-Mp3Cutter-Mp3CutterUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mp3Cutter-Mp3CutterUITests.release.xcconfig"; path = "Target Support Files/Pods-Mp3Cutter-Mp3CutterUITests/Pods-Mp3Cutter-Mp3CutterUITests.release.xcconfig"; sourceTree = "<group>"; };
+		88D82A9337DBF229E246E797 /* Pods_Mp3CutterTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Mp3CutterTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AD869176B8F50B0991A69E95 /* Pods-Mp3Cutter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mp3Cutter.debug.xcconfig"; path = "Target Support Files/Pods-Mp3Cutter/Pods-Mp3Cutter.debug.xcconfig"; sourceTree = "<group>"; };
+		BAA3F17B032532577CBC2A5F /* Pods_Mp3Cutter_Mp3CutterUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Mp3Cutter_Mp3CutterUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C909E8EC91C7979611BD4ED0 /* Pods-Mp3CutterTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mp3CutterTests.debug.xcconfig"; path = "Target Support Files/Pods-Mp3CutterTests/Pods-Mp3CutterTests.debug.xcconfig"; sourceTree = "<group>"; };
+		CC165F78EC710C4072D1A28C /* Pods_Mp3Cutter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Mp3Cutter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC352AE96E853397605ACE3E /* Pods-Mp3Cutter-Mp3CutterUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mp3Cutter-Mp3CutterUITests.debug.xcconfig"; path = "Target Support Files/Pods-Mp3Cutter-Mp3CutterUITests/Pods-Mp3Cutter-Mp3CutterUITests.debug.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		35E03BAC24E2DFE0009CFC8D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				35E03BE424E2E78C009CFC8D /* Pods_Mp3Cutter.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		35E03BC224E2DFE2009CFC8D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				68C8A8989535632CDEBCDB7B /* Pods_Mp3CutterTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		35E03BCD24E2DFE2009CFC8D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2832198B7EF4C6C8CA8288E6 /* Pods_Mp3Cutter_Mp3CutterUITests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		359F7BE224E58CCE00C09929 /* Ultils */ = {
+			isa = PBXGroup;
+			children = (
+				359F7BEA24E58D1300C09929 /* PlayViewController.swift */,
+				354C538A24E84A380093AE65 /* DropDownPickerViewController.swift */,
+				354C539424E84C760093AE65 /* Extensions.swift */,
+				354C539624E8531C0093AE65 /* Constant.swift */,
+			);
+			path = Ultils;
+			sourceTree = "<group>";
+		};
+		359F7BE524E58CFA00C09929 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				359F7BE624E58CFA00C09929 /* UserDefaultManager.swift */,
+				359F7BE724E58CFA00C09929 /* Extension.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		35E03BA624E2DFE0009CFC8D = {
+			isa = PBXGroup;
+			children = (
+				35E03BB124E2DFE0009CFC8D /* Mp3Cutter */,
+				35E03BC824E2DFE2009CFC8D /* Mp3CutterTests */,
+				35E03BD324E2DFE2009CFC8D /* Mp3CutterUITests */,
+				35E03BB024E2DFE0009CFC8D /* Products */,
+				CDE2839F4FA8C079FC9B3EE6 /* Pods */,
+				623A10682D14751AEFF8D3C1 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		35E03BB024E2DFE0009CFC8D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				35E03BAF24E2DFE0009CFC8D /* Mp3Cutter.app */,
+				35E03BC524E2DFE2009CFC8D /* Mp3CutterTests.xctest */,
+				35E03BD024E2DFE2009CFC8D /* Mp3CutterUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		35E03BB124E2DFE0009CFC8D /* Mp3Cutter */ = {
+			isa = PBXGroup;
+			children = (
+				359F7BE524E58CFA00C09929 /* Extensions */,
+				359F7BE224E58CCE00C09929 /* Ultils */,
+				35E03BF424E2F4B3009CFC8D /* CustomCell */,
+				359F7BF624E5BF6200C09929 /* Presentations.mp3 */,
+				3521BD0024EADD4400279A45 /* File 14.mp3 */,
+				35E03BB224E2DFE0009CFC8D /* AppDelegate.swift */,
+				35E03BB424E2DFE0009CFC8D /* SceneDelegate.swift */,
+				35E03BB624E2DFE0009CFC8D /* ViewController.swift */,
+				35E03BB824E2DFE0009CFC8D /* Main.storyboard */,
+				35E03BBB24E2DFE1009CFC8D /* Assets.xcassets */,
+				35E03BBD24E2DFE1009CFC8D /* LaunchScreen.storyboard */,
+				35E03BC024E2DFE1009CFC8D /* Info.plist */,
+				35E03BF224E2EFB7009CFC8D /* ListViewController.swift */,
+				359F7BEC24E5AF5F00C09929 /* ActionCutViewController.swift */,
+				354C538024E849250093AE65 /* PopupFinalFileViewController.swift */,
+				3521BD0224EAE45B00279A45 /* MediaParser.swift */,
+			);
+			path = Mp3Cutter;
+			sourceTree = "<group>";
+		};
+		35E03BC824E2DFE2009CFC8D /* Mp3CutterTests */ = {
+			isa = PBXGroup;
+			children = (
+				35E03BC924E2DFE2009CFC8D /* Mp3CutterTests.swift */,
+				35E03BCB24E2DFE2009CFC8D /* Info.plist */,
+			);
+			path = Mp3CutterTests;
+			sourceTree = "<group>";
+		};
+		35E03BD324E2DFE2009CFC8D /* Mp3CutterUITests */ = {
+			isa = PBXGroup;
+			children = (
+				35E03BD424E2DFE2009CFC8D /* Mp3CutterUITests.swift */,
+				35E03BD624E2DFE2009CFC8D /* Info.plist */,
+			);
+			path = Mp3CutterUITests;
+			sourceTree = "<group>";
+		};
+		35E03BF424E2F4B3009CFC8D /* CustomCell */ = {
+			isa = PBXGroup;
+			children = (
+				35E03BF524E2F9DD009CFC8D /* ItemTableViewCell.swift */,
+				35E03BF624E2F9DD009CFC8D /* ItemTableViewCell.xib */,
+			);
+			path = CustomCell;
+			sourceTree = "<group>";
+		};
+		623A10682D14751AEFF8D3C1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				35E03BE724E2E7CA009CFC8D /* SnapKit.framework */,
+				CC165F78EC710C4072D1A28C /* Pods_Mp3Cutter.framework */,
+				BAA3F17B032532577CBC2A5F /* Pods_Mp3Cutter_Mp3CutterUITests.framework */,
+				88D82A9337DBF229E246E797 /* Pods_Mp3CutterTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CDE2839F4FA8C079FC9B3EE6 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				AD869176B8F50B0991A69E95 /* Pods-Mp3Cutter.debug.xcconfig */,
+				0634B929693B050E3EB07C61 /* Pods-Mp3Cutter.release.xcconfig */,
+				CC352AE96E853397605ACE3E /* Pods-Mp3Cutter-Mp3CutterUITests.debug.xcconfig */,
+				7EB6332BC2A07817BD0A8A99 /* Pods-Mp3Cutter-Mp3CutterUITests.release.xcconfig */,
+				C909E8EC91C7979611BD4ED0 /* Pods-Mp3CutterTests.debug.xcconfig */,
+				4C16E9775C3D7BDF217FB3D4 /* Pods-Mp3CutterTests.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		35E03BAE24E2DFE0009CFC8D /* Mp3Cutter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 35E03BD924E2DFE2009CFC8D /* Build configuration list for PBXNativeTarget "Mp3Cutter" */;
+			buildPhases = (
+				E0390E1973E578629D336AD5 /* [CP] Check Pods Manifest.lock */,
+				35E03BAB24E2DFE0009CFC8D /* Sources */,
+				35E03BAC24E2DFE0009CFC8D /* Frameworks */,
+				35E03BAD24E2DFE0009CFC8D /* Resources */,
+				78EA4680EC714C8128A82301 /* [CP] Embed Pods Frameworks */,
+				35E03BE624E2E78C009CFC8D /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Mp3Cutter;
+			productName = Mp3Cutter;
+			productReference = 35E03BAF24E2DFE0009CFC8D /* Mp3Cutter.app */;
+			productType = "com.apple.product-type.application";
+		};
+		35E03BC424E2DFE2009CFC8D /* Mp3CutterTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 35E03BDC24E2DFE2009CFC8D /* Build configuration list for PBXNativeTarget "Mp3CutterTests" */;
+			buildPhases = (
+				C4A63DE29717CC4C24F9655D /* [CP] Check Pods Manifest.lock */,
+				35E03BC124E2DFE2009CFC8D /* Sources */,
+				35E03BC224E2DFE2009CFC8D /* Frameworks */,
+				35E03BC324E2DFE2009CFC8D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				35E03BC724E2DFE2009CFC8D /* PBXTargetDependency */,
+			);
+			name = Mp3CutterTests;
+			productName = Mp3CutterTests;
+			productReference = 35E03BC524E2DFE2009CFC8D /* Mp3CutterTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		35E03BCF24E2DFE2009CFC8D /* Mp3CutterUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 35E03BDF24E2DFE2009CFC8D /* Build configuration list for PBXNativeTarget "Mp3CutterUITests" */;
+			buildPhases = (
+				8CEC7BAF2EB621694D3E5C3A /* [CP] Check Pods Manifest.lock */,
+				35E03BCC24E2DFE2009CFC8D /* Sources */,
+				35E03BCD24E2DFE2009CFC8D /* Frameworks */,
+				35E03BCE24E2DFE2009CFC8D /* Resources */,
+				4632AFFAF190A0964243012C /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				35E03BD224E2DFE2009CFC8D /* PBXTargetDependency */,
+			);
+			name = Mp3CutterUITests;
+			productName = Mp3CutterUITests;
+			productReference = 35E03BD024E2DFE2009CFC8D /* Mp3CutterUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		35E03BA724E2DFE0009CFC8D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1160;
+				LastUpgradeCheck = 1160;
+				ORGANIZATIONNAME = "Chac Ngo Dang";
+				TargetAttributes = {
+					35E03BAE24E2DFE0009CFC8D = {
+						CreatedOnToolsVersion = 11.6;
+					};
+					35E03BC424E2DFE2009CFC8D = {
+						CreatedOnToolsVersion = 11.6;
+						TestTargetID = 35E03BAE24E2DFE0009CFC8D;
+					};
+					35E03BCF24E2DFE2009CFC8D = {
+						CreatedOnToolsVersion = 11.6;
+						TestTargetID = 35E03BAE24E2DFE0009CFC8D;
+					};
+				};
+			};
+			buildConfigurationList = 35E03BAA24E2DFE0009CFC8D /* Build configuration list for PBXProject "Mp3Cutter" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 35E03BA624E2DFE0009CFC8D;
+			productRefGroup = 35E03BB024E2DFE0009CFC8D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				35E03BAE24E2DFE0009CFC8D /* Mp3Cutter */,
+				35E03BC424E2DFE2009CFC8D /* Mp3CutterTests */,
+				35E03BCF24E2DFE2009CFC8D /* Mp3CutterUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		35E03BAD24E2DFE0009CFC8D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				359F7BF724E5BF6200C09929 /* Presentations.mp3 in Resources */,
+				35E03BF824E2F9DD009CFC8D /* ItemTableViewCell.xib in Resources */,
+				35E03BBF24E2DFE1009CFC8D /* LaunchScreen.storyboard in Resources */,
+				35E03BBC24E2DFE1009CFC8D /* Assets.xcassets in Resources */,
+				3521BD0124EADD4400279A45 /* File 14.mp3 in Resources */,
+				35E03BBA24E2DFE0009CFC8D /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		35E03BC324E2DFE2009CFC8D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		35E03BCE24E2DFE2009CFC8D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		4632AFFAF190A0964243012C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Mp3Cutter-Mp3CutterUITests/Pods-Mp3Cutter-Mp3CutterUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Mp3Cutter-Mp3CutterUITests/Pods-Mp3Cutter-Mp3CutterUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Mp3Cutter-Mp3CutterUITests/Pods-Mp3Cutter-Mp3CutterUITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		78EA4680EC714C8128A82301 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Mp3Cutter/Pods-Mp3Cutter-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Mp3Cutter/Pods-Mp3Cutter-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Mp3Cutter/Pods-Mp3Cutter-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8CEC7BAF2EB621694D3E5C3A /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Mp3Cutter-Mp3CutterUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C4A63DE29717CC4C24F9655D /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Mp3CutterTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E0390E1973E578629D336AD5 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Mp3Cutter-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		35E03BAB24E2DFE0009CFC8D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				359F7BEB24E58D1300C09929 /* PlayViewController.swift in Sources */,
+				359F7BE824E58CFB00C09929 /* UserDefaultManager.swift in Sources */,
+				35E03BB724E2DFE0009CFC8D /* ViewController.swift in Sources */,
+				3521BD0324EAE45B00279A45 /* MediaParser.swift in Sources */,
+				359F7BE924E58CFB00C09929 /* Extension.swift in Sources */,
+				35E03BB324E2DFE0009CFC8D /* AppDelegate.swift in Sources */,
+				35E03BF724E2F9DD009CFC8D /* ItemTableViewCell.swift in Sources */,
+				354C538124E849250093AE65 /* PopupFinalFileViewController.swift in Sources */,
+				354C539524E84C760093AE65 /* Extensions.swift in Sources */,
+				35E03BF324E2EFB7009CFC8D /* ListViewController.swift in Sources */,
+				354C539724E8531C0093AE65 /* Constant.swift in Sources */,
+				359F7BED24E5AF5F00C09929 /* ActionCutViewController.swift in Sources */,
+				35E03BB524E2DFE0009CFC8D /* SceneDelegate.swift in Sources */,
+				354C538B24E84A380093AE65 /* DropDownPickerViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		35E03BC124E2DFE2009CFC8D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				35E03BCA24E2DFE2009CFC8D /* Mp3CutterTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		35E03BCC24E2DFE2009CFC8D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				35E03BD524E2DFE2009CFC8D /* Mp3CutterUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		35E03BC724E2DFE2009CFC8D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 35E03BAE24E2DFE0009CFC8D /* Mp3Cutter */;
+			targetProxy = 35E03BC624E2DFE2009CFC8D /* PBXContainerItemProxy */;
+		};
+		35E03BD224E2DFE2009CFC8D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 35E03BAE24E2DFE0009CFC8D /* Mp3Cutter */;
+			targetProxy = 35E03BD124E2DFE2009CFC8D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		35E03BB824E2DFE0009CFC8D /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				35E03BB924E2DFE0009CFC8D /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		35E03BBD24E2DFE1009CFC8D /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				35E03BBE24E2DFE1009CFC8D /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		35E03BD724E2DFE2009CFC8D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		35E03BD824E2DFE2009CFC8D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		35E03BDA24E2DFE2009CFC8D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AD869176B8F50B0991A69E95 /* Pods-Mp3Cutter.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = L3BXQ56R4P;
+				INFOPLIST_FILE = Mp3Cutter/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = chacnd.Mp3Cutter;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		35E03BDB24E2DFE2009CFC8D /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0634B929693B050E3EB07C61 /* Pods-Mp3Cutter.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = L3BXQ56R4P;
+				INFOPLIST_FILE = Mp3Cutter/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = chacnd.Mp3Cutter;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		35E03BDD24E2DFE2009CFC8D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C909E8EC91C7979611BD4ED0 /* Pods-Mp3CutterTests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = Mp3CutterTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = chacnd.Mp3CutterTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Mp3Cutter.app/Mp3Cutter";
+			};
+			name = Debug;
+		};
+		35E03BDE24E2DFE2009CFC8D /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4C16E9775C3D7BDF217FB3D4 /* Pods-Mp3CutterTests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = Mp3CutterTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = chacnd.Mp3CutterTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Mp3Cutter.app/Mp3Cutter";
+			};
+			name = Release;
+		};
+		35E03BE024E2DFE2009CFC8D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CC352AE96E853397605ACE3E /* Pods-Mp3Cutter-Mp3CutterUITests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = Mp3CutterUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = chacnd.Mp3CutterUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Mp3Cutter;
+			};
+			name = Debug;
+		};
+		35E03BE124E2DFE2009CFC8D /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7EB6332BC2A07817BD0A8A99 /* Pods-Mp3Cutter-Mp3CutterUITests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = Mp3CutterUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = chacnd.Mp3CutterUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Mp3Cutter;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		35E03BAA24E2DFE0009CFC8D /* Build configuration list for PBXProject "Mp3Cutter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				35E03BD724E2DFE2009CFC8D /* Debug */,
+				35E03BD824E2DFE2009CFC8D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		35E03BD924E2DFE2009CFC8D /* Build configuration list for PBXNativeTarget "Mp3Cutter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				35E03BDA24E2DFE2009CFC8D /* Debug */,
+				35E03BDB24E2DFE2009CFC8D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		35E03BDC24E2DFE2009CFC8D /* Build configuration list for PBXNativeTarget "Mp3CutterTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				35E03BDD24E2DFE2009CFC8D /* Debug */,
+				35E03BDE24E2DFE2009CFC8D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		35E03BDF24E2DFE2009CFC8D /* Build configuration list for PBXNativeTarget "Mp3CutterUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				35E03BE024E2DFE2009CFC8D /* Debug */,
+				35E03BE124E2DFE2009CFC8D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 35E03BA724E2DFE0009CFC8D /* Project object */;
+}
