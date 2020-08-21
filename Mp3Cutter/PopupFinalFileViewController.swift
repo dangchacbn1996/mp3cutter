@@ -7,22 +7,7 @@
 //
 
 import UIKit
-
-enum ExportType : String{
-    case mp3 = "MP3"
-    case m4a = "M4A"
-    case acc = "ACC"
-}
-
-enum SoundQuality : String {
-    case kbps128 = "128Kbps"
-    case kbps320 = "320Kbps"
-}
-enum SoundType : String {
-    case ringtone = "Nhạc chuông"
-    case warning = "Âm báo"
-    case audioFile = "File nhạc"
-}
+import AVKit
 
 class PopupFinalViewController: UIViewController {
     
@@ -38,26 +23,15 @@ class PopupFinalViewController: UIViewController {
     private var lbExport = UILabel(text: "", font: UIFont.systemFont(ofSize: 14), color: .black)
     private var lbQuality = UILabel(text: "", font: UIFont.systemFont(ofSize: 14), color: .black)
     private var lbSoundType = UILabel(text: "", font: UIFont.systemFont(ofSize: 14), color: .black)
-    private var doneBlock: ((String, URL, ExportType, SoundQuality, SoundType) -> (Void))!
-    private var typeExport = ExportType.mp3 {
-        didSet {
-            lbExport.text = typeExport.rawValue
-        }
-    }
-    private var typeQuality = SoundQuality.kbps128 {
-        didSet {
-            lbQuality.text = typeQuality.rawValue
-        }
-    }
-    private var typeSound = SoundType.audioFile {
-        didSet {
-            lbSoundType.text = typeSound.rawValue
-        }
-    }
+    private var doneBlock: ((MediaInfoModel, URL) -> (Void))!
+    private var mediaInfo : MediaInfoModel!
     private var vcDrop = DropdownPickerViewController()
     
-    init(doAction: @escaping ((String, URL, ExportType, SoundQuality, SoundType) -> (Void))) {
+    init(name: String, url: URL, doAction: @escaping ((MediaInfoModel, URL) -> (Void))) {
         super.init(nibName: nil, bundle: nil)
+        self.mediaInfo = MediaInfoModel()
+        self.mediaInfo.url = url
+        self.mediaInfo.name = name
         self.doneBlock = doAction
     }
     
@@ -72,6 +46,15 @@ class PopupFinalViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+//        self.mediaInfo.asset = AVAsset(url: self.mediaInfo.url)
+        updateMedia()
+    }
+    
+    private func updateMedia() {
+        lbExport.text = mediaInfo.typeExport.rawValue
+        lbQuality.text = mediaInfo.typeQuality.rawValue
+        lbSoundType.text = mediaInfo.typeExport.rawValue
+        tfNewName.placeholder = mediaInfo.name
     }
     
     @objc func goBack(){
@@ -79,38 +62,47 @@ class PopupFinalViewController: UIViewController {
     }
     
     @objc func doAction() {
+        checkAvailable(failed: { (error) in
+            
+        }) { (url) in
+            self.doneBlock(self.mediaInfo, url)
+        }
+        
+    }
+    
+    private func checkAvailable(failed: @escaping (String) -> Void, success: @escaping (URL) -> Void) {
         let name = tfNewName.text ?? ""
         if name.replacingOccurrences(of: " ", with: "") == "" {
             print("Vui lòng nhập tên file")
             return
         }
         do {
-            typeExport = .m4a
             let fileManager = FileManager.default
             let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:false)
-            let fileURL = documentDirectory.appendingPathComponent("\(tfNewName.text ?? "").\(typeExport.rawValue)")
+            let fileURL = documentDirectory.appendingPathComponent("\(tfNewName.text ?? "").\(mediaInfo.extensionFile)")
             if FileManager.default.fileExists(atPath: fileURL.path) {
-                let vcWarning = UIAlertController(title: "File đã tồn tại", message: "Thư mục đã tồn tại file \(tfNewName.text ?? "").\(typeExport.rawValue). Đổi tên hoặc xoá file để tiếp tục?", preferredStyle: .alert)
+                let vcWarning = UIAlertController(title: "File đã tồn tại", message: "Thư mục đã tồn tại file \(mediaInfo.fileName). Đổi tên hoặc xoá file để tiếp tục?", preferredStyle: .alert)
                 vcWarning.addAction(UIAlertAction(title: "Đổi tên", style: .default, handler: { (alert) in
-                    self.dismiss(animated: true, completion: nil)
+                    vcWarning.dismiss(animated: true, completion: nil)
                 }))
                 vcWarning.addAction(UIAlertAction(title: "Xoá file", style: .default, handler: { (alert) in
                     do {
                         try? FileManager.default.removeItem(atPath: fileURL.path)
-                        try? FileManager.default.createDirectory(atPath: fileURL.path, withIntermediateDirectories: true, attributes: nil)
-                        self.doneBlock(name, fileURL, self.typeExport, self.typeQuality, self.typeSound)
+                        self.mediaInfo.name = name
+                        success(fileURL)
                     } catch {
-                        print("")
+                        failed("Có lỗi trong quá trình xoá file!")
                     }
                 }))
                 self.present(vcWarning, animated: true, completion: nil)
                 return
             } else {
-                try? FileManager.default.createDirectory(atPath: fileURL.path, withIntermediateDirectories: true, attributes: nil)
+//                try? FileManager.default.createDirectory(atPath: fileURL.path, withIntermediateDirectories: true, attributes: nil)
+                success(fileURL)
             }
-            doneBlock(name, fileURL, typeExport, typeQuality, typeSound)
+            
         } catch {
-            print("Somethings went wrong!")
+            failed("Không thể tạo mới file!")
         }
     }
     
@@ -122,10 +114,8 @@ class PopupFinalViewController: UIViewController {
             var listData : [String] = []
             switch viewGes.tag {
             case selectType.export.rawValue:
-                listObj = [ExportType.acc, ExportType.m4a, ExportType.mp3]
-                listObj.forEach({
-                    listData.append(($0 as! ExportType).rawValue)
-                })
+                listObj = [AVFileType.m4a, AVFileType.aiff]
+                listData = ["m4a", "aiff"]
                 break
             case selectType.quality.rawValue:
                 listObj = [SoundQuality.kbps128, SoundQuality.kbps320]
@@ -179,13 +169,13 @@ extension PopupFinalViewController: DropdownPickerViewDelegate {
         if let vDrop = dropdown.viewPos {
             switch vDrop.tag {
             case selectType.export.rawValue:
-                typeExport = dropdown.listObj[index] as! ExportType
+                mediaInfo.typeExport = dropdown.listObj[index] as! AVFileType
                 break
             case selectType.quality.rawValue:
-                typeQuality = dropdown.listObj[index] as! SoundQuality
+                mediaInfo.typeQuality = dropdown.listObj[index] as! SoundQuality
                 break
             case selectType.type.rawValue:
-                typeSound = dropdown.listObj[index] as! SoundType
+                mediaInfo.typeTarget = dropdown.listObj[index] as! SoundType
                 break
             default:
                 break

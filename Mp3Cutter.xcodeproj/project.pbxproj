@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2832198B7EF4C6C8CA8288E6 /* Pods_Mp3Cutter_Mp3CutterUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BAA3F17B032532577CBC2A5F /* Pods_Mp3Cutter_Mp3CutterUITests.framework */; };
+		3504F3D924EF6C450088CEBC /* MediaInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3504F3D824EF6C450088CEBC /* MediaInfoModel.swift */; };
 		3521BD0124EADD4400279A45 /* File 14.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3521BD0024EADD4400279A45 /* File 14.mp3 */; };
 		3521BD0324EAE45B00279A45 /* MediaParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3521BD0224EAE45B00279A45 /* MediaParser.swift */; };
 		354C538124E849250093AE65 /* PopupFinalFileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354C538024E849250093AE65 /* PopupFinalFileViewController.swift */; };
@@ -68,6 +69,7 @@
 
 /* Begin PBXFileReference section */
 		0634B929693B050E3EB07C61 /* Pods-Mp3Cutter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mp3Cutter.release.xcconfig"; path = "Target Support Files/Pods-Mp3Cutter/Pods-Mp3Cutter.release.xcconfig"; sourceTree = "<group>"; };
+		3504F3D824EF6C450088CEBC /* MediaInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaInfoModel.swift; sourceTree = "<group>"; };
 		3521BD0024EADD4400279A45 /* File 14.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "File 14.mp3"; sourceTree = "<group>"; };
 		3521BD0224EAE45B00279A45 /* MediaParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaParser.swift; sourceTree = "<group>"; };
 		354C538024E849250093AE65 /* PopupFinalFileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupFinalFileViewController.swift; sourceTree = "<group>"; };
@@ -142,6 +144,7 @@
 				354C538A24E84A380093AE65 /* DropDownPickerViewController.swift */,
 				354C539424E84C760093AE65 /* Extensions.swift */,
 				354C539624E8531C0093AE65 /* Constant.swift */,
+				3504F3D824EF6C450088CEBC /* MediaInfoModel.swift */,
 			);
 			path = Ultils;
 			sourceTree = "<group>";
@@ -504,6 +507,7 @@
 				354C538124E849250093AE65 /* PopupFinalFileViewController.swift in Sources */,
 				354C539524E84C760093AE65 /* Extensions.swift in Sources */,
 				35E03BF324E2EFB7009CFC8D /* ListViewController.swift in Sources */,
+				3504F3D924EF6C450088CEBC /* MediaInfoModel.swift in Sources */,
 				354C539724E8531C0093AE65 /* Constant.swift in Sources */,
 				359F7BED24E5AF5F00C09929 /* ActionCutViewController.swift in Sources */,
 				35E03BB524E2DFE0009CFC8D /* SceneDelegate.swift in Sources */,

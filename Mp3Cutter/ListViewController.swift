@@ -13,18 +13,20 @@ import MediaPlayer
 import AVFoundation
 
 struct MusicData {
-  
-  var cover: UIImage?
-  var title: String?
-  var artist: String?
-  var musicName: String?
-  
-  init(cover: UIImage?, title: String?, artist: String?, musicName: String?) {
-    self.cover = cover
-    self.title = title
-    self.artist = artist
-    self.musicName = musicName
-  }
+    
+    var url : URL?
+    var cover: UIImage?
+    var title: String?
+    var artist: String?
+    var musicName: String?
+    
+    init(url: URL, cover: UIImage?, title: String?, artist: String?, musicName: String?) {
+        self.url = url
+        self.cover = cover
+        self.title = title
+        self.artist = artist
+        self.musicName = musicName
+    }
 }
 
 extension FileManager {
@@ -40,6 +42,7 @@ class ListViewController: UIViewController {
     
     
     var musicData : [MPMediaItem] = []
+    var localMusic : [MusicData] = []
     private let lbTitle = UILabel()
     private let viewSearch = UIView()
     private let vNavigation = UIView()
@@ -48,6 +51,7 @@ class ListViewController: UIViewController {
     private let vAction = UIView()
     private let btnAction = UIButton()
     private let stackMain = UIStackView()
+    private var multiChoise = false
     var actType = ListType.cut
     var mainColor : UIColor? = UIColor.red.withAlphaComponent(0.5)
     
@@ -59,50 +63,50 @@ class ListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        // All
-//        let file = FileManager.default.urls(for: .musicDirectory, skipsHiddenFiles: false)
-//        print(file)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        loadMusicList()
         loadMusics()
     }
     
     func loadMusics(){
         if let mediaItems = MPMediaQuery.songs().items {
             self.musicData = mediaItems
-            self.tableView.reloadData()
         }
         
         let fileManager = FileManager.default
         let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
         do {
+            self.localMusic = []
             let fileURLs = try fileManager.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil)
             fileURLs.forEach({
-                print($0.absoluteString)
+                var title = $0.lastPathComponent
+                if !title.contains("mp3") && !title.contains("m4a") && !title.contains("aiff") {
+                    return
+                }
+                let playerItem = AVPlayerItem(url: $0)
+                let metadataList = playerItem.asset.metadata
+                var artist = ""
+                for item in metadataList {
+                    if let stringValue = item.value {
+                        if let key = item.commonKey?.rawValue {
+                            if key == "title" {
+                                title = stringValue as? String ?? "Name"
+                            }
+                            if key  == "artist" {
+                                artist = stringValue as? String ?? "Artist"
+                            }
+                        }
+                    }
+                }
+                localMusic.append(MusicData(url: $0, cover: nil, title: title, artist: artist, musicName: nil))
             })
-            // process files
+            
         } catch {
             print("Error while enumerating files \(documentsURL.path): \(error.localizedDescription)")
         }
-        
-        //        let mediaItems = MPMediaQuery.songs().items
-//        let mediaCollection = MPMediaItemCollection(items: mediaItems ?? [])
-//        mediaItems?.forEach({
-//            print($0.title)
-//        })
-//        let player = MPMusicPlayerController.systemMusicPlayer
-//        player.setQueue(with: mediaCollection)
-//        player.play()
-
-
-//        let picker = MPMediaPickerController(mediaTypes: .anyAudio)
-//        picker.delegate = self
-//        picker.allowsPickingMultipleItems = false
-//        picker.prompt = "Choose a song"
-//        present(picker, animated: true, completion: nil)
+        self.tableView.reloadData()
     }
 }
 
@@ -128,7 +132,20 @@ extension ListViewController: UITextFieldDelegate {
 extension ListViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return musicData.count
+        return section == 0 ? musicData.count : localMusic.count
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let cell = UITableViewCell()
+        cell.textLabel?.text = section == 0 ? "Nhạc itunes" : "Bộ sưu tập"
+        return cell
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        if localMusic.count > 0 {
+            return 2
+        }
+        return 1
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -138,12 +155,53 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ItemTableViewCell.id, for: indexPath) as! ItemTableViewCell
         cell.selectionStyle = .none
-        cell.bind(title: musicData[indexPath.row].title ?? "Name", sub: musicData[indexPath.row].artist ?? "Artist", checkColor: mainColor, showCheck: true)
+        if indexPath.section == 0 {
+            cell.bind(title: musicData[indexPath.row].title ?? "Name", sub: musicData[indexPath.row].artist ?? "Artist", checkColor: multiChoise ? mainColor : .clear, showCheck: true)
+        } else {
+            cell.bind(title: localMusic[indexPath.row].title ?? "Name", sub: localMusic[indexPath.row].artist ?? "Artist", checkColor: multiChoise ? mainColor : .clear, showCheck: true)
+        }
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        (tableView.cellForRow(at: indexPath) as? ItemTableViewCell)?.checkOn()
+        if multiChoise {
+            (tableView.cellForRow(at: indexPath) as? ItemTableViewCell)?.checkOn()
+        } else {
+            switch actType {
+            case .cut:
+                var url : URL? = nil
+                url = indexPath.section == 0 ? (musicData[indexPath.row].assetURL) : localMusic[indexPath.row].url
+                if url == nil {
+                    return
+                }
+                let vc = ActionCutViewController(url: url!)
+                let navi = UINavigationController(rootViewController: vc)
+                navi.navigationBar.tintColor = .white
+                navi.navigationBar.titleTextAttributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14, weight: .bold)]
+                navi.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
+                navi.navigationBar.barTintColor = ActionType.actCut.color
+                navi.navigationBar.isTranslucent = false
+                navi.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
+                navi.modalPresentationStyle = .overCurrentContext
+                let vButton = UIView()
+                vButton.snp.makeConstraints({
+                    $0.width.height.equalTo(navi.navigationBar.frame.height)
+                })
+                let btnBack = UIButton()
+                vButton.addSubview(btnBack)
+                btnBack.setImage(UIImage(named: "iconRemove"), for: .normal)
+                btnBack.imageView?.contentMode = .scaleAspectFit
+                btnBack.addTarget(self, action: #selector(self.goBack), for: .touchUpInside)
+                btnBack.snp.makeConstraints({
+                    $0.center.equalToSuperview()
+                    $0.width.height.equalToSuperview().multipliedBy(0.7)
+                })
+                vc.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: vButton)
+                self.present(navi, animated: true, completion: nil)
+            default:
+                break
+            }
+        }
     }
 }
 

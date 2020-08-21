@@ -41,32 +41,9 @@ extension ViewController {
         self.present(vc, animated: true, completion: nil)
     }
     
-    @objc func openAction(){
-        let vc = ActionCutViewController()
-        let navi = UINavigationController(rootViewController: vc)
-        navi.navigationBar.tintColor = .white
-        navi.navigationBar.titleTextAttributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14, weight: .bold)]
-        navi.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
-        navi.navigationBar.barTintColor = ActionType.actCut.color
-        navi.navigationBar.isTranslucent = false
-        navi.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
-        navi.modalPresentationStyle = .overCurrentContext
-        let vButton = UIView()
-        vButton.snp.makeConstraints({
-            $0.width.height.equalTo(navi.navigationBar.frame.height)
-        })
-        let btnBack = UIButton()
-        vButton.addSubview(btnBack)
-        btnBack.setImage(UIImage(named: "iconRemove"), for: .normal)
-        btnBack.imageView?.contentMode = .scaleAspectFit
-        btnBack.addTarget(self, action: #selector(backDismiss), for: .touchUpInside)
-        btnBack.snp.makeConstraints({
-            $0.center.equalToSuperview()
-            $0.width.height.equalToSuperview().multipliedBy(0.7)
-        })
-        vc.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: vButton)
-        self.present(navi, animated: true, completion: nil)
-    }
+//    @objc func openAction(){
+//
+//    }
     
     @objc func backDismiss(){
         self.dismiss(animated: true, completion: nil)
@@ -143,7 +120,7 @@ extension ViewController {
             $0.bottom.lessThanOrEqualToSuperview()
         })
         
-        btnCut.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.openAction)))
+        btnCut.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.actFunction)))
         btnMerge.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.actFunction(_:))))
         btnConvert.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.actFunction(_:))))
         btnVideo.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.actFunction(_:))))

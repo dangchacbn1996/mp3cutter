@@ -14,23 +14,86 @@ class MediaPascer {
     
     static let shared = MediaPascer()
     
-    func audioURLParse(url: URL, asset: AVAsset, newName: String, export: ExportType, quality: SoundQuality, type: SoundType, starting: CMTime, ending: CMTime, failed: ((String) -> Void), success: @escaping() -> Void) -> Void
+    func audioURLParse(info: MediaInfoModel, newURL: URL, asset: AVAsset, starting: CMTime, ending: CMTime, failed: @escaping ((String) -> Void), success: @escaping() -> Void) -> Void
     {
-        //        do {
-        guard let session = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetAppleM4A) else { return }
-        session.outputURL = url
-        session.timeRange = CMTimeRangeFromTimeToTime(start: starting, end: ending)
+        exportFile(info: info, newURL: newURL, asset: asset, timeRange: CMTimeRangeFromTimeToTime(start: starting, end: ending), failed: failed, success: success)
+    }
+    
+//    func merge(audio1: NSURL, audio2:  NSURL) {
+//
+//
+//        var error:NSError?
+//
+//        var ok1 = false
+//        var ok2 = false
+//
+//
+////        var documentsDirectory:String = paths[0] as! String
+//
+//        //Create AVMutableComposition Object.This object will hold our multiple AVMutableCompositionTrack.
+//        var composition = AVMutableComposition()
+//        var compositionAudioTrack1: AVMutableCompositionTrack? =
+//            composition.addMutableTrack(withMediaType: AVMediaType.audio, preferredTrackID: CMPersistentTrackID())
+//        var compositionAudioTrack2:AVMutableCompositionTrack? = composition.addMutableTrack(withMediaType: AVMediaType.audio, preferredTrackID: CMPersistentTrackID())
+//
+//        //create new file to receive data
+//        var documentDirectoryURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first! as! NSURL
+//        var fileDestinationUrl = documentDirectoryURL.URLByAppendingPathComponent("resultmerge.wav")
+//        println(fileDestinationUrl)
+//
+//
+//        var url1 = audio1
+//        var url2 = audio2
+//
+//
+//        var avAsset1 = AVURLAsset(URL: url1, options: nil)
+//        var avAsset2 = AVURLAsset(URL: url2, options: nil)
+//
+//        var tracks1 =  avAsset1.tracksWithMediaType(AVMediaTypeAudio)
+//        var tracks2 =  avAsset2.tracksWithMediaType(AVMediaTypeAudio)
+//
+//        var assetTrack1:AVAssetTrack = tracks1[0] as! AVAssetTrack
+//        var assetTrack2:AVAssetTrack = tracks2[0] as! AVAssetTrack
+//
+//
+//        var duration1: CMTime = assetTrack1.timeRange.duration
+//        var duration2: CMTime = assetTrack2.timeRange.duration
+//
+//        var timeRange1 = CMTimeRangeMake(kCMTimeZero, duration1)
+//        var timeRange2 = CMTimeRangeMake(duration1, duration2)
+//
+//
+//        ok1 = compositionAudioTrack1.insertTimeRange(timeRange1, ofTrack: assetTrack1, atTime: kCMTimeZero, error: nil)
+//        if ok1 {
+//
+//            ok2 = compositionAudioTrack2.insertTimeRange(timeRange2, ofTrack: assetTrack2, atTime: duration1, error: nil)
+//
+//            if ok2 {
+//                println("success")
+//            }
+//        }
+//
+//        //AVAssetExportPresetPassthrough => concatenation
+//
+//    }
+    
+    private func exportFile(info: MediaInfoModel, newURL: URL, asset: AVAsset, timeRange: CMTimeRange? = nil, failed: @escaping (String) -> Void, success: @escaping () -> Void){
+        guard let session = AVAssetExportSession(asset: asset, presetName: info.presetName) else { return }
+        session.outputURL = newURL
+        if timeRange != nil {
+            session.timeRange = timeRange!
+        }
         session.outputFileType = .m4a
         session.exportAsynchronously {
             switch session.status {
             case  AVAssetExportSessionStatus.failed:
                 
                 if let e = session.error {
-                    print("export failed \(e)")
+                    failed("export failed \(e)")
                 }
                 
             case AVAssetExportSessionStatus.cancelled:
-                print("export cancelled \(String(describing: session.error))")
+                failed("export cancelled \(String(describing: session.error))")
             default:
                 break
                 // change core data data here
