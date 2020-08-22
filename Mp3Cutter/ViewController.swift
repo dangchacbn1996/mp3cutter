@@ -52,6 +52,7 @@ extension ViewController {
 
 extension ViewController {
     func setupUI(){
+        self.view.backgroundColor = .white
         let vHeader = UIView()
         self.view.addSubview(vHeader)
         vHeader.snp.makeConstraints({
@@ -78,9 +79,9 @@ extension ViewController {
         imageBack.image = UIImage(named: "ic_background")
         
         let btnCut = makeButton(type: .actCut, imgName: "ic_cut")
-        let btnMerge = makeButton(type: .actMerge, imgName: "ic_cut")
-        let btnConvert = makeButton(type: .actConvert, imgName: "ic_cut")
-        let btnVideo = makeButton(type: .actVideo, imgName: "ic_cut")
+        let btnMerge = makeButton(type: .actMerge, imgName: "ic_merge")
+        let btnConvert = makeButton(type: .actConvert, imgName: "ic_convert")
+        let btnVideo = makeButton(type: .actVideo, imgName: "ic_video")
         viewContainer.addSubview(btnCut)
         btnCut.tag = ListType.cut.rawValue
         btnCut.snp.makeConstraints({
@@ -111,7 +112,7 @@ extension ViewController {
             $0.trailing.equalToSuperview()
         })
         
-        let btnLibrary = makeButton(type: .actCollection, imgName: "ic_cut")
+        let btnLibrary = makeButton(type: .actCollection, imgName: "ic_collection")
         viewContainer.addSubview(btnLibrary)
         btnLibrary.snp.makeConstraints({
             $0.centerX.width.equalToSuperview()
@@ -119,6 +120,7 @@ extension ViewController {
             $0.top.equalTo(btnConvert.snp.bottom).offset(16)
             $0.bottom.lessThanOrEqualToSuperview()
         })
+        btnLibrary.tag = ListType.collection.rawValue
         
         btnCut.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.actFunction)))
         btnMerge.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.actFunction(_:))))

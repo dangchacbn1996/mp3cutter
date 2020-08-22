@@ -27,7 +27,7 @@ class PopupFinalViewController: UIViewController {
     private var mediaInfo : MediaInfoModel!
     private var vcDrop = DropdownPickerViewController()
     
-    init(name: String, url: URL, doAction: @escaping ((MediaInfoModel, URL) -> (Void))) {
+    init(name: String, url: [URL], doAction: @escaping ((MediaInfoModel, URL) -> (Void))) {
         super.init(nibName: nil, bundle: nil)
         self.mediaInfo = MediaInfoModel()
         self.mediaInfo.url = url
@@ -46,7 +46,6 @@ class PopupFinalViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-//        self.mediaInfo.asset = AVAsset(url: self.mediaInfo.url)
         updateMedia()
     }
     
@@ -111,29 +110,29 @@ class PopupFinalViewController: UIViewController {
             var vGes = gesture.view
             vcDrop = DropdownPickerViewController(delegate: self, viewDrop: &vGes, border: Constant.viewBorder)
             var listObj : [Any] = []
-            var listData : [String] = []
+//            var listData : [String] = []
             switch viewGes.tag {
             case selectType.export.rawValue:
-                listObj = [AVFileType.m4a, AVFileType.aiff]
-                listData = ["m4a", "aiff"]
+                listObj = [ExportType.m4a, ExportType.aif, ExportType.caf, ExportType.wav]
+//                listData = ["m4a", "aiff"]
                 break
             case selectType.quality.rawValue:
                 listObj = [SoundQuality.kbps128, SoundQuality.kbps320]
-                listObj.forEach({
-                    listData.append(($0 as! SoundQuality).rawValue)
-                })
+//                listObj.forEach({
+//                    listData.append(($0 as! SoundQuality).rawValue)
+//                })
                 break
             case selectType.type.rawValue:
                 listObj = [SoundType.audioFile, SoundType.ringtone, SoundType.warning]
-                listObj.forEach({
-                    listData.append(($0 as! SoundType).rawValue)
-                })
+//                listObj.forEach({
+//                    listData.append(($0 as! SoundType).rawValue)
+//                })
                 break
             default:
                 break
             }
             vcDrop.listObj = listObj
-            vcDrop.listData = listData
+//            vcDrop.listData = listData
             self.present(vcDrop, animated: false, completion: nil)
             vcDrop.viewContainer.layer.cornerRadius = viewGes.layer.cornerRadius
         }
@@ -156,12 +155,20 @@ extension PopupFinalViewController: DropdownPickerViewDelegate {
     }
     
     func setData(dropdown: DropdownPickerViewController, tableView: UITableView, indexPath: IndexPath) -> (UITableViewCell) {
-//        let cell = tableView.dequeueReusableCell(withIdentifier: MarketWatchListItemTVC.id, for: indexPath) as! MarketWatchListItemTVC
-//        let name = (dropdown.listObj[indexPath.row] as? MarketServices.UrlListIndex)?.rawValue.uppercased() ?? (dropdown.listObj[indexPath.row] as? MarketWatchListItem)?.Name?.uppercased()
-//        cell.bind(title: name ?? "", removable: cateType == .collection)
-//        cell.btnRemove.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.removeCollection(_:))))
         let cell = UITableViewCell()
-        cell.textLabel?.text = dropdown.listData[indexPath.row]
+        switch dropdown.viewPos!.tag {
+        case selectType.export.rawValue:
+            cell.textLabel?.text = (dropdown.listObj[indexPath.row] as? ExportType)?.rawValue ?? ""
+            break
+        case selectType.quality.rawValue:
+            cell.textLabel?.text = (dropdown.listObj[indexPath.row] as? SoundQuality)?.rawValue ?? ""
+            break
+        case selectType.type.rawValue:
+            cell.textLabel?.text = (dropdown.listObj[indexPath.row] as? SoundType)?.rawValue ?? ""
+            break
+        default:
+            break
+        }
         return cell
     }
     
@@ -169,13 +176,16 @@ extension PopupFinalViewController: DropdownPickerViewDelegate {
         if let vDrop = dropdown.viewPos {
             switch vDrop.tag {
             case selectType.export.rawValue:
-                mediaInfo.typeExport = dropdown.listObj[index] as! AVFileType
+                mediaInfo.typeExport = dropdown.listObj[index] as! ExportType
+                lbExport.text = mediaInfo.typeExport.rawValue
                 break
             case selectType.quality.rawValue:
                 mediaInfo.typeQuality = dropdown.listObj[index] as! SoundQuality
+                lbQuality.text = mediaInfo.typeQuality.rawValue
                 break
             case selectType.type.rawValue:
                 mediaInfo.typeTarget = dropdown.listObj[index] as! SoundType
+                lbSoundType.text = mediaInfo.typeTarget.rawValue
                 break
             default:
                 break

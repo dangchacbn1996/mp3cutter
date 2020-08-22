@@ -9,14 +9,55 @@
 import Foundation
 import AVKit
 import CoreAudioKit
+import AudioKit
 
 class MediaPascer {
     
     static let shared = MediaPascer()
     
-    func audioURLParse(info: MediaInfoModel, newURL: URL, asset: AVAsset, starting: CMTime, ending: CMTime, failed: @escaping ((String) -> Void), success: @escaping() -> Void) -> Void
+    func audioURLParse(info: MediaInfoModel, newURL: URL, asset: AVAsset, starting: CMTime? = nil, ending: CMTime? = nil, failed: @escaping ((String) -> Void), success: @escaping () -> Void) -> Void
     {
-        exportFile(info: info, newURL: newURL, asset: asset, timeRange: CMTimeRangeFromTimeToTime(start: starting, end: ending), failed: failed, success: success)
+        var timeRange : CMTimeRange!
+        if starting == nil || ending == nil {
+            timeRange = nil
+        } else {
+            timeRange = CMTimeRangeFromTimeToTime(start: starting!, end: ending!)
+        }
+        exportFile(info: info, newURL: newURL, asset: asset, timeRange: timeRange, failed: failed, success: success)
+    }
+    
+    func mergeFilesWithUrl(info: MediaInfoModel, newURL: URL, listURL: [URL], failed: @escaping ((String) -> Void), success: @escaping () -> Void) -> Void
+    {
+
+//        let mixComposition : AVMutableComposition = AVMutableComposition()
+//
+//        var mutableCompositionVideoTrack : [AVMutableCompositionTrack] = []
+//        var mutableCompositionAudioTrack : [AVMutableCompositionTrack] = []
+//        var mutableCompositionAudioOfVideoTrack : [AVMutableCompositionTrack] = []
+//        let totalVideoCompositionInstruction : AVMutableVideoCompositionInstruction = AVMutableVideoCompositionInstruction()
+
+        var listAsset : [AVAsset] = []
+        listURL.forEach({
+            listAsset.append(AVAsset(url: $0))
+        })
+
+        let composition = AVMutableComposition()
+        listURL.forEach({
+            let audioAsset = AVURLAsset(url: $0, options: nil)
+            let audioTrack: AVMutableCompositionTrack? = composition.addMutableTrack(withMediaType: AVMediaType.audio, preferredTrackID: kCMPersistentTrackID_Invalid)
+            let error: Error?
+            do {
+                try? audioTrack?.insertTimeRange(CMTimeRangeMake(start: CMTime.zero, duration: audioAsset.duration), of: audioAsset.tracks(withMediaType: AVMediaType.audio)[0], at: composition.duration)
+                print("AddTrack: \($0.lastPathComponent) \(composition.duration.seconds)")
+            } catch {
+                DispatchQueue.main.async {
+                    failed("Xảy ra lỗi trong quá trình ghép file")
+                }
+            }
+        })
+        print("Merge: composition \(composition.tracks.count)")
+        exportFile(info: info, newURL: newURL, asset: composition, failed: failed, success: success)
+
     }
     
 //    func merge(audio1: NSURL, audio2:  NSURL) {
@@ -78,8 +119,16 @@ class MediaPascer {
 //    }
     
     private func exportFile(info: MediaInfoModel, newURL: URL, asset: AVAsset, timeRange: CMTimeRange? = nil, failed: @escaping (String) -> Void, success: @escaping () -> Void){
-        guard let session = AVAssetExportSession(asset: asset, presetName: info.presetName) else { return }
-        session.outputURL = newURL
+        
+        guard let session = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetAppleM4A) else { return }
+//        var string = newURL.absoluteString
+//        let length = newURL.pathExtension.count
+//        string.removeLast(length)
+//        string += "m4a"
+        var clipboardURL = newURL
+        clipboardURL.deletePathExtension()
+        clipboardURL.appendPathExtension("m4a")
+        session.outputURL = clipboardURL
         if timeRange != nil {
             session.timeRange = timeRange!
         }
@@ -89,18 +138,49 @@ class MediaPascer {
             case  AVAssetExportSessionStatus.failed:
                 
                 if let e = session.error {
-                    failed("export failed \(e)")
+                    DispatchQueue.main.async {
+                        print("export failed \(e)")
+                        failed("export failed \(e)")
+                    }
                 }
                 
             case AVAssetExportSessionStatus.cancelled:
-                failed("export cancelled \(String(describing: session.error))")
+                DispatchQueue.main.async {
+                    print("export cancelled \(String(describing: session.error))")
+                    failed("export cancelled \(String(describing: session.error))")
+                }
+            case .completed:
+                if newURL.pathExtension == "m4a" {
+                    DispatchQueue.main.async {
+                        success()
+                    }
+                    return
+                } else {
+                    let convert = AKConverter.init(inputURL: clipboardURL, outputURL: newURL)
+                    convert.start { (error) in
+                        if error == nil {
+                            DispatchQueue.main.async {
+                                do {
+                                    try? FileManager.default.removeItem(atPath: clipboardURL.path)
+                                } catch {
+                                    
+                                }
+                                success()
+                            }
+                        } else {
+                            DispatchQueue.main.async {
+                                failed(error?.localizedDescription ?? "")
+                            }
+                        }
+                    }
+                }
             default:
                 break
                 // change core data data here
             }
-            success()
         }
     }
+    
 }
 
 @objc extension AVAudioFile {

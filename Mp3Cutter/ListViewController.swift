@@ -11,6 +11,7 @@ import UIKit
 import SnapKit
 import MediaPlayer
 import AVFoundation
+import MGSwipeTableCell
 
 struct MusicData {
     
@@ -39,10 +40,31 @@ extension FileManager {
 
 class ListViewController: UIViewController {
     
-    
-    
     var musicData : [MPMediaItem] = []
     var localMusic : [MusicData] = []
+    var listHidden : [IndexPath] = []
+    var refreshControl = UIRefreshControl()
+    private var textSearch = "" {
+        didSet {
+            if textSearch.replacingOccurrences(of: " ", with: "") == "" {
+                listHidden.removeAll()
+                tableView.reloadData()
+                return
+            }
+            listHidden = []
+            for index in 0..<musicData.count {
+                if !(musicData[index].title?.lowercased().contains(textSearch.lowercased()) ?? true) {
+                    listHidden.append(IndexPath(row: index, section: 0))
+                }
+            }
+            for index in 0..<localMusic.count {
+                if !(localMusic[index].title?.lowercased().contains(textSearch.lowercased()) ?? true) {
+                    listHidden.append(IndexPath(row: index, section: 1))
+                }
+            }
+            tableView.reloadData()
+        }
+    }
     private let lbTitle = UILabel()
     private let viewSearch = UIView()
     private let vNavigation = UIView()
@@ -51,7 +73,7 @@ class ListViewController: UIViewController {
     private let vAction = UIView()
     private let btnAction = UIButton()
     private let stackMain = UIStackView()
-    private var multiChoise = false
+    private var multiChoise: [IndexPath]? = nil
     var actType = ListType.cut
     var mainColor : UIColor? = UIColor.red.withAlphaComponent(0.5)
     
@@ -63,6 +85,9 @@ class ListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        if self.actType == .merge {
+            multiChoise = []
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -70,19 +95,29 @@ class ListViewController: UIViewController {
         loadMusics()
     }
     
-    func loadMusics(){
+    @objc func loadMusics(){
+        refreshControl.endRefreshing()
         if let mediaItems = MPMediaQuery.songs().items {
             self.musicData = mediaItems
+        }
+        if self.actType == .merge {
+            self.multiChoise = []
         }
         
         let fileManager = FileManager.default
         let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
         do {
             self.localMusic = []
+            if let demoUrl = Bundle(for: type(of: self)).url(forResource: "Presentations", withExtension: "mp3") {
+                localMusic.append(MusicData(url: demoUrl, cover: nil, title: "Presentations", artist: "demo", musicName: nil))
+            }
             let fileURLs = try fileManager.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil)
             fileURLs.forEach({
                 var title = $0.lastPathComponent
-                if !title.contains("mp3") && !title.contains("m4a") && !title.contains("aiff") {
+                if !title.contains(ExportType.m4a.rawValue.lowercased())
+                    && !title.contains(ExportType.aif.rawValue.lowercased())
+                    && !title.contains(ExportType.caf.rawValue.lowercased())
+                    && !title.contains(ExportType.wav.rawValue.lowercased()) {
                     return
                 }
                 let playerItem = AVPlayerItem(url: $0)
@@ -115,17 +150,74 @@ class ListViewController: UIViewController {
  */
 extension ListViewController {
     @objc func actSearch(){
-        self.view.endEditing(true)
+        textSearch = tfSearch.text ?? ""
     }
     
     @objc func goBack(){
         self.dismiss(animated: true, completion: nil)
     }
+    
+    @objc func actSort(){
+        
+    }
+    
+    @objc func actAction(){
+        if actType == .merge {
+            if multiChoise?.count ?? 0 < 2 {
+                Toast.shared.makeToast(.error, string: "Vui lòng chọn ít nhất 2 file âm thanh", inView: self.view, time: 2.0)
+                return
+            }
+            var listURL = getListChoice()
+            var vc : PopupFinalViewController!
+            vc = PopupFinalViewController(name: "Tên mới", url: listURL, doAction: {(media, url) -> (Void) in
+                Loading.sharedInstance.show(in: vc.view)
+                MediaPascer.shared.mergeFilesWithUrl(info: media, newURL: url, listURL: listURL, failed: { (error) in
+                    Loading.sharedInstance.dismiss()
+                    Toast.shared.makeToast(.error, string: error, inView: self.view, time: 2.0)
+                }) {
+                    Loading.sharedInstance.dismiss()
+                    Toast.shared.makeToast(.success, string: "Tạo file thành công!", inView: vc.view, time: 2.0)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        vc.dismiss(animated: true, completion: nil)
+                    }
+                    print("SUCCESS: \(url.absoluteString)")
+                    print("-----------------------------")
+                }
+            })
+            vc.modalPresentationStyle = .overCurrentContext
+            vc.modalTransitionStyle = .crossDissolve
+            self.present(vc, animated: true, completion: nil)
+        }
+    }
+    
+    private func getListChoice() -> ([URL]) {
+        if let listChoice = multiChoise {
+            var listURL: [URL] = []
+            listChoice.forEach({
+                if $0.section == 0 {
+                    if musicData.count > $0.row {
+                        if let url = musicData[$0.row].assetURL {
+                            listURL.append(url)
+                        }
+                    }
+                }
+                if $0.section == 1 {
+                    if localMusic.count > $0.row {
+                        if let url = localMusic[$0.row].url {
+                            listURL.append(url)
+                        }
+                    }
+                }
+            })
+            return listURL
+        }
+        return []
+    }
 }
 
 extension ListViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
-        
+        actSearch()
     }
 }
 
@@ -137,18 +229,23 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let cell = UITableViewCell()
-        cell.textLabel?.text = section == 0 ? "Nhạc itunes" : "Bộ sưu tập"
+        cell.textLabel?.text = section == 0 ? "Nhạc itunes (\(musicData.count))" : "Bộ sưu tập (\(localMusic.count))"
+        cell.textLabel?.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        cell.textLabel?.textColor = UIColor.gray.withAlphaComponent(0.8)
+        cell.contentView.backgroundColor = UIColor.gray.withAlphaComponent(0.1)
         return cell
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        if localMusic.count > 0 {
-            return 2
-        }
-        return 1
+        return 2
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        for item in listHidden {
+            if item.section == indexPath.section && item.row == indexPath.row {
+                return 0
+            }
+        }
         return ItemTableViewCell.cellHeight
     }
     
@@ -156,16 +253,67 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: ItemTableViewCell.id, for: indexPath) as! ItemTableViewCell
         cell.selectionStyle = .none
         if indexPath.section == 0 {
-            cell.bind(title: musicData[indexPath.row].title ?? "Name", sub: musicData[indexPath.row].artist ?? "Artist", checkColor: multiChoise ? mainColor : .clear, showCheck: true)
+            cell.bind(title: musicData[indexPath.row].title ?? "Name", sub: musicData[indexPath.row].artist ?? "Artist", checkColor: multiChoise != nil ? mainColor : .clear, showCheck: true)
+            cell.rightButtons = []
         } else {
-            cell.bind(title: localMusic[indexPath.row].title ?? "Name", sub: localMusic[indexPath.row].artist ?? "Artist", checkColor: multiChoise ? mainColor : .clear, showCheck: true)
+            var sub = ""
+            if let artist = localMusic[indexPath.row].artist {
+                sub += artist
+            }
+            if let url = localMusic[indexPath.row].url {
+                let asset = AVAsset(url: url)
+                sub += NSString(format: " %02d:%02d", Int(asset.duration.seconds/60), Int(asset.duration.seconds.truncatingRemainder(dividingBy: 60))) as String
+            }
+            cell.bind(title: localMusic[indexPath.row].title ?? "Name", sub: sub, checkColor: multiChoise != nil ? mainColor : .clear, showCheck: true)
+            var actions : [MGSwipeButton] = []
+            actions.append(MGSwipeButton.init(title: "Xoá", backgroundColor: UIColor(hexString: "b9b2b2"), callback: {
+                (sender: MGSwipeTableCell!) -> Bool in
+                let vcWarning = UIAlertController(title: "Xoá file", message: "Bạn chắc chắn muốn xoá file \(self.localMusic[indexPath.row].title ?? "Name")?", preferredStyle: .alert)
+                vcWarning.addAction(UIAlertAction(title: "Huỷ", style: .default, handler: { (alert) in
+                    vcWarning.dismiss(animated: true, completion: nil)
+                }))
+                vcWarning.addAction(UIAlertAction(title: "Xoá file", style: .default, handler: { (alert) in
+                    do {
+                        try? FileManager.default.removeItem(atPath: self.localMusic[indexPath.row].url?.path ?? "")
+                        self.loadMusics()
+                    } catch {
+                        Toast.shared.makeToast(.error, string: "Có lỗi trong quá trình xoá file!", inView: self.view, time: 2.0)
+                    }
+                }))
+                self.present(vcWarning, animated: true, completion: nil)
+                return true
+            }))
+            
+            cell.rightButtons = actions
         }
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if multiChoise {
-            (tableView.cellForRow(at: indexPath) as? ItemTableViewCell)?.checkOn()
+        if multiChoise != nil {
+            if let cell = tableView.cellForRow(at: indexPath) as? ItemTableViewCell {
+                if cell.isOn() {
+                    for index in 0..<multiChoise!.count {
+                        if multiChoise![index].section == indexPath.section && multiChoise![index].row == indexPath.row {
+                            multiChoise?.remove(at: index)
+                            break
+                        }
+                    }
+                }
+                else {
+                    multiChoise?.append(indexPath)
+                }
+                cell.checkOn()
+                var time : Double = 0
+                getListChoice().forEach({
+                    let asset = AVAsset(url: $0)
+                    time += asset.duration.seconds
+                })
+                var title = "Ghép(\(multiChoise!.count)) / "
+                title += NSString(format: "%02d:%02d", Int(time / 60), Int(time.truncatingRemainder(dividingBy: 60))) as String
+                
+                btnAction.setTitle(title, for: .normal)
+            }
         } else {
             switch actType {
             case .cut:
@@ -189,15 +337,53 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
                 })
                 let btnBack = UIButton()
                 vButton.addSubview(btnBack)
-                btnBack.setImage(UIImage(named: "iconRemove"), for: .normal)
+                btnBack.setImage(UIImage(named: "ic_back")?.withRenderingMode(.alwaysTemplate), for: .normal)
+                btnBack.imageView?.tintColor = .white
                 btnBack.imageView?.contentMode = .scaleAspectFit
                 btnBack.addTarget(self, action: #selector(self.goBack), for: .touchUpInside)
                 btnBack.snp.makeConstraints({
                     $0.center.equalToSuperview()
-                    $0.width.height.equalToSuperview().multipliedBy(0.7)
+                    $0.width.height.equalToSuperview().multipliedBy(0.6)
                 })
-                vc.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: vButton)
+                vc.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: vButton)
                 self.present(navi, animated: true, completion: nil)
+                break
+            case .convert:
+                var vc : PopupFinalViewController!
+                var assetURL : URL? = nil
+                assetURL = indexPath.section == 0 ? (musicData[indexPath.row].assetURL) : localMusic[indexPath.row].url
+                if assetURL == nil {
+                    return
+                }
+                let asset = AVAsset(url: assetURL!)
+                vc = PopupFinalViewController(name: "Tên mới", url: [assetURL!], doAction: {(media, url) -> (Void) in
+                    Loading.sharedInstance.show(in: vc.view)
+                    MediaPascer.shared.audioURLParse(info: media, newURL: url, asset: asset, failed: { (error) in
+                        Loading.sharedInstance.dismiss()
+                        Toast.shared.makeToast(.error, string: error, inView: vc.view, time: 2.0)
+                    }) { () in
+                        Loading.sharedInstance.dismiss()
+                        Toast.shared.makeToast(.success, string: "Tạo file thành công!", inView: vc.view, time: 2.0)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            vc.dismiss(animated: true, completion: nil)
+                        }
+                    }
+                })
+                vc.modalPresentationStyle = .overCurrentContext
+                vc.modalTransitionStyle = .crossDissolve
+                self.present(vc, animated: true, completion: nil)
+            case .collection:
+                var assetURL : URL? = nil
+                assetURL = indexPath.section == 0 ? (musicData[indexPath.row].assetURL) : localMusic[indexPath.row].url
+                if assetURL == nil {
+                    return
+                }
+                let vc = PopupPlayerViewController()
+                vc.url = assetURL
+                vc.modalPresentationStyle = .overCurrentContext
+                vc.modalTransitionStyle = .crossDissolve
+                self.present(vc, animated: true, completion: nil)
+                break
             default:
                 break
             }
@@ -222,7 +408,8 @@ extension ListViewController {
             self.lbTitle.text = "Cắt video"
             vAction.isHidden = true
         default:
-            return
+            self.lbTitle.text = "Bộ sưu tập của tôi"
+            vAction.isHidden = true
         }
     }
     
@@ -250,10 +437,21 @@ extension ListViewController {
             $0.leading.equalToSuperview().offset(16)
             $0.height.equalTo(btnBack.snp.width)
         })
-        btnBack.setImage(UIImage(named: "ic_cut")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        btnBack.setImage(UIImage(named: "ic_back")?.withRenderingMode(.alwaysTemplate), for: .normal)
         btnBack.imageView?.tintColor = .white
         btnBack.imageView?.contentMode = .scaleAspectFit
         btnBack.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.goBack)))
+        
+        let btnSort = UIButton()
+        vNavigation.addSubview(btnSort)
+        btnSort.snp.makeConstraints({
+            $0.trailing.equalToSuperview().offset(-16)
+            $0.centerY.size.equalTo(btnBack)
+        })
+        btnSort.setImage(UIImage(named: "ic_sort")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        btnSort.imageView?.tintColor = .white
+        btnSort.imageView?.contentMode = .scaleAspectFit
+        btnSort.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.actSort)))
         
         vNavigation.addSubview(lbTitle)
         lbTitle.snp.makeConstraints({
@@ -279,16 +477,17 @@ extension ListViewController {
         })
         tfSearch.textColor = .white
         tfSearch.placeholder = "Nhập từ khoá tìm kiếm"
+        tfSearch.delegate = self
         let btnSearch = UIButton()
         vSearch.addSubview(btnSearch)
         btnSearch.snp.makeConstraints({
             $0.centerY.equalToSuperview()
+            $0.height.equalToSuperview().multipliedBy(0.5)
             $0.leading.equalTo(tfSearch.snp.trailing).offset(4)
-            $0.height.equalToSuperview().multipliedBy(-4)
-            $0.trailing.equalToSuperview().offset(-4)
+            $0.trailing.equalToSuperview().offset(-10)
             $0.width.equalTo(btnSearch.snp.height)
         })
-        btnSearch.setImage(UIImage(named: "ic_cut")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        btnSearch.setImage(UIImage(named: "ic_search")?.withRenderingMode(.alwaysTemplate), for: .normal)
         btnSearch.imageView?.tintColor = .white
         btnSearch.imageView?.contentMode = .scaleAspectFit
         btnSearch.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.actSearch)))
@@ -303,11 +502,14 @@ extension ListViewController {
         stackMain.distribution = .fill
         
         stackMain.addArrangedSubview(tableView)
+        tableView.backgroundColor = .white
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(UINib(nibName: "ItemTableViewCell", bundle: nil), forCellReuseIdentifier: ItemTableViewCell.id)
         tableView.separatorInset = .zero
         tableView.tableFooterView = UIView()
+        tableView.addSubview(refreshControl)
+        refreshControl.addTarget(self, action: #selector(self.loadMusics), for: .valueChanged)
         tableView.snp.makeConstraints({
             $0.width.equalToSuperview()
         })
@@ -321,216 +523,14 @@ extension ListViewController {
         btnAction.snp.makeConstraints({
             $0.center.equalToSuperview()
             $0.height.equalTo(42)
-            $0.width.equalTo(btnAction.snp.height).multipliedBy(3.5)
+            $0.width.equalTo(btnAction.snp.height).multipliedBy(4)
         })
         btnAction.layer.cornerRadius = 4
         btnAction.backgroundColor = mainColor
-        btnAction.setTitle("Action", for: .normal)
+        btnAction.setTitle("Ghép", for: .normal)
         btnAction.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
+        btnAction.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.actAction)))
         
         configType()
     }
 }
-
-//extension ListViewController {
-//    func loadMusicList() {
-//        let documentsDir = fileManager.urls(for: .documentDirectory,
-//                                            in: .userDomainMask)[0].path
-//        if let files = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
-//            do {
-//                let fileURLs = try fileManager.contentsOfDirectory(at: files, includingPropertiesForKeys: nil)
-//                print(fileURLs)
-//                // process files
-//            } catch {
-//                print("Error while enumerating files \(files.path): \(error.localizedDescription)")
-//            }
-//        }
-//        var image: UIImage!
-//        //var titleString: String!
-//        var artistString: String!
-//        var musicName: String!
-//
-//        if let list = UserDefaultManager.getMusicList() {
-//          if list.isEmpty {
-//            musicInfo.removeAll()
-//
-//            do {
-//              let items = try fileManager.contentsOfDirectory(atPath: documentsDir)
-//              
-//              for item in items {
-//                musicName = item
-//                
-//                let url = URL(fileURLWithPath: item)
-//                let asset = AVAsset(url: url) as AVAsset
-//                
-//                // artwork image 얻기
-//                let metaArtwork = asset.commonMetadata.filter
-//                { $0.commonKey?.rawValue == "artwork"}
-//                
-//                if !metaArtwork.isEmpty {
-//                  let imageData = metaArtwork[0].value
-//                  image = UIImage(data: imageData as! Data)
-//                } else {
-//                  image = UIImage(named: "noImage")
-//                }
-//                
-//                
-//                let metaArtist = asset.commonMetadata.filter
-//                { $0.commonKey?.rawValue == "artist"}
-//                
-//                if !metaArtist.isEmpty {
-//                  artistString = metaArtist[0].value as? String
-//                } else {
-//                  artistString = "Artist"
-//                }
-//                
-//                
-//                //          for metaDataItems in asset.commonMetadata {
-//                //            if metaDataItems.commonKey?.rawValue == "title" {
-//                //              guard let titleData = metaDataItems.value else {return}
-//                //              titleString = titleData as? String
-//                //            }
-//                //            if metaDataItems.commonKey?.rawValue == "artist" {
-//                //              guard let artistData = metaDataItems.value else {return }
-//                //              artistString = artistData as? String
-//                //
-//                //            }
-//                //          }
-//                
-//                musicInfo.append(MusicData(cover: image,
-//                                           title: musicName,
-//                                           artist: artistString,
-//                                           musicName: musicName))
-//              }
-//             
-//            } catch {
-//              print("Not Found item")
-//            }
-//            tableView.reloadData()
-//            
-//          } else {
-//            
-//            musicInfo.removeAll()
-//            let list = UserDefaultManager.getMusicList()
-//            
-//            for item in list! {
-//              musicName = item
-//              
-//              do {
-//                let items = try fileManager.contentsOfDirectory(atPath: documentsDir)
-//                
-//                for name in items {
-//                  if musicName == name {
-//                    
-//                    let url = URL(fileURLWithPath: musicName)
-//                    let asset = AVAsset(url: url) as AVAsset
-//                    
-//                    let meta = asset.commonMetadata.filter
-//                    { $0.commonKey?.rawValue == "artwork"}
-//                    
-//                    if meta.count > 0 {
-//                      let imageData = meta[0].value
-//                      image = UIImage(data: imageData as! Data)
-//                    } else {
-//                      image = UIImage(named: "noImage")
-//                    }
-//                    
-//                    let metaArtist = asset.commonMetadata.filter
-//                          { $0.commonKey?.rawValue == "artist"}
-//                          
-//                          if !metaArtist.isEmpty {
-//                            artistString = metaArtist[0].value as? String
-//                          } else {
-//                            artistString = "작자미상"
-//                          }
-//                    
-//    //                for metaDataItems in asset.commonMetadata {
-//    //                  if metaDataItems.commonKey?.rawValue == "title" {
-//    //                    guard let titleData = metaDataItems.value else {return}
-//    //                    titleString = titleData as? String
-//    //                  }
-//    //                  if metaDataItems.commonKey?.rawValue == "artist" {
-//    //                    guard let artistData = metaDataItems.value else {return}
-//    //                    artistString = artistData as? String
-//    //
-//    //                  }
-//    //                }
-//                    
-//                    musicInfo.append(MusicData(cover: image,
-//                                               title: musicName,
-//                                               artist: artistString,
-//                                               musicName: musicName))
-//                    
-//                  }
-//                }
-//                
-//              } catch {
-//                print("not Found item")
-//              }
-//              tableView.reloadData()
-//            }
-//          }
-//          
-//        } else {
-//          
-//          musicInfo.removeAll()
-//
-//          do {
-//            let items = try fileManager.contentsOfDirectory(atPath: documentsDir)
-//            
-//            for item in items {
-//              musicName = item
-//              
-//              let url = URL(fileURLWithPath: item)
-//              let asset = AVAsset(url: url) as AVAsset
-//              
-//              // artwork image 얻기
-//              let metaArtwork = asset.commonMetadata.filter
-//              { $0.commonKey?.rawValue == "artwork"}
-//              
-//              if !metaArtwork.isEmpty {
-//                let imageData = metaArtwork[0].value
-//                image = UIImage(data: imageData as! Data)
-//              } else {
-//                image = UIImage(named: "noImage")
-//              }
-//              
-//              
-//              let metaArtist = asset.commonMetadata.filter
-//              { $0.commonKey?.rawValue == "artist"}
-//              
-//              if !metaArtist.isEmpty {
-//                artistString = metaArtist[0].value as? String
-//              } else {
-//                artistString = "작자미상"
-//              }
-//              
-//              
-//    //          for metaDataItems in asset.commonMetadata {
-//    //            if metaDataItems.commonKey?.rawValue == "title" {
-//    //              guard let titleData = metaDataItems.value else {return}
-//    //              titleString = titleData as? String
-//    //            }
-//    //            if metaDataItems.commonKey?.rawValue == "artist" {
-//    //              guard let artistData = metaDataItems.value else {return }
-//    //              artistString = artistData as? String
-//    //
-//    //            }
-//    //          }
-//              
-//              musicInfo.append(MusicData(cover: image,
-//                                         title: musicName,
-//                                         artist: artistString,
-//                                         musicName: musicName))
-//            }
-//            
-//          } catch {
-//            print("Not Found item")
-//          }
-//          tableView.reloadData()
-//          
-//        }
-//      
-//        
-//      }
-//}

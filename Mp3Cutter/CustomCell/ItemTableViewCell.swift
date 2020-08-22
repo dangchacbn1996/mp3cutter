@@ -8,8 +8,9 @@
 
 import UIKit
 import M13Checkbox
+import MGSwipeTableCell
 
-class ItemTableViewCell: UITableViewCell {
+class ItemTableViewCell: MGSwipeTableCell{
     
     static let id = "ItemTableViewCell"
     static let cellHeight: CGFloat = 56
@@ -24,6 +25,10 @@ class ItemTableViewCell: UITableViewCell {
         super.awakeFromNib()
         setupUI()
         // Initialization code
+    }
+    
+    func isOn() -> Bool {
+        return checkBox.checkState == .checked
     }
     
     func checkOn(isOn: Bool? = nil){
@@ -52,6 +57,7 @@ class ItemTableViewCell: UITableViewCell {
         checkBox.boxType = .square
         checkBox.setCheckState(.unchecked, animated: false)
         checkBox.isUserInteractionEnabled = false
+        vIcon.layer.cornerRadius = (ItemTableViewCell.cellHeight - 16) / 2
     }
     
 }

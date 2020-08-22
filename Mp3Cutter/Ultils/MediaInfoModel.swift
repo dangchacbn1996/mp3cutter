@@ -9,11 +9,24 @@
 import Foundation
 import AVKit
 
-//enum ExportType : String{
-//    case mp3 = "MP3"
-//    case m4a = "M4A"
-//    case acc = "ACC"
-//}
+enum ExportType : String{
+    case wav = "WAV"
+    case m4a = "M4A"
+    case caf = "CAF"
+    case aif = "AIF"
+//    case aifc = "AIFC"
+//    "wav", "aif", "caf", "m4a"
+//    "mp3",
+//    "snd",
+//    "au",
+//    "sd2",
+//    "aiff",
+//    "aifc",
+//    "aac",
+//    "mp4",
+//    "m4v",
+//    "mov",
+}
 
 enum SoundQuality : String {
     case kbps128 = "128Kbps"
@@ -27,24 +40,25 @@ enum SoundType : String {
 
 class MediaInfoModel {
     var name: String = ""
-    var url: URL = URL(fileURLWithPath: "")
-    var typeExport = AVFileType.m4a
+    var url: [URL] = []
+    var typeExport = ExportType.m4a
     var videoQuality = AVAssetExportPresetLowQuality
     var typeQuality = SoundQuality.kbps128
     var typeTarget = SoundType.audioFile
     
     var extensionFile : String {
         get {
-            switch typeExport {
-            case .m4a:
-                return "m4a"
-            case .aiff:
-                return "aiff"
-            case .mov:
-                return "mov"
-            default:
-                return ""
-            }
+            return typeExport.rawValue.lowercased()
+//            switch typeExport {
+//            case .m4a:
+//                return "m4a"
+//            case .aiff:
+//                return "aiff"
+//            case .mov:
+//                return "mov"
+//            default:
+//                return ""
+//            }
         }
     }
     
@@ -54,18 +68,18 @@ class MediaInfoModel {
         }
     }
     
-    var presetName : String {
-        get {
-            switch typeExport {
-            case .m4a:
-                return AVAssetExportPresetAppleM4A
-            case .aiff:
-                return AVAssetExportPresetMediumQuality
-            case .mov:
-                return AVAssetExportPresetMediumQuality
-            default:
-                return AVAssetExportPresetAppleM4A
-            }
-        }
-    }
+//    var presetName : String {
+//        get {
+//            switch typeExport {
+//            case .m4a:
+//                return AVAssetExportPresetAppleM4A
+//            case .aiff:
+//                return AVAssetExportPresetMediumQuality
+//            case .mov:
+//                return AVAssetExportPresetMediumQuality
+//            default:
+//                return AVAssetExportPresetAppleM4A
+//            }
+//        }
+//    }
 }

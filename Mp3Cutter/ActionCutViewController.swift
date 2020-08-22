@@ -20,9 +20,9 @@ enum PlayState : Int {
 
 class ActionCutViewController: UIViewController {
     private let scrollWave = UIScrollView()
-    private let lbName = UILabel(text: "Song name", font: UIFont.systemFont(ofSize: 14, weight: .semibold), color: UIColor.black.withAlphaComponent(0.8))
-    private let lbStart = UILabel(text: "00:00:0", font: UIFont.systemFont(ofSize: 14, weight: .semibold), color: UIColor.black.withAlphaComponent(0.8))
-    private let lbEnd = UILabel(text: "00:21:00", font: UIFont.systemFont(ofSize: 14, weight: .semibold), color: UIColor.black.withAlphaComponent(0.8))
+    private let lbName = UILabel(text: "", font: UIFont.systemFont(ofSize: 14, weight: .semibold), color: UIColor.black.withAlphaComponent(0.8))
+    private let lbStart = UILabel(text: "00:00:00", font: UIFont.systemFont(ofSize: 14, weight: .semibold), color: UIColor.black.withAlphaComponent(0.8))
+    private let lbEnd = UILabel(text: "00:00:00", font: UIFont.systemFont(ofSize: 14, weight: .semibold), color: UIColor.black.withAlphaComponent(0.8))
     private let layerSelected = UIView()
     private let waveform = FDWaveformView()
     private let actType = ActionType.actCut
@@ -33,9 +33,24 @@ class ActionCutViewController: UIViewController {
     private let layerEnd = UIView()
     private let vScrollable = UIScrollView()
     private var startPoint : Int = 0
+    private let btnNext = UIButton()
+    private let btnRewind = UIButton()
     private var endPoint = 0
     private var urlAsset: URL = URL(fileURLWithPath: "")
     private var ratioWidth = 3
+    private var tagSelected : UIView = UIView() {
+        didSet {
+            updateSeekButton()
+            tagStart.subviews.first?.transform = CGAffineTransform(scaleX: tagSelected == tagStart ? 5 : 1, y: 1)
+            if let tag = tagStart.subviews.last as? UIImageView {
+                tag.tintColor = tagSelected == tagStart ? actType.color : UIColor.gray.withAlphaComponent(0.8)
+            }
+            tagEnd.subviews.first?.transform = CGAffineTransform(scaleX: tagSelected == tagEnd ? 5 : 1, y: 1)
+            if let tag = tagEnd.subviews.last as? UIImageView {
+                tag.tintColor = tagSelected == tagEnd ? actType.color : UIColor.gray.withAlphaComponent(0.8)
+            }
+        }
+    }
     private var playerState: PlayState = .stop {
         didSet {
             switch self.playerState {
@@ -48,7 +63,13 @@ class ActionCutViewController: UIViewController {
                 player.play()
                 break
             case .stop:
-                btnPlay.setImage(UIImage(named: "ic_pause")?.withRenderingMode(.alwaysTemplate), for: .normal)
+                if player.currentItem != nil {
+                    player.seek(to: convertPointToTime(startPoint) )
+                } else {
+                    player.seek(to: CMTime(seconds: 0, preferredTimescale: 0))
+                }
+                player.pause()
+                btnPlay.setImage(UIImage(named: "ic_stop")?.withRenderingMode(.alwaysTemplate), for: .normal)
                 break
             default:
                 break
@@ -72,61 +93,63 @@ class ActionCutViewController: UIViewController {
         setupUI()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-//        let thisBundle = Bundle(for: type(of: self))
-//        if let url = thisBundle.url(forResource: "Presentations", withExtension: "mp3") {
-//            urlAsset = url
-            //        print(url?.absoluteString)
-            //        self.waveform.audioURL = url
-            //        self.waveform.delegate = self
-            //        self.waveform.progressColor = ActionType.actCut.color
-            //        self.waveform.loadingInProgress = true
-            //        self.waveform.wavesColor = UIColor.gray.withAlphaComponent(0.4)
-            //        self.waveform.doesAllowScrubbing = false
-            //        self.waveform.doesAllowStretch = false
-            //        self.waveform.doesAllowScroll = false
-            //        if url != nil {
-            //            player = AVPlayer(url: url!)
-            //            self.player.addPeriodicTimeObserver(forInterval: CMTimeMakeWithSeconds(1, preferredTimescale: 1), queue: DispatchQueue.main, using: { (time) in
-            //                self.updateWaveForm()
-            //            })
-            //        }
-            //        playerState = .play
-            //        //        player.isMuted = true
-            //                player.play()
-            
-            let fileManager = FileManager.default
-            do {
-                //            let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:false)
-                //            let url = documentDirectory.appendingPathComponent("out.m4a")
-                self.waveform.audioURL = urlAsset
-                self.waveform.delegate = self
-                self.waveform.progressColor = ActionType.actCut.color
-                self.waveform.loadingInProgress = true
-                self.waveform.wavesColor = UIColor.gray.withAlphaComponent(0.4)
-                self.waveform.doesAllowScrubbing = false
-                self.waveform.doesAllowStretch = false
-                self.waveform.doesAllowScroll = false
-                player = AVPlayer(url: urlAsset)
-                self.player.addPeriodicTimeObserver(forInterval: CMTimeMakeWithSeconds(0.02, preferredTimescale: 1000), queue: DispatchQueue.main, using: { (time) in
-                    self.updateWaveForm()
-                })
-            } catch {
-                print(error)
-            }
-//        }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        do {
+            self.waveform.audioURL = urlAsset
+            self.waveform.delegate = self
+            self.waveform.progressColor = ActionType.actCut.color
+            self.waveform.loadingInProgress = true
+            self.waveform.wavesColor = UIColor.gray.withAlphaComponent(0.4)
+            self.waveform.doesAllowScrubbing = false
+            self.waveform.doesAllowStretch = false
+            self.waveform.doesAllowScroll = false
+            player = AVPlayer(url: urlAsset)
+            lbName.text = urlAsset.lastPathComponent
+            Loading.sharedInstance.show(in: self.view, deadline: 20.0)
+            self.player.addPeriodicTimeObserver(forInterval: CMTimeMakeWithSeconds(0.02, preferredTimescale: 1000), queue: DispatchQueue.main, using: { (time) in
+                self.updateWaveForm()
+            })
+//            if let url = localMusic[indexPath.row].url {
+                let asset = AVAsset(url: urlAsset)
+//                sub += " \(Int(asset.duration.seconds) / 60):\(Int(asset.duration.seconds.truncatingRemainder(dividingBy: 60)))"
+            lbEnd.text = NSString(format: "%02d:%02d", Int(asset.duration.seconds/60), Int(asset.duration.seconds.truncatingRemainder(dividingBy: 60))) as String
+//            }
+        } catch {
+            print(error)
+        }
     }
     
-    func updateWaveForm(){
-        if self.player.currentItem?.status == .readyToPlay {
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        player.pause()
+        player.replaceCurrentItem(with: nil)
+    }
+    
+    private func convertPointToTime(_ value: Int) -> (CMTime) {
+        if let current = player.currentItem {
+            let duration = current.duration.seconds
+            let totalWave = self.waveform.totalSamples
+            let currentTime = Double(value) * duration / Double(totalWave)
+            return CMTime(value: CMTimeValue(currentTime * 1000), timescale: 1000)
+        }
+        return CMTime(seconds: 0, preferredTimescale: 0)
+    }
+
+private func updateWaveForm(){
+    if self.player.currentItem?.status == .readyToPlay {
             let currentTime = CMTimeGetSeconds(self.player.currentTime())
             let totalTime = CMTimeGetSeconds(self.player.currentItem?.duration ?? CMTime(seconds: 1, preferredTimescale: 1))
             let highlight = Int((currentTime * Double(self.waveform.totalSamples)) / totalTime)
             if highlight < startPoint {
                 self.waveform.highlightedSamples = (self.startPoint..<self.startPoint + 1)
             } else {
-                self.waveform.highlightedSamples = (self.startPoint..<highlight)
+                if highlight > self.endPoint {
+                    self.playerState = .stop
+                    self.waveform.highlightedSamples = (self.startPoint..<self.endPoint)
+                } else {
+                    self.waveform.highlightedSamples = (self.startPoint..<highlight)
+                }
             }
             if highlight > endPoint {
                 self.player.pause()
@@ -146,6 +169,7 @@ class ActionCutViewController: UIViewController {
             playerState = .play
             break
         case .stop:
+            playerState = .play
             break
         default:
             break
@@ -156,61 +180,137 @@ class ActionCutViewController: UIViewController {
         self.dismiss(animated: true, completion: nil)
     }
     
+    @objc func selectStart(){
+        tagSelected = tagStart
+    }
+    
+    @objc func selectEnd(){
+        tagSelected = tagEnd
+    }
+    
+    @objc func actNextPage() {
+        panTo(draggedObject: tagSelected, translation: vScrollable.contentSize.width / 8)
+        seekTo(draggedObject: tagSelected)
+    }
+    
+    @objc func actRewind() {
+        panTo(draggedObject: tagSelected, translation: -vScrollable.contentSize.width / 8)
+        seekTo(draggedObject: tagSelected)
+    }
+    
     @objc func actPanStart(_ gesture: UIPanGestureRecognizer) {
 //        let pos = gesture.translation(in: vScrollable)
         guard let draggedObject = gesture.view else { return }
 
         if gesture.state == .began || gesture.state == .changed {
-
-            //2. Set The Translation & Move The View
             let translation = gesture.translation(in: vScrollable)
-            print("XDrag: \(draggedObject.center.x)")
-            print("XTran: \(translation.x)")
-            print("-----------------------")
-            draggedObject.center = CGPoint(x: draggedObject.center.x + translation.x, y: draggedObject.center.y)
+            panTo(draggedObject: draggedObject, translation: translation.x)
             gesture.setTranslation(CGPoint.zero, in: self.view)
         } else {
+            seekTo(draggedObject: draggedObject)
+        }
+    }
+    
+    private func panTo(draggedObject: UIView, translation: CGFloat){
+        if draggedObject.tag == 0 {
+            tagSelected = tagStart
+        } else {
+            tagSelected = tagEnd
+        }
+        if (draggedObject.center.x + translation) < 0 {
+            draggedObject.center = CGPoint(x: 0, y: draggedObject.center.y)
+            return
+        } else if (draggedObject.center.x + translation) > vScrollable.contentSize.width {
+            draggedObject.center = CGPoint(x: vScrollable.contentSize.width, y: draggedObject.center.y)
+            return
+        } else {
+            let duration = player.currentItem?.duration.seconds ?? Double(vScrollable.contentSize.width * 52 / 6)
+            let space5s = (5 / duration) * Double(vScrollable.contentSize.width)
             if draggedObject.tag == 0 {
-                draggedObject.snp.remakeConstraints({
-                    $0.centerY.height.equalToSuperview()
-                    $0.centerX.equalTo(draggedObject.superview!.snp.leading).offset(draggedObject.center.x)
-                    $0.width.equalTo(16)
-                })
-                if let second = player.currentItem?.duration.seconds {
-                    let newTime = Int(draggedObject.center.x * CGFloat(second) / vScrollable.contentSize.width)
-                    player.seek(to: CMTime(value: CMTimeValue(newTime * 1000), timescale: 1000))
-                    print("Scrollable: \(draggedObject.center.x / vScrollable.contentSize.width)")
-//                    print("Scrollable: \(draggedObject.center.x / vScrollable.contentSize.width)")
-                    print("Scrollable: ==========================")
-                    startPoint = Int(draggedObject.center.x * CGFloat(waveform.totalSamples) / vScrollable.contentSize.width)
-                    updateWaveForm()
+                if (draggedObject.center.x + translation) > tagEnd.center.x - CGFloat(space5s) {
+                    Toast.shared.makeToast(.error, string: "File cut không dưới 5s", inView: self.view, time: 2.0)
+                    draggedObject.center = CGPoint(x: tagEnd.center.x - CGFloat(space5s), y: draggedObject.center.y)
+                    return
                 }
-            } else {
-                draggedObject.snp.remakeConstraints({
-                    $0.centerY.height.equalToSuperview()
-                    $0.centerX.equalTo(draggedObject.superview!.snp.leading).offset(draggedObject.center.x)
-                    $0.width.equalTo(16)
-                })
-                self.endPoint = Int(draggedObject.center.x * CGFloat(waveform.totalSamples) / vScrollable.contentSize.width)
+            }
+            if draggedObject.tag == 1 {
+                if (draggedObject.center.x + translation) < tagStart.center.x + CGFloat(space5s) {
+                    Toast.shared.makeToast(.error, string: "File cut không dưới 5s", inView: self.view, time: 2.0)
+                    draggedObject.center = CGPoint(x: tagStart.center.x + CGFloat(space5s), y: draggedObject.center.y)
+                    return
+                }
+            }
+            draggedObject.center = CGPoint(x: draggedObject.center.x + translation, y: draggedObject.center.y)
+        }
+    }
+        
+    private func seekTo(draggedObject: UIView){
+        if draggedObject.tag == 0 {
+            draggedObject.snp.remakeConstraints({
+                $0.centerY.height.equalToSuperview()
+                $0.centerX.equalTo(draggedObject.superview!.snp.leading).offset(draggedObject.center.x)
+                $0.width.equalTo(56)
+            })
+            if let second = player.currentItem?.duration.seconds {
+                let newTime = Int(draggedObject.center.x * CGFloat(second) / vScrollable.contentSize.width)
+                player.seek(to: CMTime(value: CMTimeValue(newTime * 1000), timescale: 1000))
+                startPoint = Int(draggedObject.center.x * CGFloat(waveform.totalSamples) / vScrollable.contentSize.width)
                 updateWaveForm()
             }
+        } else {
+            draggedObject.snp.remakeConstraints({
+                $0.centerY.height.equalToSuperview()
+                $0.centerX.equalTo(draggedObject.superview!.snp.leading).offset(draggedObject.center.x)
+                $0.width.equalTo(56)
+            })
+            self.endPoint = Int(draggedObject.center.x * CGFloat(waveform.totalSamples) / vScrollable.contentSize.width)
+            updateWaveForm()
         }
+        updateSeekButton()
+    }
+    
+    private func updateSeekButton(){
+        if tagSelected == tagStart && tagStart.center.x == 0 {
+            btnRewind.alpha = 0.5
+            btnNext.alpha = 1
+        } else if tagSelected == tagEnd && tagEnd.center.x == vScrollable.contentSize.width {
+            btnRewind.alpha = 1
+            btnNext.alpha = 0.5
+        } else {
+            btnRewind.alpha = 1
+            btnNext.alpha = 1
+        }
+    }
+    
+    @objc func actReset(){
+        playerState = .pause
+        panTo(draggedObject: tagStart, translation: -self.vScrollable.contentSize.width)
+        seekTo(draggedObject: tagStart)
+        
+        panTo(draggedObject: tagEnd, translation: self.vScrollable.contentSize.width)
+        seekTo(draggedObject: tagEnd)
     }
     
     @objc func actionCut() {
         if let asset = self.player.currentItem?.asset {
-            let vc = PopupFinalViewController(name: "File 14", url: urlAsset, doAction: {(media, url) -> (Void) in
+            var name = urlAsset.lastPathComponent
+            let last = name.lastIndex(of: ".") ?? name.endIndex
+            name.removeSubrange(last..<name.endIndex)
+            var vc : PopupFinalViewController!
+            vc = PopupFinalViewController(name: name, url: [urlAsset], doAction: {(media, url) -> (Void) in
                 if let currentItem = self.player.currentItem {
                     let start = Double(self.startPoint) / Double(self.waveform.totalSamples) * currentItem.duration.seconds
                     let ending = Double(self.endPoint) / Double(self.waveform.totalSamples) * currentItem.duration.seconds
+                    Loading.sharedInstance.show(in: vc.view)
                     MediaPascer.shared.audioURLParse(info: media, newURL: url, asset: asset, starting: CMTime(value: CMTimeValue(start * 1000), timescale: 1000), ending: CMTime(value: CMTimeValue(ending * 1000), timescale: 1000), failed: { (error) in
-                        print("error: \(error)")
+                        Loading.sharedInstance.dismiss()
+                        Toast.shared.makeToast(.error, string: error, inView: vc.view, time: 2.0)
                     }) { () in
-                        DispatchQueue.main.async {
-                            self.dismiss(animated: true, completion: nil)
+                        Loading.sharedInstance.dismiss()
+                        Toast.shared.makeToast(.success, string: "Tạo file thành công!", inView: vc.view, time: 2.0)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            vc.dismiss(animated: true, completion: nil)
                         }
-                        print("SUCCESS: \(url.absoluteString)")
-                        print("-----------------------------")
                     }
                 }
             })
@@ -218,37 +318,9 @@ class ActionCutViewController: UIViewController {
             vc.modalTransitionStyle = .crossDissolve
             self.present(vc, animated: true, completion: nil)
         } else {
-            print("Asset not loaded!")
+            Toast.shared.makeToast(.error, string: "Không thể load được file âm thanh", inView: self.view, time: 2.0)
         }
     }
-    
-//    private func actCutAudio(){
-//        MediaPascer.shared.audioURLParse(starting: Int64(startPoint), export: , duration: Int64(endPoint - startPoint)) { (code, url) in
-//            print("Parse: \(code) - \(url)")
-//            print("-----------------------------")
-//        }
-//    }
-    
-//    @objc func cut(){
-//        if let asset = player.currentItem?.asset {
-//        let exporter = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetAppleM4A)
-//        exporter!.outputURL = soundFile1
-//            exporter!.outputFileType = AVFileType.mp3
-//        let duration = CMTimeGetSeconds(avAsset1.duration)
-//        print(duration)
-//        if (duration < 5.0) {
-//            print("sound is not long enough")
-//            return
-//        }
-//        // e.g. the first 30 seconds
-//        let startTime = CMTimeMake(0, 1)
-//        let stopTime = CMTimeMake(30,1)
-//        let exportTimeRange = CMTimeRangeFromTimeToTime(startTime, stopTime)
-//        print(exportTimeRange)
-//        exporter!.timeRange = exportTimeRange
-//        print(exporter!.timeRange)
-//        }
-//    }
 }
 
 extension ActionCutViewController: FDWaveformViewDelegate {
@@ -261,17 +333,9 @@ extension ActionCutViewController: FDWaveformViewDelegate {
     /// Rendering did complete
     func waveformViewDidRender(_ waveformView: FDWaveformView){
         print("waveformViewDidRender")
-        if player.currentItem?.status == .readyToPlay {
-            if let time = player.currentItem?.duration.seconds {
-                let minus : Double = time / 60
-                let second : Double = time.advanced(by: 60)
-                lbEnd.text = "\(minus.rounded()):\(second)"
-            }
-        }
+        Loading.sharedInstance.dismiss()
         endPoint = waveform.totalSamples
         playerState = .play
-//        player.isMuted = true
-        player.play()
     }
 
     /// An audio file will be loaded
@@ -303,7 +367,13 @@ extension ActionCutViewController: FDWaveformViewDelegate {
 extension ActionCutViewController {
     func setupUI(){
         self.view.backgroundColor = .white
+        self.title = actType.text
         
+//        if actType.text == ActionType.actVideo.text {
+//            let playerLayer = AVPlayerLayer(player: self.player)
+//            playerLayer.frame = self.view.bounds
+//            self.view.layer.addSublayer(playerLayer)
+//        }
         self.view.addSubview(vScrollable)
         vScrollable.snp.makeConstraints({
             $0.centerX.top.equalToSuperview()
@@ -324,7 +394,7 @@ extension ActionCutViewController {
         
         vScrollable.addSubview(tagStart)
         tagStart.snp.makeConstraints({
-            $0.width.equalTo(32)
+            $0.width.equalTo(56)
             $0.top.bottom.equalToSuperview()
         })
         layerStart.snp.makeConstraints({
@@ -334,28 +404,29 @@ extension ActionCutViewController {
         })
         tagStart.center = CGPoint(x: 0, y: 0)
         tagStart.addSubview(lineStart)
-        tagStart.backgroundColor = UIColor.green.withAlphaComponent(0.3)
         lineStart.snp.makeConstraints({
             $0.top.centerX.equalToSuperview()
             $0.width.equalTo(1)
             $0.bottom.equalToSuperview().offset(-24)
         })
-        lineStart.backgroundColor = .blue
+        lineStart.backgroundColor = UIColor(hexString: "42A5F5")
         
         let icTag = UIImageView(image: UIImage(named: "ic_tag")?.withRenderingMode(.alwaysTemplate))
         icTag.tintColor = actType.color
         icTag.transform = CGAffineTransform(rotationAngle: .pi)
         tagStart.addSubview(icTag)
         icTag.snp.makeConstraints({
-            $0.bottom.equalToSuperview()
+//            $0.bottom.equalToSuperview()
+            $0.width.equalTo(24)
             $0.leading.equalTo(lineStart.snp.centerX)
-            $0.top.equalTo(lineStart.snp.bottom)
+            $0.centerY.equalTo(lineStart.snp.bottom)
         })
         icTag.contentMode = .scaleAspectFit
         
         tagStart.isUserInteractionEnabled = true
         tagStart.tag = 0
         tagStart.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(self.actPanStart(_:))))
+        tagStart.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.selectStart)))
         
         //TagEnd
         let lineEnd = UIView()
@@ -364,7 +435,7 @@ extension ActionCutViewController {
         
         vScrollable.addSubview(tagEnd)
         tagEnd.snp.makeConstraints({
-            $0.width.equalTo(32)
+            $0.width.equalTo(tagStart.snp.width)
             $0.top.bottom.equalToSuperview()
         })
         layerEnd.snp.makeConstraints({
@@ -374,28 +445,30 @@ extension ActionCutViewController {
         })
         tagEnd.center = CGPoint(x: 8, y: 0)
         tagEnd.addSubview(lineEnd)
-        tagEnd.backgroundColor = UIColor.green.withAlphaComponent(0.3)
         lineEnd.snp.makeConstraints({
             $0.centerX.top.equalToSuperview()
             $0.width.equalTo(1)
             $0.bottom.equalToSuperview().offset(-24)
         })
-        lineEnd.backgroundColor = .blue
+        lineEnd.backgroundColor = UIColor(hexString: "0D47A1")
         
         let icTagEnd = UIImageView(image: UIImage(named: "ic_tag")?.withRenderingMode(.alwaysTemplate))
         icTagEnd.tintColor = actType.color
-//        icTagEnd.transform = CGAffineTransform(rotationAngle: .pi)
         tagEnd.addSubview(icTagEnd)
         icTagEnd.snp.makeConstraints({
-            $0.bottom.equalToSuperview()
+//            $0.leading.equalToSuperview().offset(-4)
+            $0.width.equalTo(icTag.snp.width)
             $0.trailing.equalTo(lineEnd.snp.centerX)
-            $0.top.equalTo(lineEnd.snp.bottom)
+            $0.centerY.equalTo(lineEnd.snp.bottom)
         })
         icTagEnd.contentMode = .scaleAspectFit
         
         tagEnd.isUserInteractionEnabled = true
         tagEnd.tag = 1
+        tagEnd.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.selectEnd)))
         tagEnd.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(self.actPanStart(_:))))
+        
+        tagSelected = tagStart
         
         let vInfo = UIView()
         self.view.addSubview(vInfo)
@@ -411,7 +484,7 @@ extension ActionCutViewController {
         })
         lbName.numberOfLines = 0
         
-        let lbTitleSt = UILabel(text: "Bắt đầu: ", font: UIFont.systemFont(ofSize: 14, weight: .semibold), color: actType.color)
+        let lbTitleSt = UILabel(text: "Playing: ", font: UIFont.systemFont(ofSize: 14, weight: .semibold), color: actType.color)
         let lbTitleEnd = UILabel(text: "Kết thúc: ", font: UIFont.systemFont(ofSize: 14, weight: .semibold), color: actType.color)
         vInfo.addSubview(lbTitleSt)
         lbTitleSt.snp.makeConstraints({
@@ -447,6 +520,25 @@ extension ActionCutViewController {
         btnPlay.imageView?.tintColor = UIColor.gray.withAlphaComponent(0.8)
         btnPlay.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.playPauseAudio)))
         
+        self.view.addSubview(btnRewind)
+        btnRewind.snp.makeConstraints({
+            $0.centerY.size.equalTo(btnPlay)
+            $0.trailing.equalTo(btnPlay.snp.leading).offset(-24)
+        })
+        btnRewind.setImage(UIImage(named: "ic_skip")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        btnRewind.imageView?.tintColor = UIColor.gray.withAlphaComponent(0.8)
+        btnRewind.transform = CGAffineTransform(rotationAngle: .pi)
+        btnRewind.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.actRewind)))
+        
+        self.view.addSubview(btnNext)
+        btnNext.snp.makeConstraints({
+            $0.centerY.size.equalTo(btnPlay)
+            $0.leading.equalTo(btnPlay.snp.trailing).offset(24)
+        })
+        btnNext.setImage(UIImage(named: "ic_skip")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        btnNext.imageView?.tintColor = UIColor.gray.withAlphaComponent(0.8)
+        btnNext.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.actNextPage)))
+        
         let btnBack = UIButton()
         btnBack.setTitle("TRỞ LẠI", for: .normal)
         btnBack.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .medium)
@@ -463,6 +555,7 @@ extension ActionCutViewController {
         btnReset.layer.cornerRadius = btnBack.layer.cornerRadius
         btnReset.layer.borderColor = btnBack.layer.borderColor
         btnReset.layer.borderWidth = 1
+        btnReset.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.actReset)))
         
         let btnCut = UIButton()
         btnCut.setTitle("CẮT", for: .normal)

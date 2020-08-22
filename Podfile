@@ -12,11 +12,27 @@ target 'Mp3Cutter' do
     # Pods for testing
   end
   
-  pod 'AudioKit', '~> 4.0'
+  pod 'MGSwipeTableCell'
+  pod 'AudioKit/Core'
+  pod 'JGProgressHUD', '~> 2.0'
+  pod 'Toast-Swift'
   pod 'FDWaveformView', '~> 5.0'
   pod 'fluid-slider'
   pod 'SnapKit', '~> 5.0.0'
   pod 'M13Checkbox', '3.2.2'
+  
+  post_install do |installer|
+       installer.pods_project.targets.each do |target|
+           target.new_shell_script_build_phase.shell_script = "mkdir -p $PODS_CONFIGURATION_BUILD_DIR/#{target.name}"
+           if ['Toast-Swift'].include? target.name
+               target.build_configurations.each do |config|
+                   config.build_settings['SWIFT_VERSION'] = '4'
+                   config.build_settings['CONFIGURATION_BUILD_DIR'] = '$PODS_CONFIGURATION_BUILD_DIR'
+               end
+           end
+
+       end
+   end
 
   target 'Mp3CutterUITests' do
     # Pods for testing

@@ -9,16 +9,41 @@
 import Foundation
 import UIKit
 
+extension UIColor {
+    
+    convenience init(hexString: String) {
+        
+        let hex = hexString.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int = UInt32()
+        Scanner(string: hex).scanHexInt32(&int)
+        let a, r, g, b: UInt32
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (0, 0, 0, 0)
+        }
+        self.init(red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: CGFloat(a) / 255)
+    }
+    
+    convenience init(_ r: CGFloat, _ g: CGFloat, _ b: CGFloat) {
+        self.init(red: r/255.0, green: g/255.0, blue: b/255.0, alpha: 1)
+    }
+}
+
 struct ActionType{
     var type: ListType
     var text: String
     var color: UIColor
-    
-    static let actCut = ActionType(type: .cut, text: "Cắt âm thanh", color: UIColor.red.withAlphaComponent(0.5))
-    static let actMerge = ActionType(type: .merge, text: "Ghép âm thanh", color: UIColor.blue.withAlphaComponent(0.5))
-    static let actConvert = ActionType(type: .convert, text: "Chuyển định dạng", color: UIColor.yellow.withAlphaComponent(0.5))
-    static let actVideo = ActionType(type: .video, text: "Cắt video", color: UIColor.orange.withAlphaComponent(0.5))
-    static let actCollection = ActionType(type: .collection, text: "Bộ sưu tập của tôi", color: UIColor.cyan.withAlphaComponent(0.5))
+    static let actCut = ActionType(type: .cut, text: "Cắt âm thanh", color: UIColor(255,128,171).withAlphaComponent(0.7))
+    static let actMerge = ActionType(type: .merge, text: "Ghép âm thanh", color: UIColor(red: 63/255.0, green: 81/255.0, blue: 181/255.0, alpha: 1).withAlphaComponent(0.7))
+    static let actConvert = ActionType(type: .convert, text: "Chuyển định dạng", color: UIColor(red: 253/255.0, green: 216/255.0, blue: 53/255.0, alpha: 1).withAlphaComponent(0.7))
+    static let actVideo = ActionType(type: .video, text: "Cắt video", color: UIColor(red: 244/255.0, green: 81/255.0, blue: 30/255.0, alpha: 1).withAlphaComponent(0.7))
+    static let actCollection = ActionType(type: .collection, text: "Bộ sưu tập của tôi", color: UIColor(red: 2/255.0, green: 136/255.0, blue: 209/255.0, alpha: 1).withAlphaComponent(0.7))
 }
 
 class Constant {
