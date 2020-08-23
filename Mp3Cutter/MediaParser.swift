@@ -10,10 +10,21 @@ import Foundation
 import AVKit
 import CoreAudioKit
 import AudioKit
+import mobileffmpeg
 
-class MediaPascer {
+class MediaPascer : NSObject, ExecuteDelegate {
+    func executeCallback(_ executionId: Int, _ returnCode: Int32) {
+        
+    }
     
     static let shared = MediaPascer()
+    
+    func convert(url: URL, newName: String){
+        print("")
+//        let command = "/Users/chacnd/Library/Developer/CoreSimulator/Devices/5FCF7F7F-D00D-45C4-AF2E-2C83BA1FDD19/data/Containers/Data/Application/74D17DFD-BBAE-4326-8D94-D1E7FC7AAA79/Documents/Newname.m4a \(url.lastPathComponent) -codec copy \(newName).aac"
+//        let command = "/Users/chacnd/Library/Developer/CoreSimulator/Devices/5FCF7F7F-D00D-45C4-AF2E-2C83BA1FDD19/data/Containers/Data/Application/74D17DFD-BBAE-4326-8D94-D1E7FC7AAA79/Documents/Newname.m4a Newname.m4a -codec copy \(Newname).aac"
+//        MobileFFmpeg.executeAsync(command, withCallback: self)
+    }
     
     func audioURLParse(info: MediaInfoModel, newURL: URL, asset: AVAsset, starting: CMTime? = nil, ending: CMTime? = nil, failed: @escaping ((String) -> Void), success: @escaping () -> Void) -> Void
     {
@@ -60,71 +71,11 @@ class MediaPascer {
 
     }
     
-//    func merge(audio1: NSURL, audio2:  NSURL) {
-//
-//
-//        var error:NSError?
-//
-//        var ok1 = false
-//        var ok2 = false
-//
-//
-////        var documentsDirectory:String = paths[0] as! String
-//
-//        //Create AVMutableComposition Object.This object will hold our multiple AVMutableCompositionTrack.
-//        var composition = AVMutableComposition()
-//        var compositionAudioTrack1: AVMutableCompositionTrack? =
-//            composition.addMutableTrack(withMediaType: AVMediaType.audio, preferredTrackID: CMPersistentTrackID())
-//        var compositionAudioTrack2:AVMutableCompositionTrack? = composition.addMutableTrack(withMediaType: AVMediaType.audio, preferredTrackID: CMPersistentTrackID())
-//
-//        //create new file to receive data
-//        var documentDirectoryURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first! as! NSURL
-//        var fileDestinationUrl = documentDirectoryURL.URLByAppendingPathComponent("resultmerge.wav")
-//        println(fileDestinationUrl)
-//
-//
-//        var url1 = audio1
-//        var url2 = audio2
-//
-//
-//        var avAsset1 = AVURLAsset(URL: url1, options: nil)
-//        var avAsset2 = AVURLAsset(URL: url2, options: nil)
-//
-//        var tracks1 =  avAsset1.tracksWithMediaType(AVMediaTypeAudio)
-//        var tracks2 =  avAsset2.tracksWithMediaType(AVMediaTypeAudio)
-//
-//        var assetTrack1:AVAssetTrack = tracks1[0] as! AVAssetTrack
-//        var assetTrack2:AVAssetTrack = tracks2[0] as! AVAssetTrack
-//
-//
-//        var duration1: CMTime = assetTrack1.timeRange.duration
-//        var duration2: CMTime = assetTrack2.timeRange.duration
-//
-//        var timeRange1 = CMTimeRangeMake(kCMTimeZero, duration1)
-//        var timeRange2 = CMTimeRangeMake(duration1, duration2)
-//
-//
-//        ok1 = compositionAudioTrack1.insertTimeRange(timeRange1, ofTrack: assetTrack1, atTime: kCMTimeZero, error: nil)
-//        if ok1 {
-//
-//            ok2 = compositionAudioTrack2.insertTimeRange(timeRange2, ofTrack: assetTrack2, atTime: duration1, error: nil)
-//
-//            if ok2 {
-//                println("success")
-//            }
-//        }
-//
-//        //AVAssetExportPresetPassthrough => concatenation
-//
-//    }
+    
     
     private func exportFile(info: MediaInfoModel, newURL: URL, asset: AVAsset, timeRange: CMTimeRange? = nil, failed: @escaping (String) -> Void, success: @escaping () -> Void){
         
         guard let session = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetAppleM4A) else { return }
-//        var string = newURL.absoluteString
-//        let length = newURL.pathExtension.count
-//        string.removeLast(length)
-//        string += "m4a"
         var clipboardURL = newURL
         clipboardURL.deletePathExtension()
         clipboardURL.appendPathExtension("m4a")
@@ -150,6 +101,7 @@ class MediaPascer {
                     failed("export cancelled \(String(describing: session.error))")
                 }
             case .completed:
+                success()
                 if newURL.pathExtension == "m4a" {
                     DispatchQueue.main.async {
                         success()
@@ -163,7 +115,7 @@ class MediaPascer {
                                 do {
                                     try? FileManager.default.removeItem(atPath: clipboardURL.path)
                                 } catch {
-                                    
+
                                 }
                                 success()
                             }
@@ -180,6 +132,90 @@ class MediaPascer {
             }
         }
     }
+    
+//    var convertVideo = function (source, format, output, success, failure, progress) {
+//
+//        var converter = ffmpeg(source);
+//
+//        var audioCodec = "libvorbis";
+//
+//        if (format.indexOf("mp4") != -1) {
+//            audioCodec = "aac";
+//        }
+//
+//        converter.format(format)
+//            .withVideoBitrate(1024)
+//            .withAudioCodec(audioCodec)
+//            .on('end', success)
+//            .on('progress', progress)
+//            .on('error', failure);
+//
+//        converter.save(output);
+//    };
+    
+//    func create(){
+//        
+//
+//        if CommandLine.argc < 2 {
+//            print("Usage: \(CommandLine.arguments[0]) <input file>")
+//            exit(1)
+//        }
+//        let input = CommandLine.arguments[1]
+//
+//        do {
+//            let fmtCtx = try AVFormatContext(url: input)
+//            try fmtCtx.findStreamInfo()
+//            
+//            fmtCtx.dumpFormat(isOutput: false)
+//            
+//            guard let stream = fmtCtx.audioStream else {
+//                fatalError("No audio stream.")
+//            }
+//            guard let codec = AVCodec.findDecoderById(stream.codecParameters.codecId) else {
+//                fatalError("Codec not found.")
+//            }
+//            let codecCtx = AVCodecContext(codec: codec)
+//            codecCtx.setParameters(stream.codecParameters)
+//            try codecCtx.openCodec()
+//            
+//            let pkt = AVPacket()
+//            let frame = AVFrame()
+//            
+//            while let _ = try? fmtCtx.readFrame(into: pkt) {
+//                defer { pkt.unref() }
+//                
+//                if pkt.streamIndex != stream.index {
+//                    continue
+//                }
+//                
+//                try codecCtx.sendPacket(pkt)
+//                
+//                while true {
+//                    do {
+//                        try codecCtx.receiveFrame(frame)
+//                    } catch let err as AVError where err == .tryAgain || err == .eof {
+//                        break
+//                    }
+//                    
+//                    
+//                    let str = String(
+//                        format: "Frame %3d (type=%@, size=%5d bytes) pts %4lld key_frame %d",
+//                        codecCtx.frameNumber,
+//                        frame.pictureType.description,
+//                        frame.pktSize,
+//                        frame.pts,
+//                        frame.isKeyFrame
+//                    )
+//                    
+//                    frame.unref()
+//                }
+//            }
+//        } catch {
+//            print("Error")
+//        }
+//
+//        print("Done.")
+//    }
     
 }
 

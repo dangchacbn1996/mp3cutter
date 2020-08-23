@@ -39,8 +39,9 @@
 			</array>
 		</dict>
 	</dict>
-    <key>UIFileSharingEnabled</key>
-    <true/>
+	<key>UIFileSharingEnabled</key>
+	<true/>
+<!--    <key>Application supports iTunes file sharing</key>-->
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -63,8 +64,8 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportsDocumentBrowser</key>
-    <true/>
-    <key>NSAppleMusicUsageDescription</key>
-    <string>For user edit</string>
+	<true/>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>For user edit</string>
 </dict>
 </plist>

@@ -12,14 +12,16 @@ target 'Mp3Cutter' do
     # Pods for testing
   end
   
+  pod 'mobile-ffmpeg-min', '~> 4.2'
   pod 'MGSwipeTableCell'
   pod 'AudioKit/Core'
   pod 'JGProgressHUD', '~> 2.0'
   pod 'Toast-Swift'
   pod 'FDWaveformView', '~> 5.0'
-  pod 'fluid-slider'
+#  pod 'fluid-slider'
   pod 'SnapKit', '~> 5.0.0'
   pod 'M13Checkbox', '3.2.2'
+  pod 'IQKeyboardManager', '~> 6.2.0'
   
   post_install do |installer|
        installer.pods_project.targets.each do |target|

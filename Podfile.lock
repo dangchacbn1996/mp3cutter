@@ -1,22 +1,22 @@
 PODS:
   - AudioKit/Core (4.10.1)
   - FDWaveformView (5.0.1)
-  - fluid-slider (1.1.0):
-    - pop
+  - IQKeyboardManager (6.2.1)
   - JGProgressHUD (2.1)
   - M13Checkbox (3.2.2)
   - MGSwipeTableCell (1.6.11)
-  - pop (1.0.12)
+  - mobile-ffmpeg-min (4.4)
   - SnapKit (5.0.1)
   - Toast-Swift (3.0.1)
 
 DEPENDENCIES:
   - AudioKit/Core
   - FDWaveformView (~> 5.0)
-  - fluid-slider
+  - IQKeyboardManager (~> 6.2.0)
   - JGProgressHUD (~> 2.0)
   - M13Checkbox (= 3.2.2)
   - MGSwipeTableCell
+  - mobile-ffmpeg-min (~> 4.2)
   - SnapKit (~> 5.0.0)
   - Toast-Swift
 
@@ -24,25 +24,25 @@ SPEC REPOS:
   trunk:
     - AudioKit
     - FDWaveformView
-    - fluid-slider
+    - IQKeyboardManager
     - JGProgressHUD
     - M13Checkbox
     - MGSwipeTableCell
-    - pop
+    - mobile-ffmpeg-min
     - SnapKit
     - Toast-Swift
 
 SPEC CHECKSUMS:
   AudioKit: b8e508a0af3dc7d53caf0ca1002b187a662f949e
   FDWaveformView: c188be613947273cc83d6f0056505f60e6c4b9ac
-  fluid-slider: 68037ac7247f16a89f3e24ff5d0167c8eea6f50b
+  IQKeyboardManager: 964638372b4a61892cc74fdfa6fd26de8c9464a2
   JGProgressHUD: aa403e9a5b45cae98903c4600cccdd98c0c3ec90
   M13Checkbox: a8c2491cfbbca10797925fd0b9154a782bf40d89
   MGSwipeTableCell: b804e4e450dee439c42250be90bd50458bf67fce
-  pop: d582054913807fd11fd50bfe6a539d91c7e1a55a
+  mobile-ffmpeg-min: 2ac0ecc97664d06a923d36a250817e9ca827f37d
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   Toast-Swift: ba0b01b095aada709d915f9beb1d38184a2721c3
 
-PODFILE CHECKSUM: a22241e083d7a7e9a6083ac7e759c95014521c2d
+PODFILE CHECKSUM: 93c7e682e2fa6bbc8523bdaf667f78fbb989fea2
 
 COCOAPODS: 1.9.0

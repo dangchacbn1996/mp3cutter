@@ -8,6 +8,7 @@
 
 import UIKit
 import SnapKit
+import mobileffmpeg
 
 enum ListType : Int {
     case cut = 0
@@ -17,7 +18,11 @@ enum ListType : Int {
     case collection = 4
 }
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, ExecuteDelegate {
+    func executeCallback(_ executionId: Int, _ returnCode: Int32) {
+        print(executionId)
+    }
+    
     
     
     private let scrollMain = UIScrollView()

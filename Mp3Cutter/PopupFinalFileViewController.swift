@@ -60,6 +60,10 @@ class PopupFinalViewController: UIViewController {
         self.dismiss(animated: true, completion: nil)
     }
     
+    @objc func keyboardDone() {
+        self.view.endEditing(true)
+    }
+    
     @objc func doAction() {
         checkAvailable(failed: { (error) in
             
@@ -253,7 +257,7 @@ extension PopupFinalViewController {
         viewContainer.backgroundColor = .white
         viewContainer.layer.cornerRadius = Constant.viewCorner
         
-        let lbTitle = UILabel(text: "Xuất file", font: UIFont.systemFont(ofSize: 14, weight: .medium), color: .black)
+        let lbTitle = UILabel(text: "Xuất file", font: UIFont.systemFont(ofSize: 16, weight: .medium), color: .black)
         
         let lbTitleName = UILabel(text: "Tên mới", font: Constant.Text.fontSmall, color: Constant.Text.colorGray)
         let lbTitleExportType = UILabel(text: "Chọn định dạng", font: Constant.Text.fontSmall, color: Constant.Text.colorGray)
@@ -280,6 +284,9 @@ extension PopupFinalViewController {
         })
         tfNewName.placeholder = "Tên sẽ lưu"
         tfNewName.borderStyle = .roundedRect
+        tfNewName.backgroundColor = .white
+        tfNewName.textColor = .black
+//        tfNewName.addDoneOnKeyboard(withTarget: self, action: #selector(self.keyboardDone))
         viewContainer.addSubview(lbTitleExportType)
         lbTitleExportType.snp.makeConstraints({
             $0.top.equalTo(tfNewName.snp.bottom).offset(space)

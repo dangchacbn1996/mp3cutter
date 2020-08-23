@@ -20,6 +20,7 @@ struct MusicData {
     var title: String?
     var artist: String?
     var musicName: String?
+    var asset: AVAsset!
     
     init(url: URL, cover: UIImage?, title: String?, artist: String?, musicName: String?) {
         self.url = url
@@ -27,6 +28,7 @@ struct MusicData {
         self.title = title
         self.artist = artist
         self.musicName = musicName
+        self.asset = AVAsset(url: url)
     }
 }
 
@@ -74,6 +76,9 @@ class ListViewController: UIViewController {
     private let btnAction = UIButton()
     private let stackMain = UIStackView()
     private var multiChoise: [IndexPath]? = nil
+    private var vcSort = DropdownPickerViewController()
+    private let btnSort = UIButton()
+    private let sortOpts = ["A -> Z", "Z -> A", "Kích thước", "Thời gian"]
     var actType = ListType.cut
     var mainColor : UIColor? = UIColor.red.withAlphaComponent(0.5)
     
@@ -158,7 +163,8 @@ extension ListViewController {
     }
     
     @objc func actSort(){
-        
+        vcSort = DropdownPickerViewController(delegate: self, background: .white, border: UIColor.gray.withAlphaComponent(0.3).cgColor)
+        self.present(vcSort, animated: false, completion: nil)
     }
     
     @objc func actAction(){
@@ -215,6 +221,67 @@ extension ListViewController {
     }
 }
 
+extension ListViewController: DropdownPickerViewDelegate {
+    func layoutConstraint(dropdown: DropdownPickerViewController, tableView: UITableView) -> (point: CGPoint, width: CGFloat, height: CGFloat) {
+        let width = self.view.frame.width * 0.4
+        var point = btnSort.superview?.convert(btnSort.frame.origin, to: nil) ?? CGPoint(x: 0, y: 0)
+        point.y = point.y + btnSort.bounds.height
+        point.x = point.x - width + btnSort.frame.width
+        return (point, width, btnSort.frame.height * 4)
+    }
+    
+    func numberOfRow(dropdown: DropdownPickerViewController, tableView: UITableView) -> (Int) {
+        return sortOpts.count
+    }
+    
+    func setData(dropdown: DropdownPickerViewController, tableView: UITableView, indexPath: IndexPath) -> (UITableViewCell) {
+        let cell = UITableViewCell()
+        cell.textLabel?.text = sortOpts[indexPath.row]
+        return cell
+    }
+    
+    func didSelect(dropdown: DropdownPickerViewController, tableView: UITableView, index: Int) {
+        switch index {
+        case 0:
+            musicData.sorted { ($0.title ?? "a") < ($1.title ?? "b") }
+            localMusic.sorted { ($0.title ?? "a") < ($1.title ?? "b") }
+            break
+        case 1:
+            musicData.sorted { ($0.title ?? "a") > ($1.title ?? "b") }
+            localMusic.sorted { ($0.title ?? "a") > ($1.title ?? "b") }
+            break
+        case 2:
+            break
+        case 3:
+//            musicData.sorted{
+//                let sort0 = AVAsset(url: $0.assetURL)
+//                ($0.assetURL ?? "a") > ($1.title ?? "b")
+//            }
+//            localMusic.sorted{
+//                ($1.asset.duration.seconds) > ($1.asset.duration.seconds)
+//            }
+            break
+        default:
+            break
+        }
+        tableView.reloadData()
+    }
+    
+    func onShowEffect() {
+        
+    }
+    
+    func onDismissEffect() {
+        
+    }
+    
+    func heightForCell(dropdown: DropdownPickerViewController, tableView: UITableView, indexPath: IndexPath) -> (CGFloat) {
+        return btnSort.frame.height
+    }
+    
+    
+}
+
 extension ListViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         actSearch()
@@ -253,28 +320,28 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: ItemTableViewCell.id, for: indexPath) as! ItemTableViewCell
         cell.selectionStyle = .none
         if indexPath.section == 0 {
-            cell.bind(title: musicData[indexPath.row].title ?? "Name", sub: musicData[indexPath.row].artist ?? "Artist", checkColor: multiChoise != nil ? mainColor : .clear, showCheck: true)
+            var artist = musicData[indexPath.row].artist ?? "Artist"
+            if let url = musicData[indexPath.row].assetURL {
+                let asset = AVAsset(url: url)
+                artist += NSString(format: " | %02d:%02d", Int(asset.duration.seconds/60), Int(asset.duration.seconds.truncatingRemainder(dividingBy: 60))) as String
+            }
+            cell.bind(title: musicData[indexPath.row].title ?? "Name", sub: artist, checkColor: multiChoise != nil ? mainColor : .clear, showCheck: true)
             cell.rightButtons = []
         } else {
-            var sub = ""
-            if let artist = localMusic[indexPath.row].artist {
-                sub += artist
-            }
-            if let url = localMusic[indexPath.row].url {
-                let asset = AVAsset(url: url)
-                sub += NSString(format: " %02d:%02d", Int(asset.duration.seconds/60), Int(asset.duration.seconds.truncatingRemainder(dividingBy: 60))) as String
-            }
-            cell.bind(title: localMusic[indexPath.row].title ?? "Name", sub: sub, checkColor: multiChoise != nil ? mainColor : .clear, showCheck: true)
+            let data = localMusic[indexPath.row]
+            var sub = data.artist ?? "Artist"
+            sub += NSString(format: " | %02d:%02d", Int(data.asset.duration.seconds/60), Int(data.asset.duration.seconds.truncatingRemainder(dividingBy: 60))) as String
+            cell.bind(title: data.title ?? "Name", sub: sub, checkColor: multiChoise != nil ? mainColor : .clear, showCheck: true)
             var actions : [MGSwipeButton] = []
             actions.append(MGSwipeButton.init(title: "Xoá", backgroundColor: UIColor(hexString: "b9b2b2"), callback: {
                 (sender: MGSwipeTableCell!) -> Bool in
-                let vcWarning = UIAlertController(title: "Xoá file", message: "Bạn chắc chắn muốn xoá file \(self.localMusic[indexPath.row].title ?? "Name")?", preferredStyle: .alert)
+                let vcWarning = UIAlertController(title: "Xoá file", message: "Bạn chắc chắn muốn xoá file \(data.title ?? "")?", preferredStyle: .alert)
                 vcWarning.addAction(UIAlertAction(title: "Huỷ", style: .default, handler: { (alert) in
                     vcWarning.dismiss(animated: true, completion: nil)
                 }))
                 vcWarning.addAction(UIAlertAction(title: "Xoá file", style: .default, handler: { (alert) in
                     do {
-                        try? FileManager.default.removeItem(atPath: self.localMusic[indexPath.row].url?.path ?? "")
+                        try? FileManager.default.removeItem(atPath: data.url?.path ?? "")
                         self.loadMusics()
                     } catch {
                         Toast.shared.makeToast(.error, string: "Có lỗi trong quá trình xoá file!", inView: self.view, time: 2.0)
@@ -442,7 +509,6 @@ extension ListViewController {
         btnBack.imageView?.contentMode = .scaleAspectFit
         btnBack.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.goBack)))
         
-        let btnSort = UIButton()
         vNavigation.addSubview(btnSort)
         btnSort.snp.makeConstraints({
             $0.trailing.equalToSuperview().offset(-16)
