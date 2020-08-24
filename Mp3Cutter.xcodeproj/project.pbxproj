@@ -24,7 +24,6 @@
 		359F7BEB24E58D1300C09929 /* PlayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359F7BEA24E58D1300C09929 /* PlayViewController.swift */; };
 		359F7BED24E5AF5F00C09929 /* ActionCutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359F7BEC24E5AF5F00C09929 /* ActionCutViewController.swift */; };
 		359F7BF724E5BF6200C09929 /* Presentations.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 359F7BF624E5BF6200C09929 /* Presentations.mp3 */; };
-		35A79E5C24F2C0A400832F85 /* demovideo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 35A79E5B24F2C0A400832F85 /* demovideo.mp4 */; };
 		35A79E5E24F2C0BE00832F85 /* ActionVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35A79E5D24F2C0BE00832F85 /* ActionVideoViewController.swift */; };
 		35E03BB324E2DFE0009CFC8D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E03BB224E2DFE0009CFC8D /* AppDelegate.swift */; };
 		35E03BB524E2DFE0009CFC8D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E03BB424E2DFE0009CFC8D /* SceneDelegate.swift */; };
@@ -39,6 +38,7 @@
 		35E03BF324E2EFB7009CFC8D /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E03BF224E2EFB7009CFC8D /* ListViewController.swift */; };
 		35E03BF724E2F9DD009CFC8D /* ItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E03BF524E2F9DD009CFC8D /* ItemTableViewCell.swift */; };
 		35E03BF824E2F9DD009CFC8D /* ItemTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 35E03BF624E2F9DD009CFC8D /* ItemTableViewCell.xib */; };
+		35EB9B2624F4076C00AB8AE1 /* demo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 35EB9B2524F4076900AB8AE1 /* demo.mp4 */; };
 		68C8A8989535632CDEBCDB7B /* Pods_Mp3CutterTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88D82A9337DBF229E246E797 /* Pods_Mp3CutterTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -91,7 +91,6 @@
 		359F7BEA24E58D1300C09929 /* PlayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayViewController.swift; sourceTree = "<group>"; };
 		359F7BEC24E5AF5F00C09929 /* ActionCutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionCutViewController.swift; sourceTree = "<group>"; };
 		359F7BF624E5BF6200C09929 /* Presentations.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Presentations.mp3; sourceTree = "<group>"; };
-		35A79E5B24F2C0A400832F85 /* demovideo.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = demovideo.mp4; sourceTree = "<group>"; };
 		35A79E5D24F2C0BE00832F85 /* ActionVideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionVideoViewController.swift; sourceTree = "<group>"; };
 		35AC713424F1865D002B6A0A /* Name.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = Name.m4a; sourceTree = "<group>"; };
 		35E03BAF24E2DFE0009CFC8D /* Mp3Cutter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mp3Cutter.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -112,6 +111,7 @@
 		35E03BF224E2EFB7009CFC8D /* ListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 		35E03BF524E2F9DD009CFC8D /* ItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemTableViewCell.swift; sourceTree = "<group>"; };
 		35E03BF624E2F9DD009CFC8D /* ItemTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ItemTableViewCell.xib; sourceTree = "<group>"; };
+		35EB9B2524F4076900AB8AE1 /* demo.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = demo.mp4; sourceTree = "<group>"; };
 		4C16E9775C3D7BDF217FB3D4 /* Pods-Mp3CutterTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mp3CutterTests.release.xcconfig"; path = "Target Support Files/Pods-Mp3CutterTests/Pods-Mp3CutterTests.release.xcconfig"; sourceTree = "<group>"; };
 		7EB6332BC2A07817BD0A8A99 /* Pods-Mp3Cutter-Mp3CutterUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mp3Cutter-Mp3CutterUITests.release.xcconfig"; path = "Target Support Files/Pods-Mp3Cutter-Mp3CutterUITests/Pods-Mp3Cutter-Mp3CutterUITests.release.xcconfig"; sourceTree = "<group>"; };
 		88D82A9337DBF229E246E797 /* Pods_Mp3CutterTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Mp3CutterTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -217,7 +217,7 @@
 				359F7BE224E58CCE00C09929 /* Ultils */,
 				35E03BF424E2F4B3009CFC8D /* CustomCell */,
 				359F7BF624E5BF6200C09929 /* Presentations.mp3 */,
-				35A79E5B24F2C0A400832F85 /* demovideo.mp4 */,
+				35EB9B2524F4076900AB8AE1 /* demo.mp4 */,
 				35AC713424F1865D002B6A0A /* Name.m4a */,
 				3521BD0024EADD4400279A45 /* File 14.mp3 */,
 				35E03BB224E2DFE0009CFC8D /* AppDelegate.swift */,
@@ -396,7 +396,7 @@
 				35E03BF824E2F9DD009CFC8D /* ItemTableViewCell.xib in Resources */,
 				35E03BBF24E2DFE1009CFC8D /* LaunchScreen.storyboard in Resources */,
 				35E03BBC24E2DFE1009CFC8D /* Assets.xcassets in Resources */,
-				35A79E5C24F2C0A400832F85 /* demovideo.mp4 in Resources */,
+				35EB9B2624F4076C00AB8AE1 /* demo.mp4 in Resources */,
 				3521BD0124EADD4400279A45 /* File 14.mp3 in Resources */,
 				35E03BBA24E2DFE0009CFC8D /* Main.storyboard in Resources */,
 			);

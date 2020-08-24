@@ -17,12 +17,12 @@ class Loading {
     
     func show(in view: UIView){
         progress.show(in: view)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 20) {
-            if (self.progress.isVisible) {
-//                Toast.shared.makeToastNotification(mess: "Tốc độ kết nối Internet không đủ nhanh!", inView: view)
-                self.dismiss()
-            }
-        }
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 20) {
+//            if (self.progress.isVisible) {
+////                Toast.shared.makeToastNotification(mess: "Tốc độ kết nối Internet không đủ nhanh!", inView: view)
+//                self.dismiss()
+//            }
+//        }
     }
     
     func show(in view: UIView, deadline : Double){

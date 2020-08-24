@@ -78,18 +78,18 @@ class MediaPascer : NSObject {
     
     private func exportFile(info: MediaInfoModel, newURL: URL, asset: AVAsset, timeRange: CMTimeRange? = nil, failed: @escaping (String) -> Void, success: @escaping () -> Void){
         
-        var presetName = ""
-        switch info.typeQuality {
-        case .qLow:
-            presetName = AVAssetExportPresetLowQuality
-            break
-        case .qHigh:
-            presetName = AVAssetExportPresetHighestQuality
-            break
-        default:
-            presetName = AVAssetExportPresetMediumQuality
-            break
-        }
+        var presetName = AVAssetExportPresetAppleM4A
+//        switch info.typeQuality {
+//        case .qLow:
+//            presetName = AVAssetExportPresetAppleM4A
+//            break
+//        case .qHigh:
+//            presetName = AVAssetExportPresetHighestQuality
+//            break
+//        default:
+//            presetName = AVAssetExportPresetMediumQuality
+//            break
+//        }
         guard let session = AVAssetExportSession(asset: asset, presetName: presetName) else { return }
         var clipboardURL = newURL
         clipboardURL.deletePathExtension()
@@ -116,7 +116,7 @@ class MediaPascer : NSObject {
                     failed("export cancelled \(String(describing: session.error))")
                 }
             case .completed:
-                success()
+//                success()
                 if newURL.pathExtension == "m4a" {
                     DispatchQueue.main.async {
                         success()
@@ -173,7 +173,9 @@ class MediaPascer : NSObject {
                     failed("export cancelled \(String(describing: session.error))")
                 }
             case .completed:
-                success()
+                DispatchQueue.main.async {
+                    success()
+                }
             default:
                 break
                 // change core data data here

@@ -19,6 +19,8 @@ class PopupPlayerViewController: UIViewController {
     private let lbTotalTime = UILabel(text: "/", font: UIFont.systemFont(ofSize: 12), color: .black)
     private let btnPlay = UIButton()
     private var player = AVPlayer()
+    private var videoFrame = VideoContainerView()
+    private var layerVideo : AVPlayerLayer!
     private var statePlay = PlayState.play {
         didSet {
             switch self.statePlay {
@@ -54,6 +56,14 @@ class PopupPlayerViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         player = AVPlayer(url: url)
+        if player.isVideoAvailable ?? false {
+            videoFrame.isHidden = false
+            layerVideo = AVPlayerLayer(player: player)
+            layerVideo.backgroundColor = UIColor.black.cgColor
+            videoFrame.layer.addSublayer(layerVideo)
+        } else {
+            videoFrame.isHidden = true
+        }
         lbName.text = url.lastPathComponent
         Loading.sharedInstance.show(in: self.view, deadline: 20.0)
         slide.value = 0
@@ -67,6 +77,11 @@ class PopupPlayerViewController: UIViewController {
         let asset = AVAsset(url: url)
         lbTotalTime.text = NSString(format: "/ %02d:%02d", Int(asset.duration.seconds/60), Int(asset.duration.seconds.truncatingRemainder(dividingBy: 60))) as String
         player.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions(rawValue: 0), context: nil)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        self.layerVideo.frame = videoFrame.bounds
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -135,17 +150,23 @@ extension PopupPlayerViewController {
         })
         lbName.textAlignment = .center
         
-        viewContainer.addSubview(slide)
-        slide.snp.makeConstraints({
+        let stackPlayer = UIStackView(axis: .vertical, distribution: .fill, alignment: .fill, spacing: 12)
+        viewContainer.addSubview(stackPlayer)
+        stackPlayer.snp.makeConstraints({
             $0.top.equalTo(lbName.snp.bottom).offset(16)
             $0.centerX.equalToSuperview()
-            $0.width.equalToSuperview().multipliedBy(0.7)
+            $0.width.equalToSuperview().multipliedBy(0.9)
         })
+        stackPlayer.addArrangedSubview(videoFrame)
+        videoFrame.snp.makeConstraints({
+            $0.width.equalTo(videoFrame.snp.height).multipliedBy(16/9)
+        })
+        stackPlayer.addArrangedSubview(slide)
         slide.addTarget(self, action: #selector(self.seek), for: .valueChanged)
         viewContainer.addSubview(lbTime)
         lbTime.snp.makeConstraints({
-            $0.leading.equalTo(slide)
-            $0.top.equalTo(slide.snp.bottom).offset(8)
+            $0.leading.equalTo(stackPlayer)
+            $0.top.equalTo(stackPlayer.snp.bottom).offset(8)
         })
         viewContainer.addSubview(lbTotalTime)
         lbTotalTime.snp.makeConstraints({

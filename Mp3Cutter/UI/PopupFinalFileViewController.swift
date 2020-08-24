@@ -66,6 +66,7 @@ class PopupFinalViewController: UIViewController {
     }
     
     @objc func doAction() {
+        self.view.endEditing(true)
         checkAvailable(failed: { (error) in
             
         }) { (url) in
@@ -83,9 +84,10 @@ class PopupFinalViewController: UIViewController {
         do {
             let fileManager = FileManager.default
             let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:false)
-            let fileURL = documentDirectory.appendingPathComponent("\(tfNewName.text ?? "").\(actionType.type == .video ? "m4v" : mediaInfo.extensionFile)")
+            let newName = "\(tfNewName.text ?? "").\(actionType.type == .video ? "m4v" : mediaInfo.extensionFile)"
+            let fileURL = documentDirectory.appendingPathComponent(newName)
             if FileManager.default.fileExists(atPath: fileURL.path) {
-                let vcWarning = UIAlertController(title: "File đã tồn tại", message: "Thư mục đã tồn tại file \(mediaInfo.fileName). Đổi tên hoặc xoá file để tiếp tục?", preferredStyle: .alert)
+                let vcWarning = UIAlertController(title: "File đã tồn tại", message: "Thư mục đã tồn tại file \(newName). Đổi tên hoặc xoá file để tiếp tục?", preferredStyle: .alert)
                 vcWarning.addAction(UIAlertAction(title: "Đổi tên", style: .default, handler: { (alert) in
                     vcWarning.dismiss(animated: true, completion: nil)
                 }))
@@ -127,6 +129,7 @@ class PopupFinalViewController: UIViewController {
                 break
             }
             vcDrop.listObj = listObj
+            vcDrop.modalPresentationStyle = .overFullScreen
 //            vcDrop.listData = listData
             self.present(vcDrop, animated: false, completion: nil)
             vcDrop.viewContainer.layer.cornerRadius = viewGes.layer.cornerRadius
@@ -142,7 +145,7 @@ extension PopupFinalViewController: DropdownPickerViewDelegate {
         let point = viewDropDown.superview?.convert(viewDropDown.frame.origin, to: nil) ?? errorPoint
         let width = viewDropDown.frame.width
         let height = viewDropDown.frame.height
-        return (point, width, height * 3.5)
+        return (point, width, height * 3)
     }
     
     func numberOfRow(dropdown: DropdownPickerViewController, tableView: UITableView) -> (Int) {

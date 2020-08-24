@@ -398,8 +398,10 @@ extension ActionCutViewController: FDWaveformViewDelegate {
     func waveformViewDidRender(_ waveformView: FDWaveformView){
         print("waveformViewDidRender")
         Loading.sharedInstance.dismiss()
-        if self.actType.type == .cut && exporType.rawValue != SoundType.video.rawValue {
-            return
+        if self.actType.type == .cut {
+            if exporType.rawValue == SoundType.video.rawValue {
+                return
+            }
         }
         endPoint = waveform.totalSamples
         playerState = .play
@@ -443,7 +445,6 @@ extension ActionCutViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        print(videoFrame.bounds)
         self.vcPlayerVideo.frame = videoFrame.bounds
     }
     

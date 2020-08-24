@@ -112,8 +112,8 @@ class ListViewController: UIViewController {
             break
         case .video:
             supportType = ["m4v", "mp4", "mov"]
-            if let demoVideo = Bundle(for: type(of: self)).url(forResource: "demovideo", withExtension: "mp4") {
-                localMusic.append(MusicData(url: demoVideo, cover: nil, title: "demovideo", artist: "demo", musicName: nil))
+            if let demoVideo = Bundle(for: type(of: self)).url(forResource: "demo", withExtension: "mp4") {
+                localMusic.append(MusicData(url: demoVideo, cover: nil, title: "demo", artist: "vietnam from above", musicName: nil))
             }
             break
         default:
@@ -136,33 +136,41 @@ class ListViewController: UIViewController {
         
         let fileManager = FileManager.default
         let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        var fileURLs : [URL] = []
         do {
-            let fileURLs = try fileManager.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil)
-            fileURLs.forEach({
-                var title = $0.lastPathComponent.fileName()
-                if supportType.count != 0 {
-                    if !supportType.contains($0.pathExtension.lowercased()) {
-                        return
-                    }
-                }
-                let playerItem = AVPlayerItem(url: $0)
-                let metadataList = playerItem.asset.metadata
-                var artist = ""
-                for item in metadataList {
-                    if let stringValue = item.value {
-                        if let key = item.commonKey?.rawValue {
-                            if key  == "artist" {
-                                artist = stringValue as? String ?? "Artist"
-                            }
-                        }
-                    }
-                }
-                localMusic.append(MusicData(url: $0, cover: nil, title: title, artist: artist, musicName: nil))
-            })
-            
+            let docUrls = try fileManager.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil)
+            fileURLs.append(contentsOf: docUrls)
         } catch {
             print("Error while enumerating files \(documentsURL.path): \(error.localizedDescription)")
         }
+        let downUrl = fileManager.urls(for: .downloadsDirectory, in: .userDomainMask)[0]
+        do {
+            let downUrls = try fileManager.contentsOfDirectory(at: downUrl, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)
+            fileURLs.append(contentsOf: downUrls)
+        } catch {
+            print("Error while enumerating files \(downUrl.path): \(error.localizedDescription)")
+        }
+        fileURLs.forEach({
+            var title = $0.lastPathComponent.fileName()
+            if supportType.count != 0 {
+                if !supportType.contains($0.pathExtension.lowercased()) {
+                    return
+                }
+            }
+            let playerItem = AVPlayerItem(url: $0)
+            let metadataList = playerItem.asset.metadata
+            var artist = ""
+            for item in metadataList {
+                if let stringValue = item.value {
+                    if let key = item.commonKey?.rawValue {
+                        if key  == "artist" {
+                            artist = stringValue as? String ?? "Artist"
+                        }
+                    }
+                }
+            }
+            localMusic.append(MusicData(url: $0, cover: nil, title: title, artist: artist, musicName: nil))
+        })
         self.tableView.reloadData()
     }
 }
