@@ -14,23 +14,23 @@ class PopupFinalViewController: UIViewController {
     enum selectType : Int {
         case export = 1
         case quality = 2
-        case type = 3
     }
     
     private let viewContainer = UIView()
-    private let actionType = ActionType.actCut
+    private var actionType = ActionType.actCut
     private let tfNewName = UITextField()
     private var lbExport = UILabel(text: "", font: UIFont.systemFont(ofSize: 14), color: .black)
     private var lbQuality = UILabel(text: "", font: UIFont.systemFont(ofSize: 14), color: .black)
-    private var lbSoundType = UILabel(text: "", font: UIFont.systemFont(ofSize: 14), color: .black)
     private var doneBlock: ((MediaInfoModel, URL) -> (Void))!
     private var mediaInfo : MediaInfoModel!
+    var isRingtone = false
     private var vcDrop = DropdownPickerViewController()
     
-    init(name: String, url: [URL], doAction: @escaping ((MediaInfoModel, URL) -> (Void))) {
+    init(name: String, actType: ActionType, url: [URL], doAction: @escaping ((MediaInfoModel, URL) -> (Void))) {
         super.init(nibName: nil, bundle: nil)
         self.mediaInfo = MediaInfoModel()
         self.mediaInfo.url = url
+        self.actionType = actType
         self.mediaInfo.name = name
         self.doneBlock = doAction
     }
@@ -47,12 +47,14 @@ class PopupFinalViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         updateMedia()
+        if isRingtone {
+            mediaInfo.typeExport = .m4a
+        }
     }
     
     private func updateMedia() {
         lbExport.text = mediaInfo.typeExport.rawValue
         lbQuality.text = mediaInfo.typeQuality.rawValue
-        lbSoundType.text = mediaInfo.typeExport.rawValue
         tfNewName.placeholder = mediaInfo.name
     }
     
@@ -117,7 +119,7 @@ class PopupFinalViewController: UIViewController {
 //            var listData : [String] = []
             switch viewGes.tag {
             case selectType.export.rawValue:
-                listObj = [ExportType.m4a, ExportType.aif, ExportType.caf, ExportType.wav]
+                listObj = [ExtensionType.m4a, ExtensionType.aif, ExtensionType.caf, ExtensionType.wav]
 //                listData = ["m4a", "aiff"]
                 break
             case selectType.quality.rawValue:
@@ -126,12 +128,12 @@ class PopupFinalViewController: UIViewController {
 //                    listData.append(($0 as! SoundQuality).rawValue)
 //                })
                 break
-            case selectType.type.rawValue:
-                listObj = [SoundType.audioFile, SoundType.ringtone, SoundType.warning]
-//                listObj.forEach({
-//                    listData.append(($0 as! SoundType).rawValue)
-//                })
-                break
+//            case selectType.type.rawValue:
+//                listObj = [SoundType.audioFile, SoundType.ringtone, SoundType.warning]
+////                listObj.forEach({
+////                    listData.append(($0 as! SoundType).rawValue)
+////                })
+//                break
             default:
                 break
             }
@@ -162,14 +164,14 @@ extension PopupFinalViewController: DropdownPickerViewDelegate {
         let cell = UITableViewCell()
         switch dropdown.viewPos!.tag {
         case selectType.export.rawValue:
-            cell.textLabel?.text = (dropdown.listObj[indexPath.row] as? ExportType)?.rawValue ?? ""
+            cell.textLabel?.text = (dropdown.listObj[indexPath.row] as? ExtensionType)?.rawValue ?? ""
             break
         case selectType.quality.rawValue:
             cell.textLabel?.text = (dropdown.listObj[indexPath.row] as? SoundQuality)?.rawValue ?? ""
             break
-        case selectType.type.rawValue:
-            cell.textLabel?.text = (dropdown.listObj[indexPath.row] as? SoundType)?.rawValue ?? ""
-            break
+//        case selectType.type.rawValue:
+//            cell.textLabel?.text = (dropdown.listObj[indexPath.row] as? SoundType)?.rawValue ?? ""
+//            break
         default:
             break
         }
@@ -180,17 +182,17 @@ extension PopupFinalViewController: DropdownPickerViewDelegate {
         if let vDrop = dropdown.viewPos {
             switch vDrop.tag {
             case selectType.export.rawValue:
-                mediaInfo.typeExport = dropdown.listObj[index] as! ExportType
+                mediaInfo.typeExport = dropdown.listObj[index] as! ExtensionType
                 lbExport.text = mediaInfo.typeExport.rawValue
                 break
             case selectType.quality.rawValue:
                 mediaInfo.typeQuality = dropdown.listObj[index] as! SoundQuality
                 lbQuality.text = mediaInfo.typeQuality.rawValue
                 break
-            case selectType.type.rawValue:
-                mediaInfo.typeTarget = dropdown.listObj[index] as! SoundType
-                lbSoundType.text = mediaInfo.typeTarget.rawValue
-                break
+//            case selectType.type.rawValue:
+//                mediaInfo.typeTarget = dropdown.listObj[index] as! SoundType
+//                lbSoundType.text = mediaInfo.typeTarget.rawValue
+//                break
             default:
                 break
             }
@@ -261,7 +263,6 @@ extension PopupFinalViewController {
         
         let lbTitleName = UILabel(text: "Tên mới", font: Constant.Text.fontSmall, color: Constant.Text.colorGray)
         let lbTitleExportType = UILabel(text: "Chọn định dạng", font: Constant.Text.fontSmall, color: Constant.Text.colorGray)
-        let lbTitleType = UILabel(text: "Loại", font: Constant.Text.fontSmall, color: Constant.Text.colorGray)
         
         let space : CGFloat = 8
         let boxHeight : CGFloat = 32
@@ -302,6 +303,11 @@ extension PopupFinalViewController {
         })
         viewExportType.tag = selectType.export.rawValue
         viewExportType.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.actDropList(_:))))
+        if isRingtone {
+            viewExportType.isUserInteractionEnabled = false
+            viewExportType.alpha = 0.7
+            lbExport.text = "Nhạc chuông"
+        }
         
         let viewQuality = initViewDrop(label: &lbQuality)
         viewContainer.addSubview(viewQuality)
@@ -312,21 +318,15 @@ extension PopupFinalViewController {
         })
         viewQuality.tag = selectType.quality.rawValue
         viewQuality.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.actDropList(_:))))
-        
-        viewContainer.addSubview(lbTitleType)
-        lbTitleType.snp.makeConstraints({
-            $0.top.equalTo(viewQuality.snp.bottom).offset(space)
-            $0.centerX.width.equalTo(lbTitleName)
-        })
-        let viewType = initViewDrop(label: &lbSoundType)
-        viewContainer.addSubview(viewType)
-        viewType.snp.makeConstraints({
-            $0.centerX.width.equalTo(lbTitleName)
-            $0.height.equalTo(boxHeight)
-            $0.top.equalTo(lbTitleType.snp.bottom).offset(4)
-        })
-        viewType.tag = selectType.type.rawValue
-        viewType.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.actDropList(_:))))
+//        let viewType = initViewDrop(label: &lbSoundType)
+//        viewContainer.addSubview(viewType)
+//        viewType.snp.makeConstraints({
+//            $0.centerX.width.equalTo(lbTitleName)
+//            $0.height.equalTo(boxHeight)
+//            $0.top.equalTo(lbTitleType.snp.bottom).offset(4)
+//        })
+//        viewType.tag = selectType.type.rawValue
+//        viewType.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.actDropList(_:))))
 
         let buttonBack = UIButton()
         viewContainer.addSubview(buttonBack)
@@ -334,7 +334,7 @@ extension PopupFinalViewController {
             $0.leading.equalToSuperview().offset(32)
             $0.trailing.equalTo(viewContainer.snp.centerX).offset(-16)
             $0.height.equalTo(boxHeight + 8)
-            $0.top.equalTo(viewType.snp.bottom).offset(24)
+            $0.top.equalTo(viewQuality.snp.bottom).offset(24)
             $0.bottom.equalToSuperview().offset(-16)
         })
         buttonBack.layer.cornerRadius = Constant.viewCorner

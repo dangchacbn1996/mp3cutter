@@ -8,22 +8,8 @@
 
 import UIKit
 import SnapKit
-import mobileffmpeg
 
-enum ListType : Int {
-    case cut = 0
-    case merge = 1
-    case convert = 2
-    case video = 3
-    case collection = 4
-}
-
-class ViewController: UIViewController, ExecuteDelegate {
-    func executeCallback(_ executionId: Int, _ returnCode: Int32) {
-        print(executionId)
-    }
-    
-    
+class ViewController: UIViewController{
     
     private let scrollMain = UIScrollView()
     private let viewContainer = UIView()

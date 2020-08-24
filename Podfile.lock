@@ -5,7 +5,6 @@ PODS:
   - JGProgressHUD (2.1)
   - M13Checkbox (3.2.2)
   - MGSwipeTableCell (1.6.11)
-  - mobile-ffmpeg-min (4.4)
   - SnapKit (5.0.1)
   - Toast-Swift (3.0.1)
 
@@ -16,7 +15,6 @@ DEPENDENCIES:
   - JGProgressHUD (~> 2.0)
   - M13Checkbox (= 3.2.2)
   - MGSwipeTableCell
-  - mobile-ffmpeg-min (~> 4.2)
   - SnapKit (~> 5.0.0)
   - Toast-Swift
 
@@ -28,7 +26,6 @@ SPEC REPOS:
     - JGProgressHUD
     - M13Checkbox
     - MGSwipeTableCell
-    - mobile-ffmpeg-min
     - SnapKit
     - Toast-Swift
 
@@ -39,10 +36,9 @@ SPEC CHECKSUMS:
   JGProgressHUD: aa403e9a5b45cae98903c4600cccdd98c0c3ec90
   M13Checkbox: a8c2491cfbbca10797925fd0b9154a782bf40d89
   MGSwipeTableCell: b804e4e450dee439c42250be90bd50458bf67fce
-  mobile-ffmpeg-min: 2ac0ecc97664d06a923d36a250817e9ca827f37d
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   Toast-Swift: ba0b01b095aada709d915f9beb1d38184a2721c3
 
-PODFILE CHECKSUM: 93c7e682e2fa6bbc8523bdaf667f78fbb989fea2
+PODFILE CHECKSUM: a0e9fc1616e87bfcb7d0480fb1c29512e757a5a2
 
-COCOAPODS: 1.9.0
+COCOAPODS: 1.9.3

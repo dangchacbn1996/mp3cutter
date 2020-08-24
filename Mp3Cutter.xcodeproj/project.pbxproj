@@ -24,6 +24,8 @@
 		359F7BEB24E58D1300C09929 /* PlayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359F7BEA24E58D1300C09929 /* PlayViewController.swift */; };
 		359F7BED24E5AF5F00C09929 /* ActionCutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359F7BEC24E5AF5F00C09929 /* ActionCutViewController.swift */; };
 		359F7BF724E5BF6200C09929 /* Presentations.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 359F7BF624E5BF6200C09929 /* Presentations.mp3 */; };
+		35A79E5C24F2C0A400832F85 /* demovideo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 35A79E5B24F2C0A400832F85 /* demovideo.mp4 */; };
+		35A79E5E24F2C0BE00832F85 /* ActionVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35A79E5D24F2C0BE00832F85 /* ActionVideoViewController.swift */; };
 		35E03BB324E2DFE0009CFC8D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E03BB224E2DFE0009CFC8D /* AppDelegate.swift */; };
 		35E03BB524E2DFE0009CFC8D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E03BB424E2DFE0009CFC8D /* SceneDelegate.swift */; };
 		35E03BB724E2DFE0009CFC8D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E03BB624E2DFE0009CFC8D /* ViewController.swift */; };
@@ -89,7 +91,8 @@
 		359F7BEA24E58D1300C09929 /* PlayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayViewController.swift; sourceTree = "<group>"; };
 		359F7BEC24E5AF5F00C09929 /* ActionCutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionCutViewController.swift; sourceTree = "<group>"; };
 		359F7BF624E5BF6200C09929 /* Presentations.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Presentations.mp3; sourceTree = "<group>"; };
-		35AC712B24F1823B002B6A0A /* Mp3Cutter-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Mp3Cutter-Bridging-Header.h"; sourceTree = "<group>"; };
+		35A79E5B24F2C0A400832F85 /* demovideo.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = demovideo.mp4; sourceTree = "<group>"; };
+		35A79E5D24F2C0BE00832F85 /* ActionVideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionVideoViewController.swift; sourceTree = "<group>"; };
 		35AC713424F1865D002B6A0A /* Name.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = Name.m4a; sourceTree = "<group>"; };
 		35E03BAF24E2DFE0009CFC8D /* Mp3Cutter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mp3Cutter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		35E03BB224E2DFE0009CFC8D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -157,7 +160,6 @@
 				3504F3D824EF6C450088CEBC /* MediaInfoModel.swift */,
 				35166CC624F04E190048A6F1 /* ToastView.swift */,
 				35166CC824F053E10048A6F1 /* Loading.swift */,
-				35AC712B24F1823B002B6A0A /* Mp3Cutter-Bridging-Header.h */,
 			);
 			path = Ultils;
 			sourceTree = "<group>";
@@ -169,6 +171,20 @@
 				359F7BE724E58CFA00C09929 /* Extension.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		35A79E5F24F2C0C300832F85 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				35E03BB624E2DFE0009CFC8D /* ViewController.swift */,
+				35E03BF224E2EFB7009CFC8D /* ListViewController.swift */,
+				359F7BEC24E5AF5F00C09929 /* ActionCutViewController.swift */,
+				35A79E5D24F2C0BE00832F85 /* ActionVideoViewController.swift */,
+				354C538024E849250093AE65 /* PopupFinalFileViewController.swift */,
+				35166CCA24F06A500048A6F1 /* PopupLoadingViewController.swift */,
+				35166CDC24F094B00048A6F1 /* PopupPlayerViewController.swift */,
+			);
+			path = UI;
 			sourceTree = "<group>";
 		};
 		35E03BA624E2DFE0009CFC8D = {
@@ -196,25 +212,21 @@
 		35E03BB124E2DFE0009CFC8D /* Mp3Cutter */ = {
 			isa = PBXGroup;
 			children = (
+				35A79E5F24F2C0C300832F85 /* UI */,
 				359F7BE524E58CFA00C09929 /* Extensions */,
 				359F7BE224E58CCE00C09929 /* Ultils */,
 				35E03BF424E2F4B3009CFC8D /* CustomCell */,
 				359F7BF624E5BF6200C09929 /* Presentations.mp3 */,
+				35A79E5B24F2C0A400832F85 /* demovideo.mp4 */,
 				35AC713424F1865D002B6A0A /* Name.m4a */,
 				3521BD0024EADD4400279A45 /* File 14.mp3 */,
 				35E03BB224E2DFE0009CFC8D /* AppDelegate.swift */,
 				35E03BB424E2DFE0009CFC8D /* SceneDelegate.swift */,
-				35E03BB624E2DFE0009CFC8D /* ViewController.swift */,
 				35E03BB824E2DFE0009CFC8D /* Main.storyboard */,
 				35E03BBB24E2DFE1009CFC8D /* Assets.xcassets */,
 				35E03BBD24E2DFE1009CFC8D /* LaunchScreen.storyboard */,
 				35E03BC024E2DFE1009CFC8D /* Info.plist */,
-				35E03BF224E2EFB7009CFC8D /* ListViewController.swift */,
-				359F7BEC24E5AF5F00C09929 /* ActionCutViewController.swift */,
-				354C538024E849250093AE65 /* PopupFinalFileViewController.swift */,
 				3521BD0224EAE45B00279A45 /* MediaParser.swift */,
-				35166CCA24F06A500048A6F1 /* PopupLoadingViewController.swift */,
-				35166CDC24F094B00048A6F1 /* PopupPlayerViewController.swift */,
 			);
 			path = Mp3Cutter;
 			sourceTree = "<group>";
@@ -278,7 +290,6 @@
 			buildConfigurationList = 35E03BD924E2DFE2009CFC8D /* Build configuration list for PBXNativeTarget "Mp3Cutter" */;
 			buildPhases = (
 				E0390E1973E578629D336AD5 /* [CP] Check Pods Manifest.lock */,
-				E7001D1DBC58DE4B7576448B /* [CP] Prepare Artifacts */,
 				35E03BAB24E2DFE0009CFC8D /* Sources */,
 				35E03BAC24E2DFE0009CFC8D /* Frameworks */,
 				35E03BAD24E2DFE0009CFC8D /* Resources */,
@@ -290,8 +301,6 @@
 			dependencies = (
 			);
 			name = Mp3Cutter;
-			packageProductDependencies = (
-			);
 			productName = Mp3Cutter;
 			productReference = 35E03BAF24E2DFE0009CFC8D /* Mp3Cutter.app */;
 			productType = "com.apple.product-type.application";
@@ -320,7 +329,6 @@
 			buildConfigurationList = 35E03BDF24E2DFE2009CFC8D /* Build configuration list for PBXNativeTarget "Mp3CutterUITests" */;
 			buildPhases = (
 				8CEC7BAF2EB621694D3E5C3A /* [CP] Check Pods Manifest.lock */,
-				DAC3C0259FCB08B33F40FBDE /* [CP] Prepare Artifacts */,
 				35E03BCC24E2DFE2009CFC8D /* Sources */,
 				35E03BCD24E2DFE2009CFC8D /* Frameworks */,
 				35E03BCE24E2DFE2009CFC8D /* Resources */,
@@ -368,8 +376,6 @@
 				Base,
 			);
 			mainGroup = 35E03BA624E2DFE0009CFC8D;
-			packageReferences = (
-			);
 			productRefGroup = 35E03BB024E2DFE0009CFC8D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -390,6 +396,7 @@
 				35E03BF824E2F9DD009CFC8D /* ItemTableViewCell.xib in Resources */,
 				35E03BBF24E2DFE1009CFC8D /* LaunchScreen.storyboard in Resources */,
 				35E03BBC24E2DFE1009CFC8D /* Assets.xcassets in Resources */,
+				35A79E5C24F2C0A400832F85 /* demovideo.mp4 in Resources */,
 				3521BD0124EADD4400279A45 /* File 14.mp3 in Resources */,
 				35E03BBA24E2DFE0009CFC8D /* Main.storyboard in Resources */,
 			);
@@ -490,23 +497,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		DAC3C0259FCB08B33F40FBDE /* [CP] Prepare Artifacts */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Mp3Cutter-Mp3CutterUITests/Pods-Mp3Cutter-Mp3CutterUITests-artifacts-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Prepare Artifacts";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Mp3Cutter-Mp3CutterUITests/Pods-Mp3Cutter-Mp3CutterUITests-artifacts-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Mp3Cutter-Mp3CutterUITests/Pods-Mp3Cutter-Mp3CutterUITests-artifacts.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		E0390E1973E578629D336AD5 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -527,23 +517,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E7001D1DBC58DE4B7576448B /* [CP] Prepare Artifacts */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Mp3Cutter/Pods-Mp3Cutter-artifacts-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Prepare Artifacts";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Mp3Cutter/Pods-Mp3Cutter-artifacts-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Mp3Cutter/Pods-Mp3Cutter-artifacts.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -567,6 +540,7 @@
 				354C539524E84C760093AE65 /* Extensions.swift in Sources */,
 				35E03BF324E2EFB7009CFC8D /* ListViewController.swift in Sources */,
 				3504F3D924EF6C450088CEBC /* MediaInfoModel.swift in Sources */,
+				35A79E5E24F2C0BE00832F85 /* ActionVideoViewController.swift in Sources */,
 				354C539724E8531C0093AE65 /* Constant.swift in Sources */,
 				359F7BED24E5AF5F00C09929 /* ActionCutViewController.swift in Sources */,
 				35E03BB524E2DFE0009CFC8D /* SceneDelegate.swift in Sources */,
@@ -746,7 +720,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = L3BXQ56R4P;
+				DEVELOPMENT_TEAM = YHBF8QR6XS;
 				INFOPLIST_FILE = Mp3Cutter/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -765,7 +739,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = L3BXQ56R4P;
+				DEVELOPMENT_TEAM = YHBF8QR6XS;
 				INFOPLIST_FILE = Mp3Cutter/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

@@ -10,12 +10,8 @@ import Foundation
 import AVKit
 import CoreAudioKit
 import AudioKit
-import mobileffmpeg
 
-class MediaPascer : NSObject, ExecuteDelegate {
-    func executeCallback(_ executionId: Int, _ returnCode: Int32) {
-        
-    }
+class MediaPascer : NSObject {
     
     static let shared = MediaPascer()
     

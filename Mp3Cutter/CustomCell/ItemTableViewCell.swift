@@ -9,6 +9,8 @@
 import UIKit
 import M13Checkbox
 import MGSwipeTableCell
+import AVFoundation
+import MediaPlayer
 
 class ItemTableViewCell: MGSwipeTableCell{
     
@@ -16,6 +18,7 @@ class ItemTableViewCell: MGSwipeTableCell{
     static let cellHeight: CGFloat = 56
     
     @IBOutlet weak var lbName: UILabel!
+    @IBOutlet weak var lbExt: UILabel!
     @IBOutlet weak var lbSub: UILabel!
     @IBOutlet weak var vIcon: UIView!
     @IBOutlet weak var vCheckBox: UIView!
@@ -24,6 +27,7 @@ class ItemTableViewCell: MGSwipeTableCell{
     override func awakeFromNib() {
         super.awakeFromNib()
         setupUI()
+        lbExt.adjustsFontSizeToFitWidth = true
         // Initialization code
     }
     
@@ -36,9 +40,25 @@ class ItemTableViewCell: MGSwipeTableCell{
         checkBox.setCheckState(check ? .checked : .unchecked, animated: true)
     }
     
-    func bind(title: String, sub: String, checkColor: UIColor?, showCheck: Bool) {
+    func bind(_ data: MPMediaItem, checkColor: UIColor?, showCheck: Bool) {
+        var artist = data.artist ?? "Artist"
+        if let url = data.assetURL {
+            let asset = AVAsset(url: url)
+            artist += NSString(format: " | %02d:%02d", Int(asset.duration.seconds/60), Int(asset.duration.seconds.truncatingRemainder(dividingBy: 60))) as String
+        }
+        self.bind(title: data.title ?? "NONAME", sub: artist, ext: data.assetURL?.pathExtension ?? "", checkColor: checkColor, showCheck: showCheck)
+    }
+    
+    func bind(_ data: MusicData, checkColor: UIColor?, showCheck: Bool) {
+        var sub = data.artist ?? "Artist"
+        sub += NSString(format: " | %02d:%02d", Int(data.asset.duration.seconds/60), Int(data.asset.duration.seconds.truncatingRemainder(dividingBy: 60))) as String
+        self.bind(title: data.title ?? "Name", sub: sub, ext: data.url?.pathExtension ?? "", checkColor: checkColor, showCheck: showCheck)
+    }
+    
+    func bind(title: String, sub: String, ext: String, checkColor: UIColor?, showCheck: Bool) {
         lbName.text = title
         lbSub.text = sub
+        lbExt.text = ext
         checkBox.tintColor = checkColor
         checkBox.secondaryTintColor = checkColor
         checkBox.alpha = showCheck ? 1 : 0

@@ -35,10 +35,38 @@ extension UIColor {
     }
 }
 
+enum ListType : Int {
+    case cut = 0
+    case merge = 1
+    case convert = 2
+    case video = 4
+    case collection = 5
+}
+
 struct ActionType{
     var type: ListType
     var text: String
     var color: UIColor
+    
+    static func getType(_ type: ListType) -> ActionType {
+        return ActionType.getType(type.rawValue)
+    }
+    
+    static func getType(_ index: Int) -> ActionType {
+           switch index {
+           case ListType.cut.rawValue:
+               return ActionType.actCut
+           case ListType.merge.rawValue:
+               return ActionType.actMerge
+           case ListType.convert.rawValue:
+               return ActionType.actConvert
+           case ListType.video.rawValue:
+               return ActionType.actVideo
+           default:
+               return ActionType.actCollection
+           }
+       }
+
     static let actCut = ActionType(type: .cut, text: "Cắt âm thanh", color: UIColor(255,128,171).withAlphaComponent(0.7))
     static let actMerge = ActionType(type: .merge, text: "Ghép âm thanh", color: UIColor(red: 63/255.0, green: 81/255.0, blue: 181/255.0, alpha: 1).withAlphaComponent(0.7))
     static let actConvert = ActionType(type: .convert, text: "Chuyển định dạng", color: UIColor(red: 253/255.0, green: 216/255.0, blue: 53/255.0, alpha: 1).withAlphaComponent(0.7))

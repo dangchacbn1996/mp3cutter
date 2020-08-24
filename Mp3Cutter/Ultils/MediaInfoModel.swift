@@ -9,42 +9,30 @@
 import Foundation
 import AVKit
 
-enum ExportType : String{
+enum ExtensionType : String{
     case wav = "WAV"
     case m4a = "M4A"
     case caf = "CAF"
     case aif = "AIF"
-//    case aifc = "AIFC"
-//    "wav", "aif", "caf", "m4a"
-//    "mp3",
-//    "snd",
-//    "au",
-//    "sd2",
-//    "aiff",
-//    "aifc",
-//    "aac",
-//    "mp4",
-//    "m4v",
-//    "mov",
+}
+
+enum SoundType : Int{
+    case ringtone = 0
+    case music = 1
+    case video = 2
 }
 
 enum SoundQuality : String {
     case kbps128 = "128Kbps"
     case kbps320 = "320Kbps"
 }
-enum SoundType : String {
-    case ringtone = "Nhạc chuông"
-    case warning = "Âm báo"
-    case audioFile = "File nhạc"
-}
 
 class MediaInfoModel {
     var name: String = ""
     var url: [URL] = []
-    var typeExport = ExportType.m4a
+    var typeExport = ExtensionType.m4a
     var videoQuality = AVAssetExportPresetLowQuality
     var typeQuality = SoundQuality.kbps128
-    var typeTarget = SoundType.audioFile
     
     var extensionFile : String {
         get {

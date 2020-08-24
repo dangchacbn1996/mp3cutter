@@ -9,6 +9,19 @@
 import Foundation
 import UIKit
 import MediaPlayer
+import AVFoundation
+
+extension AVPlayer {
+    var isAudioAvailable: Bool? {
+        let asset = self.currentItem?.asset
+        return asset?.tracks.filter({$0.mediaType == AVMediaType.audio}).count != 0
+    }
+
+    var isVideoAvailable: Bool? {
+        let asset = self.currentItem?.asset
+        return asset?.tracks.filter({$0.mediaType == AVMediaType.video}).count != 0
+    }
+}
 
 
 @IBDesignable extension UIButton {

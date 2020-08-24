@@ -79,18 +79,18 @@ class ListViewController: UIViewController {
     private var vcSort = DropdownPickerViewController()
     private let btnSort = UIButton()
     private let sortOpts = ["A -> Z", "Z -> A", "Kích thước", "Thời gian"]
-    var actType = ListType.cut
+    var actType = ActionType.actCut
     var mainColor : UIColor? = UIColor.red.withAlphaComponent(0.5)
     
     convenience init(actionType: Int) {
         self.init()
-        self.actType = ListType.init(rawValue: actionType) ?? ListType.cut
+        self.actType = ActionType.getType(actionType)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        if self.actType == .merge {
+        if self.actType.type == .merge {
             multiChoise = []
         }
     }
@@ -101,30 +101,56 @@ class ListViewController: UIViewController {
     }
     
     @objc func loadMusics(){
+        var supportType: [String] = []
+        self.localMusic = []
+        switch actType.type {
+        case .cut, .merge, .convert:
+            supportType = ["mp3", "m4a", "m4r"]
+            if let demoUrl = Bundle(for: type(of: self)).url(forResource: "Presentations", withExtension: "mp3") {
+                localMusic.append(MusicData(url: demoUrl, cover: nil, title: "Presentations", artist: "demo", musicName: nil))
+            }
+            break
+        case .video:
+            supportType = ["m4v", "mp4", "mov"]
+            if let demoVideo = Bundle(for: type(of: self)).url(forResource: "demovideo", withExtension: "mp4") {
+                localMusic.append(MusicData(url: demoVideo, cover: nil, title: "demovideo", artist: "demo", musicName: nil))
+            }
+            break
+        default:
+            break
+        }
         refreshControl.endRefreshing()
         if let mediaItems = MPMediaQuery.songs().items {
-            self.musicData = mediaItems
+            mediaItems.forEach({
+                if supportType.count != 0 {
+                    if !supportType.contains($0.assetURL?.pathExtension.lowercased() ?? "") {
+                        return
+                    }
+                }
+                self.musicData.append($0)
+            })
         }
-        if self.actType == .merge {
+        if self.actType.type == .merge {
             self.multiChoise = []
         }
         
         let fileManager = FileManager.default
         let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
         do {
-            self.localMusic = []
-            if let demoUrl = Bundle(for: type(of: self)).url(forResource: "Presentations", withExtension: "mp3") {
-                localMusic.append(MusicData(url: demoUrl, cover: nil, title: "Presentations", artist: "demo", musicName: nil))
-            }
             let fileURLs = try fileManager.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil)
             fileURLs.forEach({
                 var title = $0.lastPathComponent
-                if !title.contains(ExportType.m4a.rawValue.lowercased())
-                    && !title.contains(ExportType.aif.rawValue.lowercased())
-                    && !title.contains(ExportType.caf.rawValue.lowercased())
-                    && !title.contains(ExportType.wav.rawValue.lowercased()) {
-                    return
+                if supportType.count != 0 {
+                    if !supportType.contains($0.pathExtension.lowercased()) {
+                        return
+                    }
                 }
+//                if !title.contains(ExportType.m4a.rawValue.lowercased())
+//                    && !title.contains(ExportType.aif.rawValue.lowercased())
+//                    && !title.contains(ExportType.caf.rawValue.lowercased())
+//                    && !title.contains(ExportType.wav.rawValue.lowercased()) {
+//                    return
+//                }
                 let playerItem = AVPlayerItem(url: $0)
                 let metadataList = playerItem.asset.metadata
                 var artist = ""
@@ -168,14 +194,14 @@ extension ListViewController {
     }
     
     @objc func actAction(){
-        if actType == .merge {
+        if actType.type == .merge {
             if multiChoise?.count ?? 0 < 2 {
                 Toast.shared.makeToast(.error, string: "Vui lòng chọn ít nhất 2 file âm thanh", inView: self.view, time: 2.0)
                 return
             }
             var listURL = getListChoice()
             var vc : PopupFinalViewController!
-            vc = PopupFinalViewController(name: "Tên mới", url: listURL, doAction: {(media, url) -> (Void) in
+            vc = PopupFinalViewController(name: "Tên mới", actType: actType, url: listURL, doAction: {(media, url) -> (Void) in
                 Loading.sharedInstance.show(in: vc.view)
                 MediaPascer.shared.mergeFilesWithUrl(info: media, newURL: url, listURL: listURL, failed: { (error) in
                     Loading.sharedInstance.dismiss()
@@ -320,18 +346,11 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: ItemTableViewCell.id, for: indexPath) as! ItemTableViewCell
         cell.selectionStyle = .none
         if indexPath.section == 0 {
-            var artist = musicData[indexPath.row].artist ?? "Artist"
-            if let url = musicData[indexPath.row].assetURL {
-                let asset = AVAsset(url: url)
-                artist += NSString(format: " | %02d:%02d", Int(asset.duration.seconds/60), Int(asset.duration.seconds.truncatingRemainder(dividingBy: 60))) as String
-            }
-            cell.bind(title: musicData[indexPath.row].title ?? "Name", sub: artist, checkColor: multiChoise != nil ? mainColor : .clear, showCheck: true)
+            cell.bind(musicData[indexPath.row], checkColor: multiChoise != nil ? mainColor : .clear, showCheck: true)
             cell.rightButtons = []
         } else {
-            let data = localMusic[indexPath.row]
-            var sub = data.artist ?? "Artist"
-            sub += NSString(format: " | %02d:%02d", Int(data.asset.duration.seconds/60), Int(data.asset.duration.seconds.truncatingRemainder(dividingBy: 60))) as String
-            cell.bind(title: data.title ?? "Name", sub: sub, checkColor: multiChoise != nil ? mainColor : .clear, showCheck: true)
+            var data = localMusic[indexPath.row]
+            cell.bind(data, checkColor: multiChoise != nil ? mainColor : .clear, showCheck: true)
             var actions : [MGSwipeButton] = []
             actions.append(MGSwipeButton.init(title: "Xoá", backgroundColor: UIColor(hexString: "b9b2b2"), callback: {
                 (sender: MGSwipeTableCell!) -> Bool in
@@ -382,14 +401,14 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
                 btnAction.setTitle(title, for: .normal)
             }
         } else {
-            switch actType {
-            case .cut:
+            switch actType.type {
+            case .cut, .video:
                 var url : URL? = nil
                 url = indexPath.section == 0 ? (musicData[indexPath.row].assetURL) : localMusic[indexPath.row].url
                 if url == nil {
                     return
                 }
-                let vc = ActionCutViewController(url: url!)
+                let vc = ActionCutViewController(url: url!, action: self.actType)
                 let navi = UINavigationController(rootViewController: vc)
                 navi.navigationBar.tintColor = .white
                 navi.navigationBar.titleTextAttributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14, weight: .bold)]
@@ -423,7 +442,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
                     return
                 }
                 let asset = AVAsset(url: assetURL!)
-                vc = PopupFinalViewController(name: "Tên mới", url: [assetURL!], doAction: {(media, url) -> (Void) in
+                vc = PopupFinalViewController(name: "Tên mới", actType: actType, url: [assetURL!], doAction: {(media, url) -> (Void) in
                     Loading.sharedInstance.show(in: vc.view)
                     MediaPascer.shared.audioURLParse(info: media, newURL: url, asset: asset, failed: { (error) in
                         Loading.sharedInstance.dismiss()
@@ -451,6 +470,32 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
                 vc.modalTransitionStyle = .crossDissolve
                 self.present(vc, animated: true, completion: nil)
                 break
+            case .video:
+                let vc = ActionVideoViewController()
+                let navi = UINavigationController(rootViewController: vc)
+                navi.navigationBar.tintColor = .white
+                navi.navigationBar.titleTextAttributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14, weight: .bold)]
+                navi.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
+                navi.navigationBar.barTintColor = ActionType.actCut.color
+                navi.navigationBar.isTranslucent = false
+                navi.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
+                navi.modalPresentationStyle = .overCurrentContext
+                let vButton = UIView()
+                vButton.snp.makeConstraints({
+                    $0.width.height.equalTo(navi.navigationBar.frame.height)
+                })
+                let btnBack = UIButton()
+                vButton.addSubview(btnBack)
+                btnBack.setImage(UIImage(named: "ic_back")?.withRenderingMode(.alwaysTemplate), for: .normal)
+                btnBack.imageView?.tintColor = .white
+                btnBack.imageView?.contentMode = .scaleAspectFit
+                btnBack.addTarget(self, action: #selector(self.goBack), for: .touchUpInside)
+                btnBack.snp.makeConstraints({
+                    $0.center.equalToSuperview()
+                    $0.width.height.equalToSuperview().multipliedBy(0.6)
+                })
+                vc.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: vButton)
+                self.present(navi, animated: true, completion: nil)
             default:
                 break
             }
@@ -461,7 +506,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
 extension ListViewController {
     
     private func configType(){
-        switch actType {
+        switch actType.type {
         case .cut:
             self.lbTitle.text = "Cắt âm thanh"
             vAction.isHidden = true

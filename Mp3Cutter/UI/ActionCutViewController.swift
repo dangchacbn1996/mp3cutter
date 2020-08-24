@@ -10,7 +10,7 @@ import UIKit
 import SnapKit
 import AVFoundation
 import FDWaveformView
-import AudioUnit
+import AVKit
 
 enum PlayState : Int {
     case stop = 0
@@ -23,9 +23,11 @@ class ActionCutViewController: UIViewController {
     private let lbName = UILabel(text: "", font: UIFont.systemFont(ofSize: 14, weight: .semibold), color: UIColor.black.withAlphaComponent(0.8))
     private let lbStart = UILabel(text: "00:00:00", font: UIFont.systemFont(ofSize: 14, weight: .semibold), color: UIColor.black.withAlphaComponent(0.8))
     private let lbEnd = UILabel(text: "00:00:00", font: UIFont.systemFont(ofSize: 14, weight: .semibold), color: UIColor.black.withAlphaComponent(0.8))
+    private var videoFrame = VideoContainerView()
+    var vcPlayerVideo = AVPlayerLayer()
     private let layerSelected = UIView()
     private let waveform = FDWaveformView()
-    private let actType = ActionType.actCut
+    private var actType = ActionType.actCut
     private let btnPlay = UIButton()
     private let tagStart = UIView()
     private let tagEnd = UIView()
@@ -38,6 +40,17 @@ class ActionCutViewController: UIViewController {
     private var endPoint = 0
     private var urlAsset: URL = URL(fileURLWithPath: "")
     private var ratioWidth = 3
+    private var totalDistance : CGFloat = 0
+    var exporType: SoundType = .video {
+        didSet {
+            if self.exporType.rawValue == SoundType.ringtone.rawValue {
+                self.totalDistance = convertSeconsToDistance(29.5)
+                tagEnd.center = CGPoint(x: self.totalDistance, y: 0)
+                seekTo(draggedObject: tagEnd)
+                Toast.shared.makeToast(.success, string: "File nhạc chuông có độ dài tối đa là 30s", inView: self.view, time: 3.0)
+            }
+        }
+    }
     private var tagSelected : UIView = UIView() {
         didSet {
             updateSeekButton()
@@ -79,9 +92,10 @@ class ActionCutViewController: UIViewController {
     
     private var player = AVPlayer()
     
-    init(url: URL) {
+    init(url: URL, action: ActionType) {
         super.init(nibName: nil, bundle: nil)
         self.urlAsset = url
+        self.actType = action
     }
     
     required init?(coder: NSCoder) {
@@ -96,6 +110,7 @@ class ActionCutViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         do {
+            self.videoFrame.isHidden = actType.type == ActionType.actCut.type
             self.waveform.audioURL = urlAsset
             self.waveform.delegate = self
             self.waveform.progressColor = ActionType.actCut.color
@@ -104,19 +119,31 @@ class ActionCutViewController: UIViewController {
             self.waveform.doesAllowScrubbing = false
             self.waveform.doesAllowStretch = false
             self.waveform.doesAllowScroll = false
-            player = AVPlayer(url: urlAsset)
             lbName.text = urlAsset.lastPathComponent
             Loading.sharedInstance.show(in: self.view, deadline: 20.0)
             self.player.addPeriodicTimeObserver(forInterval: CMTimeMakeWithSeconds(0.02, preferredTimescale: 1000), queue: DispatchQueue.main, using: { (time) in
                 self.updateWaveForm()
             })
-//            if let url = localMusic[indexPath.row].url {
                 let asset = AVAsset(url: urlAsset)
-//                sub += " \(Int(asset.duration.seconds) / 60):\(Int(asset.duration.seconds.truncatingRemainder(dividingBy: 60)))"
             lbEnd.text = NSString(format: "%02d:%02d", Int(asset.duration.seconds/60), Int(asset.duration.seconds.truncatingRemainder(dividingBy: 60))) as String
-//            }
         } catch {
             print(error)
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if actType.type == .cut {
+            let vcChoise = UIAlertController(title: "Loại xuất audio", message: "Chọn loại âm thanh bạn muốn chỉnh sửa?", preferredStyle: .alert)
+            vcChoise.addAction(UIAlertAction(title: "Âm thanh", style: .default, handler: { (UIAlertAction) in
+                self.exporType = .music
+                vcChoise.dismiss(animated: true, completion: nil)
+            }))
+            vcChoise.addAction(UIAlertAction(title: "Nhạc chuông", style: .default, handler: { (UIAlertAction) in
+                self.exporType = .ringtone
+                vcChoise.dismiss(animated: true, completion: nil)
+            }))
+            self.present(vcChoise, animated: true, completion: nil)
         }
     }
     
@@ -135,9 +162,17 @@ class ActionCutViewController: UIViewController {
         }
         return CMTime(seconds: 0, preferredTimescale: 0)
     }
-
-private func updateWaveForm(){
-    if self.player.currentItem?.status == .readyToPlay {
+    
+    private func convertSeconsToDistance(_ value: CGFloat) -> (CGFloat) {
+        if let current = player.currentItem {
+            let duration = current.duration.seconds
+            return value / CGFloat(duration) * CGFloat(vScrollable.contentSize.width)
+        }
+        return 0
+    }
+    
+    private func updateWaveForm(){
+        if self.player.currentItem?.status == .readyToPlay {
             let currentTime = CMTimeGetSeconds(self.player.currentTime())
             let totalTime = CMTimeGetSeconds(self.player.currentItem?.duration ?? CMTime(seconds: 1, preferredTimescale: 1))
             let highlight = Int((currentTime * Double(self.waveform.totalSamples)) / totalTime)
@@ -199,16 +234,35 @@ private func updateWaveForm(){
     }
     
     @objc func actPanStart(_ gesture: UIPanGestureRecognizer) {
-//        let pos = gesture.translation(in: vScrollable)
         guard let draggedObject = gesture.view else { return }
 
         if gesture.state == .began || gesture.state == .changed {
             let translation = gesture.translation(in: vScrollable)
+            if isRingtone() {
+                if tagEnd.center.x - tagStart.center.x > self.totalDistance {
+                    let velocity = gesture.velocity(in: vScrollable)
+                    if draggedObject == tagStart && velocity.x < 0 {
+                        panTo(draggedObject: tagEnd, translation: translation.x)
+                    }
+                    if draggedObject == tagEnd && velocity.x > 0 {
+                        panTo(draggedObject: tagStart, translation: translation.x)
+                    }
+                }
+            }
             panTo(draggedObject: draggedObject, translation: translation.x)
             gesture.setTranslation(CGPoint.zero, in: self.view)
         } else {
-            seekTo(draggedObject: draggedObject)
+            if isRingtone() {
+                seekTo(draggedObject: tagStart)
+                seekTo(draggedObject: tagEnd)
+            } else {
+                seekTo(draggedObject: draggedObject)
+            }
         }
+    }
+    
+    private func isRingtone() -> (Bool) {
+        return actType.type == .cut && exporType.rawValue == SoundType.ringtone.rawValue
     }
     
     private func panTo(draggedObject: UIView, translation: CGFloat){
@@ -241,6 +295,9 @@ private func updateWaveForm(){
                 }
             }
             draggedObject.center = CGPoint(x: draggedObject.center.x + translation, y: draggedObject.center.y)
+            var scrollOff = draggedObject.center.x - vScrollable.contentSize.width / (CGFloat(ratioWidth) / 2)
+            scrollOff = scrollOff < 0 ? 0 : (scrollOff > vScrollable.contentSize.width ? vScrollable.contentSize.width / CGFloat(ratioWidth) - 1 : scrollOff)
+            vScrollable.scrollRectToVisible(draggedObject.frame, animated: true)
         }
     }
         
@@ -287,8 +344,12 @@ private func updateWaveForm(){
         panTo(draggedObject: tagStart, translation: -self.vScrollable.contentSize.width)
         seekTo(draggedObject: tagStart)
         
-        panTo(draggedObject: tagEnd, translation: self.vScrollable.contentSize.width)
-        seekTo(draggedObject: tagEnd)
+        if isRingtone() {
+            self.exporType = .ringtone
+        } else {
+            panTo(draggedObject: tagEnd, translation: self.vScrollable.contentSize.width)
+            seekTo(draggedObject: tagEnd)
+        }
     }
     
     @objc func actionCut() {
@@ -297,7 +358,7 @@ private func updateWaveForm(){
             let last = name.lastIndex(of: ".") ?? name.endIndex
             name.removeSubrange(last..<name.endIndex)
             var vc : PopupFinalViewController!
-            vc = PopupFinalViewController(name: name, url: [urlAsset], doAction: {(media, url) -> (Void) in
+            vc = PopupFinalViewController(name: name, actType: self.actType, url: [urlAsset], doAction: {(media, url) -> (Void) in
                 if let currentItem = self.player.currentItem {
                     let start = Double(self.startPoint) / Double(self.waveform.totalSamples) * currentItem.duration.seconds
                     let ending = Double(self.endPoint) / Double(self.waveform.totalSamples) * currentItem.duration.seconds
@@ -314,6 +375,7 @@ private func updateWaveForm(){
                     }
                 }
             })
+            vc.isRingtone = isRingtone()
             vc.modalPresentationStyle = .overCurrentContext
             vc.modalTransitionStyle = .crossDissolve
             self.present(vc, animated: true, completion: nil)
@@ -334,6 +396,9 @@ extension ActionCutViewController: FDWaveformViewDelegate {
     func waveformViewDidRender(_ waveformView: FDWaveformView){
         print("waveformViewDidRender")
         Loading.sharedInstance.dismiss()
+        if self.actType.type == .cut && exporType.rawValue != SoundType.video.rawValue {
+            return
+        }
         endPoint = waveform.totalSamples
         playerState = .play
     }
@@ -363,23 +428,46 @@ extension ActionCutViewController: FDWaveformViewDelegate {
          print("waveformDidEndScrubbing")
     }
 }
+class VideoContainerView: UIView {
+  var playerLayer: CALayer?
+    
+    override func layoutSublayers(of layer: CALayer) {
+        super.layoutSublayers(of: layer)
+        playerLayer?.frame = self.bounds
+    }
+}
 
 extension ActionCutViewController {
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        print(videoFrame.bounds)
+        self.vcPlayerVideo.frame = videoFrame.bounds
+    }
+    
     func setupUI(){
         self.view.backgroundColor = .white
         self.title = actType.text
+        player = AVPlayer(url: urlAsset)
         
-//        if actType.text == ActionType.actVideo.text {
-//            let playerLayer = AVPlayerLayer(player: self.player)
-//            playerLayer.frame = self.view.bounds
-//            self.view.layer.addSublayer(playerLayer)
-//        }
-        self.view.addSubview(vScrollable)
-        vScrollable.snp.makeConstraints({
-            $0.centerX.top.equalToSuperview()
+        let stackPlayer = UIStackView(axis: .vertical, distribution: .fill, alignment: .fill, spacing: 16)
+        self.view.addSubview(stackPlayer)
+        stackPlayer.snp.makeConstraints({
+            $0.top.centerX.equalToSuperview()
             $0.width.equalToSuperview()
             $0.height.equalToSuperview().multipliedBy(0.6)
         })
+        
+        stackPlayer.addArrangedSubview(videoFrame)
+        videoFrame.snp.makeConstraints({
+            $0.height.equalTo(self.view.bounds.width * 9 / 16)
+        })
+        vcPlayerVideo = AVPlayerLayer(player: player)
+        vcPlayerVideo.backgroundColor = UIColor.black.cgColor
+//        vcPlayerVideo.videoGravity = .resize
+        videoFrame.layer.addSublayer(vcPlayerVideo)
+        
+        stackPlayer.addArrangedSubview(vScrollable)
         vScrollable.bounces = false
         vScrollable.addSubview(waveform)
         waveform.snp.makeConstraints({
@@ -473,7 +561,7 @@ extension ActionCutViewController {
         let vInfo = UIView()
         self.view.addSubview(vInfo)
         vInfo.snp.makeConstraints({
-            $0.top.equalTo(vScrollable.snp.bottom).offset(8)
+            $0.top.equalTo(stackPlayer.snp.bottom).offset(8)
             $0.centerX.width.equalToSuperview()
         })
         vInfo.addSubview(lbName)
