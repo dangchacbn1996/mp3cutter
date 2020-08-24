@@ -353,17 +353,19 @@ class ActionCutViewController: UIViewController {
     }
     
     @objc func actionCut() {
+        self.view.endEditing(true)
         if let asset = self.player.currentItem?.asset {
             var name = urlAsset.lastPathComponent
             let last = name.lastIndex(of: ".") ?? name.endIndex
             name.removeSubrange(last..<name.endIndex)
             var vc : PopupFinalViewController!
             vc = PopupFinalViewController(name: name, actType: self.actType, url: [urlAsset], doAction: {(media, url) -> (Void) in
+                print(url.absoluteString)
                 if let currentItem = self.player.currentItem {
                     let start = Double(self.startPoint) / Double(self.waveform.totalSamples) * currentItem.duration.seconds
                     let ending = Double(self.endPoint) / Double(self.waveform.totalSamples) * currentItem.duration.seconds
                     Loading.sharedInstance.show(in: vc.view)
-                    MediaPascer.shared.audioURLParse(info: media, newURL: url, asset: asset, starting: CMTime(value: CMTimeValue(start * 1000), timescale: 1000), ending: CMTime(value: CMTimeValue(ending * 1000), timescale: 1000), failed: { (error) in
+                    MediaPascer.shared.audioURLParse(info: media, actType: self.actType, newURL: url, asset: asset, starting: CMTime(value: CMTimeValue(start * 1000), timescale: 1000), ending: CMTime(value: CMTimeValue(ending * 1000), timescale: 1000), failed: { (error) in
                         Loading.sharedInstance.dismiss()
                         Toast.shared.makeToast(.error, string: error, inView: vc.view, time: 2.0)
                     }) { () in

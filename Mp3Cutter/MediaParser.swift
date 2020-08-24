@@ -22,7 +22,7 @@ class MediaPascer : NSObject {
 //        MobileFFmpeg.executeAsync(command, withCallback: self)
     }
     
-    func audioURLParse(info: MediaInfoModel, newURL: URL, asset: AVAsset, starting: CMTime? = nil, ending: CMTime? = nil, failed: @escaping ((String) -> Void), success: @escaping () -> Void) -> Void
+    func audioURLParse(info: MediaInfoModel, actType: ActionType, newURL: URL, asset: AVAsset, starting: CMTime? = nil, ending: CMTime? = nil, failed: @escaping ((String) -> Void), success: @escaping () -> Void) -> Void
     {
         var timeRange : CMTimeRange!
         if starting == nil || ending == nil {
@@ -30,19 +30,26 @@ class MediaPascer : NSObject {
         } else {
             timeRange = CMTimeRangeFromTimeToTime(start: starting!, end: ending!)
         }
-        exportFile(info: info, newURL: newURL, asset: asset, timeRange: timeRange, failed: failed, success: success)
+        if actType.type == .video {
+            exportVideoFile(info: info, newURL: newURL, asset: asset, timeRange: timeRange, failed: failed, success: success)
+        } else {
+            exportFile(info: info, newURL: newURL, asset: asset, timeRange: timeRange, failed: failed, success: success)
+        }
+    }
+    
+    func videoURLParse(info: MediaInfoModel, newURL: URL, asset: AVAsset, starting: CMTime? = nil, ending: CMTime? = nil, failed: @escaping ((String) -> Void), success: @escaping () -> Void) -> Void
+    {
+        var timeRange : CMTimeRange!
+        if starting == nil || ending == nil {
+            timeRange = nil
+        } else {
+            timeRange = CMTimeRangeFromTimeToTime(start: starting!, end: ending!)
+        }
+        exportVideoFile(info: info, newURL: newURL, asset: asset, timeRange: timeRange, failed: failed, success: success)
     }
     
     func mergeFilesWithUrl(info: MediaInfoModel, newURL: URL, listURL: [URL], failed: @escaping ((String) -> Void), success: @escaping () -> Void) -> Void
     {
-
-//        let mixComposition : AVMutableComposition = AVMutableComposition()
-//
-//        var mutableCompositionVideoTrack : [AVMutableCompositionTrack] = []
-//        var mutableCompositionAudioTrack : [AVMutableCompositionTrack] = []
-//        var mutableCompositionAudioOfVideoTrack : [AVMutableCompositionTrack] = []
-//        let totalVideoCompositionInstruction : AVMutableVideoCompositionInstruction = AVMutableVideoCompositionInstruction()
-
         var listAsset : [AVAsset] = []
         listURL.forEach({
             listAsset.append(AVAsset(url: $0))
@@ -71,7 +78,19 @@ class MediaPascer : NSObject {
     
     private func exportFile(info: MediaInfoModel, newURL: URL, asset: AVAsset, timeRange: CMTimeRange? = nil, failed: @escaping (String) -> Void, success: @escaping () -> Void){
         
-        guard let session = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetAppleM4A) else { return }
+        var presetName = ""
+        switch info.typeQuality {
+        case .qLow:
+            presetName = AVAssetExportPresetLowQuality
+            break
+        case .qHigh:
+            presetName = AVAssetExportPresetHighestQuality
+            break
+        default:
+            presetName = AVAssetExportPresetMediumQuality
+            break
+        }
+        guard let session = AVAssetExportSession(asset: asset, presetName: presetName) else { return }
         var clipboardURL = newURL
         clipboardURL.deletePathExtension()
         clipboardURL.appendPathExtension("m4a")
@@ -122,6 +141,39 @@ class MediaPascer : NSObject {
                         }
                     }
                 }
+            default:
+                break
+                // change core data data here
+            }
+        }
+    }
+    
+    private func exportVideoFile(info: MediaInfoModel, newURL: URL, asset: AVAsset, timeRange: CMTimeRange? = nil, failed: @escaping (String) -> Void, success: @escaping () -> Void){
+        
+        guard let session = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetMediumQuality) else { return }
+        session.outputURL = newURL
+        if timeRange != nil {
+            session.timeRange = timeRange!
+        }
+        session.outputFileType = .m4v
+        session.exportAsynchronously {
+            switch session.status {
+            case  AVAssetExportSessionStatus.failed:
+                
+                if let e = session.error {
+                    DispatchQueue.main.async {
+                        print("export failed \(e)")
+                        failed("export failed \(e)")
+                    }
+                }
+                
+            case AVAssetExportSessionStatus.cancelled:
+                DispatchQueue.main.async {
+                    print("export cancelled \(String(describing: session.error))")
+                    failed("export cancelled \(String(describing: session.error))")
+                }
+            case .completed:
+                success()
             default:
                 break
                 // change core data data here

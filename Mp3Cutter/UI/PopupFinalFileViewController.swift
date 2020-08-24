@@ -47,13 +47,12 @@ class PopupFinalViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         updateMedia()
-        if isRingtone {
-            mediaInfo.typeExport = .m4a
-        }
     }
     
     private func updateMedia() {
-        lbExport.text = mediaInfo.typeExport.rawValue
+        if actionType.type != .video || isRingtone {
+            lbExport.text = mediaInfo.typeExport.rawValue
+        }
         lbQuality.text = mediaInfo.typeQuality.rawValue
         tfNewName.placeholder = mediaInfo.name
     }
@@ -84,7 +83,7 @@ class PopupFinalViewController: UIViewController {
         do {
             let fileManager = FileManager.default
             let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:false)
-            let fileURL = documentDirectory.appendingPathComponent("\(tfNewName.text ?? "").\(mediaInfo.extensionFile)")
+            let fileURL = documentDirectory.appendingPathComponent("\(tfNewName.text ?? "").\(actionType.type == .video ? "m4v" : mediaInfo.extensionFile)")
             if FileManager.default.fileExists(atPath: fileURL.path) {
                 let vcWarning = UIAlertController(title: "File đã tồn tại", message: "Thư mục đã tồn tại file \(mediaInfo.fileName). Đổi tên hoặc xoá file để tiếp tục?", preferredStyle: .alert)
                 vcWarning.addAction(UIAlertAction(title: "Đổi tên", style: .default, handler: { (alert) in
@@ -102,7 +101,6 @@ class PopupFinalViewController: UIViewController {
                 self.present(vcWarning, animated: true, completion: nil)
                 return
             } else {
-//                try? FileManager.default.createDirectory(atPath: fileURL.path, withIntermediateDirectories: true, attributes: nil)
                 success(fileURL)
             }
             
@@ -123,17 +121,8 @@ class PopupFinalViewController: UIViewController {
 //                listData = ["m4a", "aiff"]
                 break
             case selectType.quality.rawValue:
-                listObj = [SoundQuality.kbps128, SoundQuality.kbps320]
-//                listObj.forEach({
-//                    listData.append(($0 as! SoundQuality).rawValue)
-//                })
+                listObj = [SoundQuality.qLow, SoundQuality.qMedium, SoundQuality.qHigh]
                 break
-//            case selectType.type.rawValue:
-//                listObj = [SoundType.audioFile, SoundType.ringtone, SoundType.warning]
-////                listObj.forEach({
-////                    listData.append(($0 as! SoundType).rawValue)
-////                })
-//                break
             default:
                 break
             }
@@ -303,11 +292,6 @@ extension PopupFinalViewController {
         })
         viewExportType.tag = selectType.export.rawValue
         viewExportType.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.actDropList(_:))))
-        if isRingtone {
-            viewExportType.isUserInteractionEnabled = false
-            viewExportType.alpha = 0.7
-            lbExport.text = "Nhạc chuông"
-        }
         
         let viewQuality = initViewDrop(label: &lbQuality)
         viewContainer.addSubview(viewQuality)
@@ -356,6 +340,22 @@ extension PopupFinalViewController {
         buttonAction.setTitle("Thực hiện", for: .normal)
         buttonAction.setTitleColor(.white, for: .normal)
         buttonAction.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.doAction)))
+        
+        //Custom
+        if isRingtone {
+            mediaInfo.typeExport = .m4a
+            viewExportType.isUserInteractionEnabled = false
+            viewExportType.alpha = 0.7
+            lbExport.alpha = 0.7
+            lbExport.text = "Nhạc chuông"
+        }
+        if actionType.type == .video {
+            mediaInfo.typeExport = .m4a
+            viewExportType.isUserInteractionEnabled = false
+            viewExportType.alpha = 0.7
+            lbExport.alpha = 0.7
+            lbExport.text = "Video"
+        }
     }
     
     func initViewDrop(label: inout UILabel) -> (UIView) {

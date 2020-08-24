@@ -139,27 +139,18 @@ class ListViewController: UIViewController {
         do {
             let fileURLs = try fileManager.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil)
             fileURLs.forEach({
-                var title = $0.lastPathComponent
+                var title = $0.lastPathComponent.fileName()
                 if supportType.count != 0 {
                     if !supportType.contains($0.pathExtension.lowercased()) {
                         return
                     }
                 }
-//                if !title.contains(ExportType.m4a.rawValue.lowercased())
-//                    && !title.contains(ExportType.aif.rawValue.lowercased())
-//                    && !title.contains(ExportType.caf.rawValue.lowercased())
-//                    && !title.contains(ExportType.wav.rawValue.lowercased()) {
-//                    return
-//                }
                 let playerItem = AVPlayerItem(url: $0)
                 let metadataList = playerItem.asset.metadata
                 var artist = ""
                 for item in metadataList {
                     if let stringValue = item.value {
                         if let key = item.commonKey?.rawValue {
-                            if key == "title" {
-                                title = stringValue as? String ?? "Name"
-                            }
                             if key  == "artist" {
                                 artist = stringValue as? String ?? "Artist"
                             }
@@ -444,7 +435,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
                 let asset = AVAsset(url: assetURL!)
                 vc = PopupFinalViewController(name: "Tên mới", actType: actType, url: [assetURL!], doAction: {(media, url) -> (Void) in
                     Loading.sharedInstance.show(in: vc.view)
-                    MediaPascer.shared.audioURLParse(info: media, newURL: url, asset: asset, failed: { (error) in
+                    MediaPascer.shared.audioURLParse(info: media, actType: .actConvert, newURL: url, asset: asset, failed: { (error) in
                         Loading.sharedInstance.dismiss()
                         Toast.shared.makeToast(.error, string: error, inView: vc.view, time: 2.0)
                     }) { () in

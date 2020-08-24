@@ -23,8 +23,9 @@ enum SoundType : Int{
 }
 
 enum SoundQuality : String {
-    case kbps128 = "128Kbps"
-    case kbps320 = "320Kbps"
+    case qLow = "Low"
+    case qMedium = "Medium"
+    case qHigh = "High"
 }
 
 class MediaInfoModel {
@@ -32,7 +33,7 @@ class MediaInfoModel {
     var url: [URL] = []
     var typeExport = ExtensionType.m4a
     var videoQuality = AVAssetExportPresetLowQuality
-    var typeQuality = SoundQuality.kbps128
+    var typeQuality = SoundQuality.qMedium
     
     var extensionFile : String {
         get {
