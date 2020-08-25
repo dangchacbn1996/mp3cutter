@@ -1,0 +1,50 @@
+/* 
+  Localizable.strings
+  Mp3Cutter
+
+  Created by Chac Ngo Dang on 8/26/20.
+  Copyright © 2020 Chac Ngo Dang. All rights reserved.
+*/
+"Home Page" = "Trang chủ";
+"Vui lòng chọn ít nhất 2 file âm thanh" = "Vui lòng chọn ít nhất 2 file âm thanh";
+"Tên mới" = "Tên mới";
+"Tạo file thành công!" = "Tạo file thành công!";
+"Nhạc itunes" = "Nhạc itunes";
+"Bộ sưu tập" = "Bộ sưu tập";
+"Cài đặt" = "Cài đặt";
+"Xoá" = "Xoá";
+"Bạn chắc chắn muốn xoá file" = "Bạn chắc chắn muốn xoá file";
+"Xoá file" = "Xoá file";
+"Huỷ" = "Huỷ";
+"Có lỗi trong quá trình xoá file!" = "Có lỗi trong quá trình xoá file!";
+"Ghép" = "Ghép";
+"Cắt âm thanh" = "Cắt âm thanh";
+"Ghép âm thanh" = "Ghép âm thanh";
+"Chuyển định dạng" = "Chuyển định dạng";
+"Cắt video" = "Cắt video";
+"Bộ sưu tập của tôi" = "Bộ sưu tập của tôi";
+"Nhập từ khoá tìm kiếm" = "Nhập từ khoá tìm kiếm";
+"File nhạc chuông có độ dài tối đa là 30s" = "File nhạc chuông có độ dài tối đa là 30s";
+"Loại xuất audio" = "Loại xuất audio";
+"Chọn loại âm thanh bạn muốn chỉnh sửa?" = "Chọn loại âm thanh bạn muốn chỉnh sửa?";
+"Âm thanh" = "Âm thanh";
+"Nhạc chuông" = "Nhạc chuông";
+"File cut không dưới 5s" = "File cut không dưới 5s";
+"Không thể load được file âm thanh" = "Không thể load được file âm thanh";
+"Kết thúc: " = "Kết thúc: ";
+"TRỞ LẠI" = "TRỞ LẠI";
+"ĐẶT LẠI" = "ĐẶT LẠI";
+"CẮT" = "CẮT";
+"Tên sẽ lưu" = "Tên sẽ lưu";
+"Vui lòng nhập tên file" = "Vui lòng nhập tên file";
+"File đã tồn tại" = "File đã tồn tại";
+"Chọn định dạng" = "Chọn định dạng";
+"Thư mục đã tồn tại file" = "Thư mục đã tồn tại file";
+"Đổi tên hoặc xoá file để tiếp tục?" = "Đổi tên hoặc xoá file để tiếp tục?";
+"Có lỗi trong quá trình xoá file!" = "Có lỗi trong quá trình xoá file!";
+"Không thể tạo mới file!" = "Không thể tạo mới file!";
+"Xuất file" = "Xuất file";
+"Tên mới" = "Tên mới";
+"Trở lại" = "Trở lại";
+"Thực hiện" = "Thực hiện";
+"Đóng" = "Đóng";

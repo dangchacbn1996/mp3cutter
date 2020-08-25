@@ -67,11 +67,11 @@ struct ActionType{
            }
        }
 
-    static let actCut = ActionType(type: .cut, text: "Cắt âm thanh", color: UIColor(255,128,171).withAlphaComponent(0.7))
-    static let actMerge = ActionType(type: .merge, text: "Ghép âm thanh", color: UIColor(red: 63/255.0, green: 81/255.0, blue: 181/255.0, alpha: 1).withAlphaComponent(0.7))
-    static let actConvert = ActionType(type: .convert, text: "Chuyển định dạng", color: UIColor(red: 253/255.0, green: 216/255.0, blue: 53/255.0, alpha: 1).withAlphaComponent(0.7))
-    static let actVideo = ActionType(type: .video, text: "Cắt video", color: UIColor(red: 244/255.0, green: 81/255.0, blue: 30/255.0, alpha: 1).withAlphaComponent(0.7))
-    static let actCollection = ActionType(type: .collection, text: "Bộ sưu tập của tôi", color: UIColor(red: 2/255.0, green: 136/255.0, blue: 209/255.0, alpha: 1).withAlphaComponent(0.7))
+    static var actCut = ActionType(type: .cut, text: "Cắt âm thanh".localized(), color: UIColor(255,128,171).withAlphaComponent(0.7))
+    static var actMerge = ActionType(type: .merge, text: "Ghép âm thanh".localized(), color: UIColor(red: 63/255.0, green: 81/255.0, blue: 181/255.0, alpha: 1).withAlphaComponent(0.7))
+    static var actConvert = ActionType(type: .convert, text: "Chuyển định dạng".localized(), color: UIColor(red: 253/255.0, green: 216/255.0, blue: 53/255.0, alpha: 1).withAlphaComponent(0.7))
+    static var actVideo = ActionType(type: .video, text: "Cắt video".localized(), color: UIColor(red: 244/255.0, green: 81/255.0, blue: 30/255.0, alpha: 1).withAlphaComponent(0.5))
+    static var actCollection = ActionType(type: .collection, text: "Bộ sưu tập của tôi".localized(), color: UIColor(red: 2/255.0, green: 136/255.0, blue: 209/255.0, alpha: 1).withAlphaComponent(0.7))
 }
 
 class Constant {

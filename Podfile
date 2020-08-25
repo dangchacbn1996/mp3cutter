@@ -11,7 +11,7 @@ target 'Mp3Cutter' do
     inherit! :search_paths
     # Pods for testing
   end
-  
+  pod 'Localize-Swift', '~> 2.0'
   pod 'MGSwipeTableCell'
   pod 'AudioKit/Core'
   pod 'JGProgressHUD', '~> 2.0'

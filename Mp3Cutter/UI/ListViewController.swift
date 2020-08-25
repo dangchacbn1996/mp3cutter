@@ -78,7 +78,7 @@ class ListViewController: UIViewController {
     private var multiChoise: [IndexPath]? = nil
     private var vcSort = DropdownPickerViewController()
     private let btnSort = UIButton()
-    private let sortOpts = ["A -> Z", "Z -> A", "Kích thước", "Thời gian"]
+    private let sortOpts = ["A -> Z", "Z -> A"]
     var actType = ActionType.actCut
     var mainColor : UIColor? = UIColor.red.withAlphaComponent(0.5)
     
@@ -106,15 +106,15 @@ class ListViewController: UIViewController {
         switch actType.type {
         case .cut, .merge, .convert:
             supportType = ["mp3", "m4a", "m4r"]
-            if let demoUrl = Bundle(for: type(of: self)).url(forResource: "Presentations", withExtension: "mp3") {
-                localMusic.append(MusicData(url: demoUrl, cover: nil, title: "Presentations", artist: "demo", musicName: nil))
-            }
+//            if let demoUrl = Bundle(for: type(of: self)).url(forResource: "Presentations", withExtension: "mp3") {
+//                localMusic.append(MusicData(url: demoUrl, cover: nil, title: "Presentations", artist: "demo", musicName: nil))
+//            }
             break
         case .video:
             supportType = ["m4v", "mp4", "mov"]
-            if let demoVideo = Bundle(for: type(of: self)).url(forResource: "demo", withExtension: "mp4") {
-                localMusic.append(MusicData(url: demoVideo, cover: nil, title: "demo", artist: "vietnam from above", musicName: nil))
-            }
+//            if let demoVideo = Bundle(for: type(of: self)).url(forResource: "demo", withExtension: "mp4") {
+//                localMusic.append(MusicData(url: demoVideo, cover: nil, title: "demo", artist: "vietnam from above", musicName: nil))
+//            }
             break
         default:
             break
@@ -188,26 +188,27 @@ extension ListViewController {
     }
     
     @objc func actSort(){
-        vcSort = DropdownPickerViewController(delegate: self, background: .white, border: UIColor.gray.withAlphaComponent(0.3).cgColor)
+        vcSort = DropdownPickerViewController(delegate: self, background: UIColor.white.withAlphaComponent(0.6), border: UIColor.gray.withAlphaComponent(0.3).cgColor)
+        vcSort.viewContainer.backgroundColor = UIColor.white.withAlphaComponent(0.4)
         self.present(vcSort, animated: false, completion: nil)
     }
     
     @objc func actAction(){
         if actType.type == .merge {
             if multiChoise?.count ?? 0 < 2 {
-                Toast.shared.makeToast(.error, string: "Vui lòng chọn ít nhất 2 file âm thanh", inView: self.view, time: 2.0)
+                Toast.shared.makeToast(.error, string: "Vui lòng chọn ít nhất 2 file âm thanh".localized(), inView: self.view, time: 2.0)
                 return
             }
             var listURL = getListChoice()
             var vc : PopupFinalViewController!
-            vc = PopupFinalViewController(name: "Tên mới", actType: actType, url: listURL, doAction: {(media, url) -> (Void) in
+            vc = PopupFinalViewController(name: "Tên mới".localized(), actType: actType, url: listURL, doAction: {(media, url) -> (Void) in
                 Loading.sharedInstance.show(in: vc.view)
                 MediaPascer.shared.mergeFilesWithUrl(info: media, newURL: url, listURL: listURL, failed: { (error) in
                     Loading.sharedInstance.dismiss()
                     Toast.shared.makeToast(.error, string: error, inView: self.view, time: 2.0)
                 }) {
                     Loading.sharedInstance.dismiss()
-                    Toast.shared.makeToast(.success, string: "Tạo file thành công!", inView: vc.view, time: 2.0)
+                    Toast.shared.makeToast(.success, string: "Tạo file thành công!".localized(), inView: vc.view, time: 2.0)
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                         vc.dismiss(animated: true, completion: nil)
                     }
@@ -252,7 +253,7 @@ extension ListViewController: DropdownPickerViewDelegate {
         var point = btnSort.superview?.convert(btnSort.frame.origin, to: nil) ?? CGPoint(x: 0, y: 0)
         point.y = point.y + btnSort.bounds.height
         point.x = point.x - width + btnSort.frame.width
-        return (point, width, btnSort.frame.height * 4)
+        return (point, width, btnSort.frame.height * 2.6)
     }
     
     func numberOfRow(dropdown: DropdownPickerViewController, tableView: UITableView) -> (Int) {
@@ -261,6 +262,7 @@ extension ListViewController: DropdownPickerViewDelegate {
     
     func setData(dropdown: DropdownPickerViewController, tableView: UITableView, indexPath: IndexPath) -> (UITableViewCell) {
         let cell = UITableViewCell()
+        cell.backgroundColor = .clear
         cell.textLabel?.text = sortOpts[indexPath.row]
         return cell
     }
@@ -268,14 +270,15 @@ extension ListViewController: DropdownPickerViewDelegate {
     func didSelect(dropdown: DropdownPickerViewController, tableView: UITableView, index: Int) {
         switch index {
         case 0:
-            musicData.sorted { ($0.title ?? "a") < ($1.title ?? "b") }
-            localMusic.sorted { ($0.title ?? "a") < ($1.title ?? "b") }
+            musicData = musicData.sorted { ($0.title ?? "a") < ($1.title ?? "b") }
+            localMusic = localMusic.sorted { ($0.title ?? "a") < ($1.title ?? "b") }
             break
         case 1:
-            musicData.sorted { ($0.title ?? "a") > ($1.title ?? "b") }
-            localMusic.sorted { ($0.title ?? "a") > ($1.title ?? "b") }
+            musicData = musicData.sorted { ($0.title ?? "a") > ($1.title ?? "b") }
+            localMusic = localMusic.sorted { ($0.title ?? "a") > ($1.title ?? "b") }
             break
         case 2:
+//            musicData = musicData.sorted { ($0.) > ($1.title ?? "b") }
             break
         case 3:
 //            musicData.sorted{
@@ -289,7 +292,7 @@ extension ListViewController: DropdownPickerViewDelegate {
         default:
             break
         }
-        tableView.reloadData()
+        self.tableView.reloadData()
     }
     
     func onShowEffect() {
@@ -301,7 +304,7 @@ extension ListViewController: DropdownPickerViewDelegate {
     }
     
     func heightForCell(dropdown: DropdownPickerViewController, tableView: UITableView, indexPath: IndexPath) -> (CGFloat) {
-        return btnSort.frame.height
+        return btnSort.frame.height * 1.3
     }
     
     
@@ -321,7 +324,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let cell = UITableViewCell()
-        cell.textLabel?.text = section == 0 ? "Nhạc itunes (\(musicData.count))" : "Bộ sưu tập (\(localMusic.count))"
+        cell.textLabel?.text = section == 0 ? "Nhạc itunes".localized() + " (\(musicData.count))" : "Bộ sưu tập".localized() + "(\(localMusic.count))"
         cell.textLabel?.font = UIFont.systemFont(ofSize: 14, weight: .medium)
         cell.textLabel?.textColor = UIColor.gray.withAlphaComponent(0.8)
         cell.contentView.backgroundColor = UIColor.gray.withAlphaComponent(0.1)
@@ -344,34 +347,59 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ItemTableViewCell.id, for: indexPath) as! ItemTableViewCell
         cell.selectionStyle = .none
+        cell.vIcon.backgroundColor = actType.color
+        cell.btnMore.gestureRecognizers?.removeAll()
+        cell.btnMore.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.tapMore(_:))))
         if indexPath.section == 0 {
             cell.bind(musicData[indexPath.row], checkColor: multiChoise != nil ? mainColor : .clear, showCheck: true)
             cell.rightButtons = []
         } else {
-            var data = localMusic[indexPath.row]
+            let data = localMusic[indexPath.row]
             cell.bind(data, checkColor: multiChoise != nil ? mainColor : .clear, showCheck: true)
+            
             var actions : [MGSwipeButton] = []
-            actions.append(MGSwipeButton.init(title: "Xoá", backgroundColor: UIColor(hexString: "b9b2b2"), callback: {
+            if actType.type == .cut && "m4a m4r".contains(localMusic[indexPath.row].url?.pathExtension ?? "") {
+                actions.append(MGSwipeButton.init(title: "Cài đặt".localized(), backgroundColor: actType.color, callback: {
+                    (sender: MGSwipeTableCell!) -> Bool in
+                    let vc = IntroduceViewController()
+                    vc.modalPresentationStyle = .overFullScreen
+                    self.present(vc, animated: true, completion: nil)
+                    return true
+                }))
+            }
+            
+            actions.append(MGSwipeButton.init(title: "Xoá".localized(), backgroundColor: UIColor(hexString: "b9b2b2"), callback: {
                 (sender: MGSwipeTableCell!) -> Bool in
-                let vcWarning = UIAlertController(title: "Xoá file", message: "Bạn chắc chắn muốn xoá file \(data.title ?? "")?", preferredStyle: .alert)
-                vcWarning.addAction(UIAlertAction(title: "Huỷ", style: .default, handler: { (alert) in
+                let vcWarning = UIAlertController(title: "Xoá file".localized(), message: "Bạn chắc chắn muốn xoá file".localized() + " \(data.title ?? "")?", preferredStyle: .alert)
+                vcWarning.addAction(UIAlertAction(title: "Huỷ".localized(), style: .default, handler: { (alert) in
                     vcWarning.dismiss(animated: true, completion: nil)
                 }))
-                vcWarning.addAction(UIAlertAction(title: "Xoá file", style: .default, handler: { (alert) in
+                vcWarning.addAction(UIAlertAction(title: "Xoá file".localized(), style: .default, handler: { (alert) in
                     do {
                         try? FileManager.default.removeItem(atPath: data.url?.path ?? "")
                         self.loadMusics()
                     } catch {
-                        Toast.shared.makeToast(.error, string: "Có lỗi trong quá trình xoá file!", inView: self.view, time: 2.0)
+                        Toast.shared.makeToast(.error, string: "Có lỗi trong quá trình xoá file!".localized(), inView: self.view, time: 2.0)
                     }
                 }))
                 self.present(vcWarning, animated: true, completion: nil)
                 return true
             }))
-            
             cell.rightButtons = actions
         }
         return cell
+    }
+    
+    @objc func tapMore(_ gesture: UITapGestureRecognizer) {
+        if let indexPath = UIUltils.indexPathFrom(tableView, gesture: gesture) {
+            if let cell = tableView.cellForRow(at: indexPath) as? ItemTableViewCell {
+                if cell.swipeState == .expandingRightToLeft {
+                    cell.hideSwipe(animated: true)
+                } else {
+                    cell.showSwipe(.rightToLeft, animated: true)
+                }
+            }
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -394,7 +422,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
                     let asset = AVAsset(url: $0)
                     time += asset.duration.seconds
                 })
-                var title = "Ghép(\(multiChoise!.count)) / "
+                var title = "Ghép".localized() + "(\(multiChoise!.count)) / "
                 title += NSString(format: "%02d:%02d", Int(time / 60), Int(time.truncatingRemainder(dividingBy: 60))) as String
                 
                 btnAction.setTitle(title, for: .normal)
@@ -412,7 +440,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
                 navi.navigationBar.tintColor = .white
                 navi.navigationBar.titleTextAttributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14, weight: .bold)]
                 navi.navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil)
-                navi.navigationBar.barTintColor = ActionType.actCut.color
+                navi.navigationBar.barTintColor = actType.color
                 navi.navigationBar.isTranslucent = false
                 navi.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
                 navi.modalPresentationStyle = .overCurrentContext
@@ -441,14 +469,14 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
                     return
                 }
                 let asset = AVAsset(url: assetURL!)
-                vc = PopupFinalViewController(name: "Tên mới", actType: actType, url: [assetURL!], doAction: {(media, url) -> (Void) in
+                vc = PopupFinalViewController(name: "Tên mới".localized(), actType: actType, url: [assetURL!], doAction: {(media, url) -> (Void) in
                     Loading.sharedInstance.show(in: vc.view)
                     MediaPascer.shared.audioURLParse(info: media, actType: .actConvert, newURL: url, asset: asset, failed: { (error) in
                         Loading.sharedInstance.dismiss()
                         Toast.shared.makeToast(.error, string: error, inView: vc.view, time: 2.0)
                     }) { () in
                         Loading.sharedInstance.dismiss()
-                        Toast.shared.makeToast(.success, string: "Tạo file thành công!", inView: vc.view, time: 2.0)
+                        Toast.shared.makeToast(.success, string: "Tạo file thành công!".localized(), inView: vc.view, time: 2.0)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                             vc.dismiss(animated: true, completion: nil)
                         }
@@ -457,6 +485,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
                 vc.modalPresentationStyle = .overCurrentContext
                 vc.modalTransitionStyle = .crossDissolve
                 self.present(vc, animated: true, completion: nil)
+                break
             case .collection:
                 var assetURL : URL? = nil
                 assetURL = indexPath.section == 0 ? (musicData[indexPath.row].assetURL) : localMusic[indexPath.row].url
@@ -495,6 +524,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
                 })
                 vc.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: vButton)
                 self.present(navi, animated: true, completion: nil)
+                break
             default:
                 break
             }
@@ -507,19 +537,19 @@ extension ListViewController {
     private func configType(){
         switch actType.type {
         case .cut:
-            self.lbTitle.text = "Cắt âm thanh"
+            self.lbTitle.text = "Cắt âm thanh".localized()
             vAction.isHidden = true
         case .merge:
-            self.lbTitle.text = "Ghép âm thanh"
+            self.lbTitle.text = "Ghép âm thanh".localized()
             vAction.isHidden = false
         case .convert:
-            self.lbTitle.text = "Chuyển định dạng"
+            self.lbTitle.text = "Chuyển định dạng".localized()
             vAction.isHidden = true
         case .video:
-            self.lbTitle.text = "Cắt video"
+            self.lbTitle.text = "Cắt video".localized()
             vAction.isHidden = true
         default:
-            self.lbTitle.text = "Bộ sưu tập của tôi"
+            self.lbTitle.text = "Bộ sưu tập của tôi".localized()
             vAction.isHidden = true
         }
     }
@@ -586,7 +616,7 @@ extension ListViewController {
             $0.leading.equalToSuperview().offset(16)
         })
         tfSearch.textColor = .white
-        tfSearch.placeholder = "Nhập từ khoá tìm kiếm"
+        tfSearch.placeholder = "Nhập từ khoá tìm kiếm".localized()
         tfSearch.delegate = self
         let btnSearch = UIButton()
         vSearch.addSubview(btnSearch)
@@ -637,7 +667,7 @@ extension ListViewController {
         })
         btnAction.layer.cornerRadius = 4
         btnAction.backgroundColor = mainColor
-        btnAction.setTitle("Ghép", for: .normal)
+        btnAction.setTitle("Ghép".localized(), for: .normal)
         btnAction.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
         btnAction.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.actAction)))
         

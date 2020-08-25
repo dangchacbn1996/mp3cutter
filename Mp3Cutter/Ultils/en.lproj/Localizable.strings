@@ -1,0 +1,50 @@
+/* 
+  Localizable.strings
+  Mp3Cutter
+
+  Created by Chac Ngo Dang on 8/26/20.
+  Copyright © 2020 Chac Ngo Dang. All rights reserved.
+*/
+"Home Page" = "Home page";
+"Vui lòng chọn ít nhất 2 file âm thanh" = "Please choose at least 2 files";
+"Tên mới" = "New name";
+"Tạo file thành công!" = "Export successfully!";
+"Nhạc itunes" = "Itune music";
+"Bộ sưu tập" = "Local library";
+"Cài đặt" = "Setup";
+"Xoá" = "Delete";
+"Bạn chắc chắn muốn xoá file" = "Are you sure to delete file";
+"Xoá file" = "Delete";
+"Huỷ" = "Cancel";
+"Có lỗi trong quá trình xoá file!" = "Somethings went wrong while trying delete file!";
+"Ghép" = "Merge";
+"Cắt âm thanh" = "Cut audio";
+"Ghép âm thanh" = "Merge audio";
+"Chuyển định dạng" = "Convert audio";
+"Cắt video" = "Cut video";
+"Bộ sưu tập của tôi" = "My library";
+"Nhập từ khoá tìm kiếm" = "Search content";
+"File nhạc chuông có độ dài tối đa là 30s" = "Ringtones file have maximum durations of 30 seconds";
+"Loại xuất audio" = "Export type";
+"Chọn loại âm thanh bạn muốn chỉnh sửa?" = "Select the type of sound you want to edit";
+"Âm thanh" = "Music";
+"Nhạc chuông" = "Ringtone";
+"File cut không dưới 5s" = "Audio need to have minimum durations of 5 seconds";
+"Không thể load được file âm thanh" = "Cannot load file";
+"Kết thúc: " = "Endtime: ";
+"TRỞ LẠI" = "BACK";
+"ĐẶT LẠI" = "RESET";
+"CẮT" = "CUT";
+"Tên sẽ lưu" = "New name";
+"Vui lòng nhập tên file" = "Please insert new name";
+"File đã tồn tại" = "File already existed";
+"Chọn định dạng" = "Choose export type";
+"Thư mục đã tồn tại file" = "File already existed";
+"Đổi tên hoặc xoá file để tiếp tục?" = "Please rename or delete file before export";
+"Có lỗi trong quá trình xoá file!" = "Somethings went wrong while exporting file";
+"Không thể tạo mới file!" = "Cannot create new file!";
+"Xuất file" = "Export";
+"Tên mới" = "New name";
+"Trở lại" = "Back";
+"Thực hiện" = "Accept";
+"Đóng" = "Close";

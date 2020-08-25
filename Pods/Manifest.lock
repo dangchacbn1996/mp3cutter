@@ -3,6 +3,7 @@ PODS:
   - FDWaveformView (5.0.1)
   - IQKeyboardManager (6.2.1)
   - JGProgressHUD (2.1)
+  - Localize-Swift (2.0.0)
   - M13Checkbox (3.2.2)
   - MGSwipeTableCell (1.6.11)
   - SnapKit (5.0.1)
@@ -13,6 +14,7 @@ DEPENDENCIES:
   - FDWaveformView (~> 5.0)
   - IQKeyboardManager (~> 6.2.0)
   - JGProgressHUD (~> 2.0)
+  - Localize-Swift (~> 2.0)
   - M13Checkbox (= 3.2.2)
   - MGSwipeTableCell
   - SnapKit (~> 5.0.0)
@@ -24,6 +26,7 @@ SPEC REPOS:
     - FDWaveformView
     - IQKeyboardManager
     - JGProgressHUD
+    - Localize-Swift
     - M13Checkbox
     - MGSwipeTableCell
     - SnapKit
@@ -34,11 +37,12 @@ SPEC CHECKSUMS:
   FDWaveformView: c188be613947273cc83d6f0056505f60e6c4b9ac
   IQKeyboardManager: 964638372b4a61892cc74fdfa6fd26de8c9464a2
   JGProgressHUD: aa403e9a5b45cae98903c4600cccdd98c0c3ec90
+  Localize-Swift: c798ec9286494866f7068f85f7c71283ac5bdab4
   M13Checkbox: a8c2491cfbbca10797925fd0b9154a782bf40d89
   MGSwipeTableCell: b804e4e450dee439c42250be90bd50458bf67fce
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   Toast-Swift: ba0b01b095aada709d915f9beb1d38184a2721c3
 
-PODFILE CHECKSUM: a0e9fc1616e87bfcb7d0480fb1c29512e757a5a2
+PODFILE CHECKSUM: a8004d399e895864c876419c1cc66a96a48e3bfe
 
 COCOAPODS: 1.9.3

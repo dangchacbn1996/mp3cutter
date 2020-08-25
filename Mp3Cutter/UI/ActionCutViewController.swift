@@ -47,18 +47,18 @@ class ActionCutViewController: UIViewController {
                 self.totalDistance = convertSeconsToDistance(29.5)
                 tagEnd.center = CGPoint(x: self.totalDistance, y: 0)
                 seekTo(draggedObject: tagEnd)
-                Toast.shared.makeToast(.success, string: "File nhạc chuông có độ dài tối đa là 30s", inView: self.view, time: 3.0)
+                Toast.shared.makeToast(.success, string: "File nhạc chuông có độ dài tối đa là 30s".localized(), inView: self.view, time: 3.0)
             }
         }
     }
     private var tagSelected : UIView = UIView() {
         didSet {
             updateSeekButton()
-            tagStart.subviews.first?.transform = CGAffineTransform(scaleX: tagSelected == tagStart ? 5 : 1, y: 1)
+            tagStart.subviews.first?.transform = CGAffineTransform(scaleX: tagSelected == tagStart ? 3 : 1, y: 1)
             if let tag = tagStart.subviews.last as? UIImageView {
                 tag.tintColor = tagSelected == tagStart ? actType.color : UIColor.gray.withAlphaComponent(0.8)
             }
-            tagEnd.subviews.first?.transform = CGAffineTransform(scaleX: tagSelected == tagEnd ? 5 : 1, y: 1)
+            tagEnd.subviews.first?.transform = CGAffineTransform(scaleX: tagSelected == tagEnd ? 3 : 1, y: 1)
             if let tag = tagEnd.subviews.last as? UIImageView {
                 tag.tintColor = tagSelected == tagEnd ? actType.color : UIColor.gray.withAlphaComponent(0.8)
             }
@@ -134,12 +134,12 @@ class ActionCutViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if actType.type == .cut {
-            let vcChoise = UIAlertController(title: "Loại xuất audio", message: "Chọn loại âm thanh bạn muốn chỉnh sửa?", preferredStyle: .alert)
-            vcChoise.addAction(UIAlertAction(title: "Âm thanh", style: .default, handler: { (UIAlertAction) in
+            let vcChoise = UIAlertController(title: "Loại xuất audio".localized(), message: "Chọn loại âm thanh bạn muốn chỉnh sửa?".localized(), preferredStyle: .alert)
+            vcChoise.addAction(UIAlertAction(title: "Âm thanh".localized(), style: .default, handler: { (UIAlertAction) in
                 self.exporType = .music
                 vcChoise.dismiss(animated: true, completion: nil)
             }))
-            vcChoise.addAction(UIAlertAction(title: "Nhạc chuông", style: .default, handler: { (UIAlertAction) in
+            vcChoise.addAction(UIAlertAction(title: "Nhạc chuông".localized(), style: .default, handler: { (UIAlertAction) in
                 self.exporType = .ringtone
                 vcChoise.dismiss(animated: true, completion: nil)
             }))
@@ -282,14 +282,14 @@ class ActionCutViewController: UIViewController {
             let space5s = (5 / duration) * Double(vScrollable.contentSize.width)
             if draggedObject.tag == 0 {
                 if (draggedObject.center.x + translation) > tagEnd.center.x - CGFloat(space5s) {
-                    Toast.shared.makeToast(.error, string: "File cut không dưới 5s", inView: self.view, time: 2.0)
+                    Toast.shared.makeToast(.error, string: "File cut không dưới 5s".localized(), inView: self.view, time: 2.0)
                     draggedObject.center = CGPoint(x: tagEnd.center.x - CGFloat(space5s), y: draggedObject.center.y)
                     return
                 }
             }
             if draggedObject.tag == 1 {
                 if (draggedObject.center.x + translation) < tagStart.center.x + CGFloat(space5s) {
-                    Toast.shared.makeToast(.error, string: "File cut không dưới 5s", inView: self.view, time: 2.0)
+                    Toast.shared.makeToast(.error, string: "File cut không dưới 5s".localized(), inView: self.view, time: 2.0)
                     draggedObject.center = CGPoint(x: tagStart.center.x + CGFloat(space5s), y: draggedObject.center.y)
                     return
                 }
@@ -370,7 +370,7 @@ class ActionCutViewController: UIViewController {
                         Toast.shared.makeToast(.error, string: error, inView: vc.view, time: 2.0)
                     }) { () in
                         Loading.sharedInstance.dismiss()
-                        Toast.shared.makeToast(.success, string: "Tạo file thành công!", inView: vc.view, time: 2.0)
+                        Toast.shared.makeToast(.success, string: "Tạo file thành công!".localized(), inView: vc.view, time: 2.0)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                             vc.dismiss(animated: true, completion: nil)
                         }
@@ -382,7 +382,7 @@ class ActionCutViewController: UIViewController {
             vc.modalTransitionStyle = .crossDissolve
             self.present(vc, animated: true, completion: nil)
         } else {
-            Toast.shared.makeToast(.error, string: "Không thể load được file âm thanh", inView: self.view, time: 2.0)
+            Toast.shared.makeToast(.error, string: "Không thể load được file âm thanh".localized(), inView: self.view, time: 2.0)
         }
     }
 }
@@ -576,7 +576,7 @@ extension ActionCutViewController {
         lbName.numberOfLines = 0
         
         let lbTitleSt = UILabel(text: "Playing: ", font: UIFont.systemFont(ofSize: 14, weight: .semibold), color: actType.color)
-        let lbTitleEnd = UILabel(text: "Kết thúc: ", font: UIFont.systemFont(ofSize: 14, weight: .semibold), color: actType.color)
+        let lbTitleEnd = UILabel(text: "Kết thúc: ".localized(), font: UIFont.systemFont(ofSize: 14, weight: .semibold), color: actType.color)
         vInfo.addSubview(lbTitleSt)
         lbTitleSt.snp.makeConstraints({
             $0.leading.equalToSuperview().offset(16)
@@ -631,7 +631,7 @@ extension ActionCutViewController {
         btnNext.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.actNextPage)))
         
         let btnBack = UIButton()
-        btnBack.setTitle("TRỞ LẠI", for: .normal)
+        btnBack.setTitle("TRỞ LẠI".localized(), for: .normal)
         btnBack.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .medium)
         btnBack.setTitleColor(ActionType.actCut.color, for: .normal)
         btnBack.layer.cornerRadius = 4
@@ -640,7 +640,7 @@ extension ActionCutViewController {
         btnBack.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.actGoBack)))
         
         let btnReset = UIButton()
-        btnReset.setTitle("ĐẶT LẠI", for: .normal)
+        btnReset.setTitle("ĐẶT LẠI".localized(), for: .normal)
         btnReset.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .medium)
         btnReset.setTitleColor(ActionType.actCut.color, for: .normal)
         btnReset.layer.cornerRadius = btnBack.layer.cornerRadius
@@ -649,7 +649,7 @@ extension ActionCutViewController {
         btnReset.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.actReset)))
         
         let btnCut = UIButton()
-        btnCut.setTitle("CẮT", for: .normal)
+        btnCut.setTitle("CẮT".localized(), for: .normal)
         btnCut.setTitleColor(.white, for: .normal)
         btnCut.titleLabel?.font = btnBack.titleLabel?.font
         btnCut.layer.cornerRadius = 4

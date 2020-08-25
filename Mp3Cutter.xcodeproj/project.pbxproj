@@ -39,6 +39,9 @@
 		35E03BF724E2F9DD009CFC8D /* ItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E03BF524E2F9DD009CFC8D /* ItemTableViewCell.swift */; };
 		35E03BF824E2F9DD009CFC8D /* ItemTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 35E03BF624E2F9DD009CFC8D /* ItemTableViewCell.xib */; };
 		35EB9B2624F4076C00AB8AE1 /* demo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 35EB9B2524F4076900AB8AE1 /* demo.mp4 */; };
+		35EB9B3824F5971D00AB8AE1 /* UIUltils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35EB9B3724F5971D00AB8AE1 /* UIUltils.swift */; };
+		35EB9B3A24F5A95600AB8AE1 /* IntroduceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35EB9B3924F5A95600AB8AE1 /* IntroduceViewController.swift */; };
+		35EB9B4F24F5BE8F00AB8AE1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 35EB9B5124F5BE8F00AB8AE1 /* Localizable.strings */; };
 		68C8A8989535632CDEBCDB7B /* Pods_Mp3CutterTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88D82A9337DBF229E246E797 /* Pods_Mp3CutterTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -112,6 +115,12 @@
 		35E03BF524E2F9DD009CFC8D /* ItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemTableViewCell.swift; sourceTree = "<group>"; };
 		35E03BF624E2F9DD009CFC8D /* ItemTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ItemTableViewCell.xib; sourceTree = "<group>"; };
 		35EB9B2524F4076900AB8AE1 /* demo.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = demo.mp4; sourceTree = "<group>"; };
+		35EB9B3724F5971D00AB8AE1 /* UIUltils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIUltils.swift; sourceTree = "<group>"; };
+		35EB9B3924F5A95600AB8AE1 /* IntroduceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroduceViewController.swift; sourceTree = "<group>"; };
+		35EB9B4324F5BDA700AB8AE1 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Main.strings; sourceTree = "<group>"; };
+		35EB9B4424F5BDA700AB8AE1 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		35EB9B5024F5BE8F00AB8AE1 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Localizable.strings; sourceTree = "<group>"; };
+		35EB9B5224F5BE9300AB8AE1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4C16E9775C3D7BDF217FB3D4 /* Pods-Mp3CutterTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mp3CutterTests.release.xcconfig"; path = "Target Support Files/Pods-Mp3CutterTests/Pods-Mp3CutterTests.release.xcconfig"; sourceTree = "<group>"; };
 		7EB6332BC2A07817BD0A8A99 /* Pods-Mp3Cutter-Mp3CutterUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mp3Cutter-Mp3CutterUITests.release.xcconfig"; path = "Target Support Files/Pods-Mp3Cutter-Mp3CutterUITests/Pods-Mp3Cutter-Mp3CutterUITests.release.xcconfig"; sourceTree = "<group>"; };
 		88D82A9337DBF229E246E797 /* Pods_Mp3CutterTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Mp3CutterTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -160,6 +169,8 @@
 				3504F3D824EF6C450088CEBC /* MediaInfoModel.swift */,
 				35166CC624F04E190048A6F1 /* ToastView.swift */,
 				35166CC824F053E10048A6F1 /* Loading.swift */,
+				35EB9B3724F5971D00AB8AE1 /* UIUltils.swift */,
+				35EB9B5124F5BE8F00AB8AE1 /* Localizable.strings */,
 			);
 			path = Ultils;
 			sourceTree = "<group>";
@@ -183,6 +194,7 @@
 				354C538024E849250093AE65 /* PopupFinalFileViewController.swift */,
 				35166CCA24F06A500048A6F1 /* PopupLoadingViewController.swift */,
 				35166CDC24F094B00048A6F1 /* PopupPlayerViewController.swift */,
+				35EB9B3924F5A95600AB8AE1 /* IntroduceViewController.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -374,6 +386,7 @@
 			knownRegions = (
 				en,
 				Base,
+				vi,
 			);
 			mainGroup = 35E03BA624E2DFE0009CFC8D;
 			productRefGroup = 35E03BB024E2DFE0009CFC8D /* Products */;
@@ -395,6 +408,7 @@
 				359F7BF724E5BF6200C09929 /* Presentations.mp3 in Resources */,
 				35E03BF824E2F9DD009CFC8D /* ItemTableViewCell.xib in Resources */,
 				35E03BBF24E2DFE1009CFC8D /* LaunchScreen.storyboard in Resources */,
+				35EB9B4F24F5BE8F00AB8AE1 /* Localizable.strings in Resources */,
 				35E03BBC24E2DFE1009CFC8D /* Assets.xcassets in Resources */,
 				35EB9B2624F4076C00AB8AE1 /* demo.mp4 in Resources */,
 				3521BD0124EADD4400279A45 /* File 14.mp3 in Resources */,
@@ -529,6 +543,7 @@
 				35166CDD24F094B00048A6F1 /* PopupPlayerViewController.swift in Sources */,
 				35166CC724F04E190048A6F1 /* ToastView.swift in Sources */,
 				35166CC924F053E10048A6F1 /* Loading.swift in Sources */,
+				35EB9B3824F5971D00AB8AE1 /* UIUltils.swift in Sources */,
 				359F7BEB24E58D1300C09929 /* PlayViewController.swift in Sources */,
 				359F7BE824E58CFB00C09929 /* UserDefaultManager.swift in Sources */,
 				35E03BB724E2DFE0009CFC8D /* ViewController.swift in Sources */,
@@ -537,6 +552,7 @@
 				35E03BB324E2DFE0009CFC8D /* AppDelegate.swift in Sources */,
 				35E03BF724E2F9DD009CFC8D /* ItemTableViewCell.swift in Sources */,
 				354C538124E849250093AE65 /* PopupFinalFileViewController.swift in Sources */,
+				35EB9B3A24F5A95600AB8AE1 /* IntroduceViewController.swift in Sources */,
 				354C539524E84C760093AE65 /* Extensions.swift in Sources */,
 				35E03BF324E2EFB7009CFC8D /* ListViewController.swift in Sources */,
 				3504F3D924EF6C450088CEBC /* MediaInfoModel.swift in Sources */,
@@ -585,6 +601,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				35E03BB924E2DFE0009CFC8D /* Base */,
+				35EB9B4324F5BDA700AB8AE1 /* vi */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -593,8 +610,18 @@
 			isa = PBXVariantGroup;
 			children = (
 				35E03BBE24E2DFE1009CFC8D /* Base */,
+				35EB9B4424F5BDA700AB8AE1 /* vi */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		35EB9B5124F5BE8F00AB8AE1 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				35EB9B5024F5BE8F00AB8AE1 /* vi */,
+				35EB9B5224F5BE9300AB8AE1 /* en */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -604,6 +631,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -650,7 +678,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -664,6 +692,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -704,7 +733,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

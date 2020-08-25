@@ -36,28 +36,35 @@
                         </constraints>
                     </view>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jzq-ES-sxp" userLabel="lbName">
-                        <rect key="frame" x="95" y="22.5" width="295" height="17"/>
+                        <rect key="frame" x="95" y="22.5" width="271" height="17"/>
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3w6-TW-STn" userLabel="lbSub">
-                        <rect key="frame" x="95" y="47.5" width="295" height="17"/>
+                        <rect key="frame" x="95" y="47.5" width="271" height="17"/>
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2XD-IU-tUy" userLabel="vCheckbox">
-                        <rect key="frame" x="398" y="31.5" width="24" height="24"/>
+                        <rect key="frame" x="374" y="31.5" width="24" height="24"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="2XD-IU-tUy" secondAttribute="height" id="LgS-uJ-xba"/>
                             <constraint firstAttribute="height" constant="24" id="gU2-V1-IC1"/>
                         </constraints>
                     </view>
+                    <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WA6-Ly-akc">
+                        <rect key="frame" x="406" y="0.0" width="32" height="87"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="32" id="uOj-uM-zZc"/>
+                        </constraints>
+                    </button>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="trailing" secondItem="2XD-IU-tUy" secondAttribute="trailing" constant="16" id="32g-aK-eFh"/>
+                    <constraint firstItem="WA6-Ly-akc" firstAttribute="leading" secondItem="2XD-IU-tUy" secondAttribute="trailing" constant="8" id="32g-aK-eFh"/>
                     <constraint firstItem="KJq-r6-eQl" firstAttribute="height" secondItem="H2p-sc-9uM" secondAttribute="height" constant="-16" id="7F7-tf-884"/>
                     <constraint firstItem="KJq-r6-eQl" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="7Wd-6p-LAx"/>
                     <constraint firstItem="2XD-IU-tUy" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="B4A-Bq-dWk"/>
@@ -67,13 +74,17 @@
                     <constraint firstItem="KJq-r6-eQl" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="UXM-zE-O2k"/>
                     <constraint firstItem="Jzq-ES-sxp" firstAttribute="bottom" secondItem="H2p-sc-9uM" secondAttribute="centerY" constant="-4" id="ZIV-sa-HoZ"/>
                     <constraint firstItem="3w6-TW-STn" firstAttribute="top" secondItem="Jzq-ES-sxp" secondAttribute="bottom" constant="8" id="ksK-ve-ymH"/>
+                    <constraint firstAttribute="trailing" secondItem="WA6-Ly-akc" secondAttribute="trailing" id="lhK-sh-YRx"/>
                     <constraint firstItem="Jzq-ES-sxp" firstAttribute="leading" secondItem="KJq-r6-eQl" secondAttribute="trailing" constant="16" id="lrY-9K-EUj"/>
+                    <constraint firstItem="WA6-Ly-akc" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="m42-S5-sjb"/>
                     <constraint firstItem="3w6-TW-STn" firstAttribute="width" secondItem="Jzq-ES-sxp" secondAttribute="width" id="pi2-Rd-zRr"/>
+                    <constraint firstItem="WA6-Ly-akc" firstAttribute="height" secondItem="H2p-sc-9uM" secondAttribute="height" id="uIn-aj-8Mm"/>
                 </constraints>
             </tableViewCellContentView>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
+                <outlet property="btnMore" destination="WA6-Ly-akc" id="gKZ-Ub-WHF"/>
                 <outlet property="lbExt" destination="zwO-13-cFj" id="LJ4-C4-2X1"/>
                 <outlet property="lbName" destination="Jzq-ES-sxp" id="VKU-n1-KDC"/>
                 <outlet property="lbSub" destination="3w6-TW-STn" id="Qfy-L4-Bht"/>

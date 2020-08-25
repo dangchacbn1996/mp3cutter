@@ -78,7 +78,7 @@ class PopupFinalViewController: UIViewController {
     private func checkAvailable(failed: @escaping (String) -> Void, success: @escaping (URL) -> Void) {
         let name = tfNewName.text ?? ""
         if name.replacingOccurrences(of: " ", with: "") == "" {
-            print("Vui lòng nhập tên file")
+            Toast.shared.makeToast(.error, string: "Vui lòng nhập tên file".localized(), inView: self.view, time: 2.0)
             return
         }
         do {
@@ -87,17 +87,17 @@ class PopupFinalViewController: UIViewController {
             let newName = "\(tfNewName.text ?? "").\(actionType.type == .video ? "m4v" : mediaInfo.extensionFile)"
             let fileURL = documentDirectory.appendingPathComponent(newName)
             if FileManager.default.fileExists(atPath: fileURL.path) {
-                let vcWarning = UIAlertController(title: "File đã tồn tại", message: "Thư mục đã tồn tại file \(newName). Đổi tên hoặc xoá file để tiếp tục?", preferredStyle: .alert)
+                let vcWarning = UIAlertController(title: "File đã tồn tại".localized(), message: "Thư mục đã tồn tại file".localized() + " \(newName). " + "Đổi tên hoặc xoá file để tiếp tục?".localized(), preferredStyle: .alert)
                 vcWarning.addAction(UIAlertAction(title: "Đổi tên", style: .default, handler: { (alert) in
                     vcWarning.dismiss(animated: true, completion: nil)
                 }))
-                vcWarning.addAction(UIAlertAction(title: "Xoá file", style: .default, handler: { (alert) in
+                vcWarning.addAction(UIAlertAction(title: "Xoá file".localized(), style: .default, handler: { (alert) in
                     do {
                         try? FileManager.default.removeItem(atPath: fileURL.path)
                         self.mediaInfo.name = name
                         success(fileURL)
                     } catch {
-                        failed("Có lỗi trong quá trình xoá file!")
+                        failed("Có lỗi trong quá trình xoá file!".localized())
                     }
                 }))
                 self.present(vcWarning, animated: true, completion: nil)
@@ -107,7 +107,7 @@ class PopupFinalViewController: UIViewController {
             }
             
         } catch {
-            failed("Không thể tạo mới file!")
+            failed("Không thể tạo mới file!".localized())
         }
     }
     
@@ -251,10 +251,10 @@ extension PopupFinalViewController {
         viewContainer.backgroundColor = .white
         viewContainer.layer.cornerRadius = Constant.viewCorner
         
-        let lbTitle = UILabel(text: "Xuất file", font: UIFont.systemFont(ofSize: 16, weight: .medium), color: .black)
+        let lbTitle = UILabel(text: "Xuất file".localized(), font: UIFont.systemFont(ofSize: 16, weight: .medium), color: .black)
         
-        let lbTitleName = UILabel(text: "Tên mới", font: Constant.Text.fontSmall, color: Constant.Text.colorGray)
-        let lbTitleExportType = UILabel(text: "Chọn định dạng", font: Constant.Text.fontSmall, color: Constant.Text.colorGray)
+        let lbTitleName = UILabel(text: "Tên mới".localized(), font: Constant.Text.fontSmall, color: Constant.Text.colorGray)
+        let lbTitleExportType = UILabel(text: "Chọn định dạng".localized(), font: Constant.Text.fontSmall, color: Constant.Text.colorGray)
         
         let space : CGFloat = 8
         let boxHeight : CGFloat = 32
@@ -275,11 +275,12 @@ extension PopupFinalViewController {
             $0.top.equalTo(lbTitleName.snp.bottom).offset(4)
             $0.height.equalTo(boxHeight)
         })
-        tfNewName.placeholder = "Tên sẽ lưu"
-        tfNewName.borderStyle = .roundedRect
+        tfNewName.placeholder = "Tên sẽ lưu".localized()
         tfNewName.backgroundColor = .white
         tfNewName.textColor = .black
-//        tfNewName.addDoneOnKeyboard(withTarget: self, action: #selector(self.keyboardDone))
+        tfNewName.layer.cornerRadius = 4
+        tfNewName.layer.borderWidth = 1
+        tfNewName.layer.borderColor = Constant.viewBorder
         viewContainer.addSubview(lbTitleExportType)
         lbTitleExportType.snp.makeConstraints({
             $0.top.equalTo(tfNewName.snp.bottom).offset(space)
@@ -328,7 +329,7 @@ extension PopupFinalViewController {
         buttonBack.layer.borderColor = actionType.color.cgColor
         buttonBack.layer.borderWidth = 1
         buttonBack.backgroundColor = .white
-        buttonBack.setTitle("Trở lại", for: .normal)
+        buttonBack.setTitle("Trở lại".localized(), for: .normal)
         buttonBack.setTitleColor(actionType.color, for: .normal)
         buttonBack.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.goBack)))
 
@@ -340,7 +341,7 @@ extension PopupFinalViewController {
         })
         buttonAction.layer.cornerRadius = Constant.viewCorner
         buttonAction.backgroundColor = actionType.color
-        buttonAction.setTitle("Thực hiện", for: .normal)
+        buttonAction.setTitle("Thực hiện".localized(), for: .normal)
         buttonAction.setTitleColor(.white, for: .normal)
         buttonAction.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.doAction)))
         
@@ -350,14 +351,14 @@ extension PopupFinalViewController {
             viewExportType.isUserInteractionEnabled = false
             viewExportType.alpha = 0.7
             lbExport.alpha = 0.7
-            lbExport.text = "Nhạc chuông"
+            lbExport.text = "Nhạc chuông".localized()
         }
         if actionType.type == .video {
             mediaInfo.typeExport = .m4a
             viewExportType.isUserInteractionEnabled = false
             viewExportType.alpha = 0.7
             lbExport.alpha = 0.7
-            lbExport.text = "Video"
+            lbExport.text = "Video".localized()
         }
     }
     
@@ -365,7 +366,7 @@ extension PopupFinalViewController {
         let vResult = UIView()
         vResult.layer.cornerRadius = Constant.viewCorner
         vResult.layer.borderWidth = 1
-        vResult.layer.borderColor = UIColor.gray.withAlphaComponent(0.6).cgColor
+        vResult.layer.borderColor = Constant.viewBorder
         
         vResult.addSubview(label)
         label.snp.makeConstraints({
