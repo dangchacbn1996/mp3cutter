@@ -317,28 +317,28 @@ extension ListViewController: UIDocumentMenuDelegate,UIDocumentPickerDelegate,UI
     
     @objc func pickDocuments(){
         var alert : UIAlertController!
-        alert = UIAlertController(title: "Chọn bộ sưu tập", message: nil, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Tệp", style: .default, handler: { (UIAlertAction) in
-//            alert.dismiss(animated: true) {
-                let importMenu = UIDocumentPickerViewController(documentTypes: [
-                    String(kUTTypeMP3),
-                    String(kUTTypeMPEG),
-                    String(kUTTypeMPEG4),
-                    String(kUTTypeAudio),
-                    String(kUTTypeMovie)
-                ], in: .import)
-                    importMenu.delegate = self
-                    importMenu.modalPresentationStyle = .formSheet
-                    self.present(importMenu, animated: true, completion: nil)
-//            }
+        alert = UIAlertController(title: "Chọn bộ sưu tập".localized(), message: nil, preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Tệp".localized(), style: .default, handler: { (UIAlertAction) in
+            let importMenu = UIDocumentPickerViewController(documentTypes: [
+                String(kUTTypeMP3),
+                String(kUTTypeMPEG),
+                String(kUTTypeMPEG4),
+                String(kUTTypeAudio),
+                String(kUTTypeMovie)
+            ], in: .import)
+            importMenu.delegate = self
+            importMenu.modalPresentationStyle = .formSheet
+            self.present(importMenu, animated: true, completion: nil)
         }))
         alert.addAction(UIAlertAction(title: "Photos", style: .default, handler: { (UIAlertAction) in
-                let imagePickerController = UIImagePickerController()
-                imagePickerController.sourceType = .photoLibrary
-                imagePickerController.delegate = self
-                imagePickerController.mediaTypes = ["public.movie"]
-                self.present(imagePickerController, animated: true, completion: nil)
-//            }
+            let imagePickerController = UIImagePickerController()
+            imagePickerController.sourceType = .photoLibrary
+            imagePickerController.delegate = self
+            imagePickerController.mediaTypes = ["public.movie"]
+            self.present(imagePickerController, animated: true, completion: nil)
+        }))
+        alert.addAction(UIAlertAction(title: "Đóng".localized(), style: .cancel, handler: { (UIAlertAction) in
+            alert.dismiss(animated: true, completion: nil)
         }))
         self.present(alert, animated: true, completion: nil)
     }
@@ -426,7 +426,8 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
         cell.textLabel?.text = section == 0 ? "Nhạc itunes".localized() + " (\(musicData.count))" : (section == 1 ? "Bộ sưu tập".localized() + "(\(localMusic.count))" : "DS đã thêm".localized() + "(\(additionMusic.count))")
         cell.textLabel?.font = UIFont.systemFont(ofSize: 14, weight: .medium)
         cell.textLabel?.textColor = UIColor.gray.withAlphaComponent(0.8)
-        cell.contentView.backgroundColor = UIColor.gray.withAlphaComponent(0.1)
+        cell.contentView.backgroundColor = UIColor(hexString: "E0E0E0")
+        cell.selectionStyle = .none
         return cell
     }
     
@@ -762,11 +763,11 @@ extension ListViewController {
         tableView.dataSource = self
         tableView.register(UINib(nibName: "ItemTableViewCell", bundle: nil), forCellReuseIdentifier: ItemTableViewCell.id)
         tableView.separatorInset = .zero
-        let view = UIView()
-        view.snp.makeConstraints({
+        let footer = UIView()
+        footer.snp.makeConstraints({
             $0.height.equalTo(100)
         })
-        tableView.tableFooterView = UIView()
+        tableView.tableFooterView = footer
         tableView.addSubview(refreshControl)
         refreshControl.addTarget(self, action: #selector(self.loadMusics), for: .valueChanged)
         tableView.snp.makeConstraints({
@@ -795,11 +796,11 @@ extension ListViewController {
         btnPick.snp.makeConstraints({
             $0.trailing.equalToSuperview().offset(-16)
             $0.bottom.equalToSuperview().offset(-48)
-            $0.width.height.equalTo(32)
+            $0.width.height.equalTo(36)
         })
         btnPick.layer.cornerRadius = 16
         btnPick.setImage(UIImage(named: "ic_add")?.withRenderingMode(.alwaysTemplate), for: .normal)
-        btnPick.imageView?.tintColor = mainColor?.withAlphaComponent(0.5)
+        btnPick.imageView?.tintColor = mainColor?.withAlphaComponent(0.4)
         btnPick.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(pickDocuments)))
         
         configType()
