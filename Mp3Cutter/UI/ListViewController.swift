@@ -12,6 +12,7 @@ import SnapKit
 import MediaPlayer
 import AVFoundation
 import MGSwipeTableCell
+import MobileCoreServices
 
 struct MusicData {
     
@@ -44,6 +45,7 @@ class ListViewController: UIViewController {
     
     var musicData : [MPMediaItem] = []
     var localMusic : [MusicData] = []
+    var additionMusic : [MusicData] = []
     var listHidden : [IndexPath] = []
     var refreshControl = UIRefreshControl()
     private var textSearch = "" {
@@ -64,7 +66,11 @@ class ListViewController: UIViewController {
                     listHidden.append(IndexPath(row: index, section: 1))
                 }
             }
-            tableView.reloadData()
+            for index in 0..<additionMusic.count {
+                if !(additionMusic[index].title?.lowercased().contains(textSearch.lowercased()) ?? true) {
+                    listHidden.append(IndexPath(row: index, section: 1))
+                }
+            }
         }
     }
     private let lbTitle = UILabel()
@@ -79,6 +85,7 @@ class ListViewController: UIViewController {
     private var vcSort = DropdownPickerViewController()
     private let btnSort = UIButton()
     private let sortOpts = ["A -> Z", "Z -> A"]
+    var supportType: [String] = []
     var actType = ActionType.actCut
     var mainColor : UIColor? = UIColor.red.withAlphaComponent(0.5)
     
@@ -101,8 +108,8 @@ class ListViewController: UIViewController {
     }
     
     @objc func loadMusics(){
-        var supportType: [String] = []
         self.localMusic = []
+        self.additionMusic = []
         switch actType.type {
         case .cut, .merge, .convert:
             supportType = ["mp3", "m4a", "m4r"]
@@ -111,7 +118,7 @@ class ListViewController: UIViewController {
 //            }
             break
         case .video:
-            supportType = ["m4v", "mp4", "mov"]
+            supportType = ["m4v", "mp4", "mov", "mpeg"]
 //            if let demoVideo = Bundle(for: type(of: self)).url(forResource: "demo", withExtension: "mp4") {
 //                localMusic.append(MusicData(url: demoVideo, cover: nil, title: "demo", artist: "vietnam from above", musicName: nil))
 //            }
@@ -151,27 +158,39 @@ class ListViewController: UIViewController {
             print("Error while enumerating files \(downUrl.path): \(error.localizedDescription)")
         }
         fileURLs.forEach({
-            var title = $0.lastPathComponent.fileName()
-            if supportType.count != 0 {
-                if !supportType.contains($0.pathExtension.lowercased()) {
-                    return
-                }
+            loadUrl($0) { (data) in
+                self.localMusic.append(data)
             }
-            let playerItem = AVPlayerItem(url: $0)
-            let metadataList = playerItem.asset.metadata
-            var artist = ""
-            for item in metadataList {
-                if let stringValue = item.value {
-                    if let key = item.commonKey?.rawValue {
-                        if key  == "artist" {
-                            artist = stringValue as? String ?? "Artist"
-                        }
+        })
+        ViewController.listAddition.forEach({
+            loadUrl($0) { (data) in
+                self.additionMusic.append(data)
+            }
+        })
+        self.tableView.reloadData()
+    }
+    
+    private func loadUrl(_ url: URL, success: (MusicData) -> Void){
+        var title = url.lastPathComponent.fileName()
+        if supportType.count != 0 {
+            if !supportType.contains(url.pathExtension.lowercased()) {
+                return
+            }
+        }
+        let playerItem = AVPlayerItem(url: url)
+        let metadataList = playerItem.asset.metadata
+        var artist = ""
+        for item in metadataList {
+            if let stringValue = item.value {
+                if let key = item.commonKey?.rawValue {
+                    if key  == "artist" {
+                        artist = stringValue as? String ?? "Artist"
                     }
                 }
             }
-            localMusic.append(MusicData(url: $0, cover: nil, title: title, artist: artist, musicName: nil))
-        })
-        self.tableView.reloadData()
+        }
+        success(MusicData(url: url, cover: nil, title: title, artist: artist, musicName: nil))
+        return
     }
 }
 
@@ -240,10 +259,88 @@ extension ListViewController {
                         }
                     }
                 }
+                if $0.section == 2 {
+                    if additionMusic.count > $0.row {
+                        if let url = additionMusic[$0.row].url {
+                            listURL.append(url)
+                        }
+                    }
+                }
             })
             return listURL
         }
         return []
+    }
+}
+
+extension ListViewController: UIDocumentMenuDelegate,UIDocumentPickerDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate{
+    
+    func documentMenu(_ documentMenu: UIDocumentMenuViewController, didPickDocumentPicker documentPicker: UIDocumentPickerViewController) {
+        documentPicker.delegate = self
+        present(documentPicker, animated: true, completion: nil)
+    }
+    
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        guard let myURL = urls.first else {
+            return
+        }
+        if !ViewController.listAddition.contains(myURL) {
+            ViewController.listAddition.append(myURL)
+            loadUrl(myURL) {
+                (data) in
+                additionMusic.append(data)
+            }
+            tableView.reloadData()
+        }
+    }
+    
+    @objc func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+//        let chosenImage = info[UIImagePickerControllerO] as! UIImage
+//        userChosenPhotoFromGalleryOrCamera.image = chosenImage
+//        picker.dismiss(animated: true, completion: nil)
+//
+//        userChosenPhotoFromGalleryOrCamera.isHidden = false
+        if let myUrl = info[UIImagePickerController.InfoKey.mediaURL.rawValue] as? NSURL {
+            if let url = myUrl.absoluteURL {
+                if !ViewController.listAddition.contains(url) {
+                    ViewController.listAddition.append(url)
+                    loadUrl(url) {
+                        (data) in
+                        additionMusic.append(data)
+                    }
+                    tableView.reloadData()
+                }
+            }
+        }
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func pickDocuments(){
+        var alert : UIAlertController!
+        alert = UIAlertController(title: "Chọn bộ sưu tập", message: nil, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Tệp", style: .default, handler: { (UIAlertAction) in
+//            alert.dismiss(animated: true) {
+                let importMenu = UIDocumentPickerViewController(documentTypes: [
+                    String(kUTTypeMP3),
+                    String(kUTTypeMPEG),
+                    String(kUTTypeMPEG4),
+                    String(kUTTypeAudio),
+                    String(kUTTypeMovie)
+                ], in: .import)
+                    importMenu.delegate = self
+                    importMenu.modalPresentationStyle = .formSheet
+                    self.present(importMenu, animated: true, completion: nil)
+//            }
+        }))
+        alert.addAction(UIAlertAction(title: "Photos", style: .default, handler: { (UIAlertAction) in
+                let imagePickerController = UIImagePickerController()
+                imagePickerController.sourceType = .photoLibrary
+                imagePickerController.delegate = self
+                imagePickerController.mediaTypes = ["public.movie"]
+                self.present(imagePickerController, animated: true, completion: nil)
+//            }
+        }))
+        self.present(alert, animated: true, completion: nil)
     }
 }
 
@@ -272,10 +369,12 @@ extension ListViewController: DropdownPickerViewDelegate {
         case 0:
             musicData = musicData.sorted { ($0.title ?? "a") < ($1.title ?? "b") }
             localMusic = localMusic.sorted { ($0.title ?? "a") < ($1.title ?? "b") }
+            additionMusic = additionMusic.sorted { ($0.title ?? "a") < ($1.title ?? "b") }
             break
         case 1:
             musicData = musicData.sorted { ($0.title ?? "a") > ($1.title ?? "b") }
             localMusic = localMusic.sorted { ($0.title ?? "a") > ($1.title ?? "b") }
+            additionMusic = additionMusic.sorted { ($0.title ?? "a") > ($1.title ?? "b") }
             break
         case 2:
 //            musicData = musicData.sorted { ($0.) > ($1.title ?? "b") }
@@ -319,12 +418,12 @@ extension ListViewController: UITextFieldDelegate {
 extension ListViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return section == 0 ? musicData.count : localMusic.count
+        return section == 0 ? musicData.count : (section == 1 ? localMusic.count : additionMusic.count)
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let cell = UITableViewCell()
-        cell.textLabel?.text = section == 0 ? "Nhạc itunes".localized() + " (\(musicData.count))" : "Bộ sưu tập".localized() + "(\(localMusic.count))"
+        cell.textLabel?.text = section == 0 ? "Nhạc itunes".localized() + " (\(musicData.count))" : (section == 1 ? "Bộ sưu tập".localized() + "(\(localMusic.count))" : "DS đã thêm".localized() + "(\(additionMusic.count))")
         cell.textLabel?.font = UIFont.systemFont(ofSize: 14, weight: .medium)
         cell.textLabel?.textColor = UIColor.gray.withAlphaComponent(0.8)
         cell.contentView.backgroundColor = UIColor.gray.withAlphaComponent(0.1)
@@ -332,7 +431,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 3
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -354,11 +453,16 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
             cell.bind(musicData[indexPath.row], checkColor: multiChoise != nil ? mainColor : .clear, showCheck: true)
             cell.rightButtons = []
         } else {
-            let data = localMusic[indexPath.row]
+            var data : MusicData!
+            if indexPath.section == 1 {
+                data = localMusic[indexPath.row]
+            } else {
+                data = additionMusic[indexPath.row]
+            }
             cell.bind(data, checkColor: multiChoise != nil ? mainColor : .clear, showCheck: true)
             
             var actions : [MGSwipeButton] = []
-            if actType.type == .cut && "m4a m4r".contains(localMusic[indexPath.row].url?.pathExtension ?? "") {
+            if actType.type == .cut && "m4a m4r".contains(indexPath.section == 1 ? ( localMusic[indexPath.row].url?.pathExtension ?? "") : (additionMusic[indexPath.row].url?.pathExtension ?? "")) {
                 actions.append(MGSwipeButton.init(title: "Cài đặt".localized(), backgroundColor: actType.color, callback: {
                     (sender: MGSwipeTableCell!) -> Bool in
                     let vc = IntroduceViewController()
@@ -368,23 +472,34 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
                 }))
             }
             
-            actions.append(MGSwipeButton.init(title: "Xoá".localized(), backgroundColor: UIColor(hexString: "b9b2b2"), callback: {
-                (sender: MGSwipeTableCell!) -> Bool in
-                let vcWarning = UIAlertController(title: "Xoá file".localized(), message: "Bạn chắc chắn muốn xoá file".localized() + " \(data.title ?? "")?", preferredStyle: .alert)
-                vcWarning.addAction(UIAlertAction(title: "Huỷ".localized(), style: .default, handler: { (alert) in
-                    vcWarning.dismiss(animated: true, completion: nil)
+            if indexPath.section == 1 {
+                actions.append(MGSwipeButton.init(title: "Xoá".localized(), backgroundColor: UIColor(hexString: "b9b2b2"), callback: {
+                    (sender: MGSwipeTableCell!) -> Bool in
+                    let vcWarning = UIAlertController(title: "Xoá file".localized(), message: "Bạn chắc chắn muốn xoá file".localized() + " \(data.title ?? "")?", preferredStyle: .alert)
+                    vcWarning.addAction(UIAlertAction(title: "Huỷ".localized(), style: .default, handler: { (alert) in
+                        vcWarning.dismiss(animated: true, completion: nil)
+                    }))
+                    vcWarning.addAction(UIAlertAction(title: "Xoá file".localized(), style: .default, handler: { (alert) in
+                        do {
+                            try? FileManager.default.removeItem(atPath: data.url?.path ?? "")
+                            for index in 0..<(self.multiChoise?.count ?? 0) {
+                                if self.multiChoise?[index] == indexPath {
+                                    self.multiChoise?.remove(at: index)
+                                    break
+                                }
+                            }
+                            self.loadMusics()
+                        } catch {
+                            Toast.shared.makeToast(.error, string: "Có lỗi trong quá trình xoá file!".localized(), inView: self.view, time: 2.0)
+                        }
+                    }))
+                    self.present(vcWarning, animated: true, completion: nil)
+                    return true
                 }))
-                vcWarning.addAction(UIAlertAction(title: "Xoá file".localized(), style: .default, handler: { (alert) in
-                    do {
-                        try? FileManager.default.removeItem(atPath: data.url?.path ?? "")
-                        self.loadMusics()
-                    } catch {
-                        Toast.shared.makeToast(.error, string: "Có lỗi trong quá trình xoá file!".localized(), inView: self.view, time: 2.0)
-                    }
-                }))
-                self.present(vcWarning, animated: true, completion: nil)
-                return true
-            }))
+            }
+            if actions.count == 0 {
+                cell.btnMore.isHidden = true
+            }
             cell.rightButtons = actions
         }
         return cell
@@ -431,7 +546,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
             switch actType.type {
             case .cut, .video:
                 var url : URL? = nil
-                url = indexPath.section == 0 ? (musicData[indexPath.row].assetURL) : localMusic[indexPath.row].url
+                url = indexPath.section == 0 ? (musicData[indexPath.row].assetURL) : (indexPath.section == 1 ?  localMusic[indexPath.row].url : additionMusic[indexPath.row].url)
                 if url == nil {
                     return
                 }
@@ -464,7 +579,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
             case .convert:
                 var vc : PopupFinalViewController!
                 var assetURL : URL? = nil
-                assetURL = indexPath.section == 0 ? (musicData[indexPath.row].assetURL) : localMusic[indexPath.row].url
+                assetURL = indexPath.section == 0 ? (musicData[indexPath.row].assetURL) : (indexPath.section == 1 ? localMusic[indexPath.row].url : additionMusic[indexPath.row].url)
                 if assetURL == nil {
                     return
                 }
@@ -488,7 +603,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
                 break
             case .collection:
                 var assetURL : URL? = nil
-                assetURL = indexPath.section == 0 ? (musicData[indexPath.row].assetURL) : localMusic[indexPath.row].url
+                assetURL = indexPath.section == 0 ? (musicData[indexPath.row].assetURL) : (indexPath.section == 1 ? localMusic[indexPath.row].url : additionMusic[indexPath.row].url)
                 if assetURL == nil {
                     return
                 }
@@ -647,6 +762,10 @@ extension ListViewController {
         tableView.dataSource = self
         tableView.register(UINib(nibName: "ItemTableViewCell", bundle: nil), forCellReuseIdentifier: ItemTableViewCell.id)
         tableView.separatorInset = .zero
+        let view = UIView()
+        view.snp.makeConstraints({
+            $0.height.equalTo(100)
+        })
         tableView.tableFooterView = UIView()
         tableView.addSubview(refreshControl)
         refreshControl.addTarget(self, action: #selector(self.loadMusics), for: .valueChanged)
@@ -662,7 +781,7 @@ extension ListViewController {
         vAction.addSubview(btnAction)
         btnAction.snp.makeConstraints({
             $0.center.equalToSuperview()
-            $0.height.equalTo(42)
+            $0.height.equalTo(56)
             $0.width.equalTo(btnAction.snp.height).multipliedBy(4)
         })
         btnAction.layer.cornerRadius = 4
@@ -670,6 +789,18 @@ extension ListViewController {
         btnAction.setTitle("Ghép".localized(), for: .normal)
         btnAction.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
         btnAction.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.actAction)))
+        
+        let btnPick = UIButton()
+        self.view.addSubview(btnPick)
+        btnPick.snp.makeConstraints({
+            $0.trailing.equalToSuperview().offset(-16)
+            $0.bottom.equalToSuperview().offset(-48)
+            $0.width.height.equalTo(32)
+        })
+        btnPick.layer.cornerRadius = 16
+        btnPick.setImage(UIImage(named: "ic_add")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        btnPick.imageView?.tintColor = mainColor?.withAlphaComponent(0.5)
+        btnPick.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(pickDocuments)))
         
         configType()
     }

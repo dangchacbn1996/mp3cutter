@@ -35,7 +35,6 @@ class UserDefaultManager {
     return TimeInterval(defaults.integer(forKey: "lastMusicTime"))
   }
   
-  
   static func saveProgressBarStyle(_ style: String?) {
     defaults.set(style, forKey: "progressBarStyle")
   }

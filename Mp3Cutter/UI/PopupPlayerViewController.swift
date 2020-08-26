@@ -20,7 +20,7 @@ class PopupPlayerViewController: UIViewController {
     private let btnPlay = UIButton()
     private var player = AVPlayer()
     private var videoFrame = VideoContainerView()
-    private var layerVideo : AVPlayerLayer!
+    private var layerVideo = AVPlayerLayer()
     private var statePlay = PlayState.play {
         didSet {
             switch self.statePlay {
@@ -51,10 +51,6 @@ class PopupPlayerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         player = AVPlayer(url: url)
         if player.isVideoAvailable ?? false {
             videoFrame.isHidden = false
@@ -64,6 +60,10 @@ class PopupPlayerViewController: UIViewController {
         } else {
             videoFrame.isHidden = true
         }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         lbName.text = url.lastPathComponent
         Loading.sharedInstance.show(in: self.view, deadline: 20.0)
         slide.value = 0
@@ -76,7 +76,7 @@ class PopupPlayerViewController: UIViewController {
         })
         let asset = AVAsset(url: url)
         lbTotalTime.text = NSString(format: "/ %02d:%02d", Int(asset.duration.seconds/60), Int(asset.duration.seconds.truncatingRemainder(dividingBy: 60))) as String
-        player.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions(rawValue: 0), context: nil)
+        player.currentItem?.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions(rawValue: 0), context: nil)
     }
     
     override func viewDidLayoutSubviews() {
@@ -85,7 +85,7 @@ class PopupPlayerViewController: UIViewController {
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if object is AVPlayer && keyPath == "status" {
+        if object is AVPlayerItem && keyPath == "status" {
             Loading.sharedInstance.dismiss()
             statePlay = .play
         }

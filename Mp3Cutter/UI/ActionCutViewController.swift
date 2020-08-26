@@ -137,11 +137,21 @@ class ActionCutViewController: UIViewController {
             let vcChoise = UIAlertController(title: "Loại xuất audio".localized(), message: "Chọn loại âm thanh bạn muốn chỉnh sửa?".localized(), preferredStyle: .alert)
             vcChoise.addAction(UIAlertAction(title: "Âm thanh".localized(), style: .default, handler: { (UIAlertAction) in
                 self.exporType = .music
-                vcChoise.dismiss(animated: true, completion: nil)
+                vcChoise.dismiss(animated: true) {
+                    if self.endPoint == 0 || self.playerState == .stop {
+                        self.endPoint = self.waveform.totalSamples
+                        self.playerState = .play
+                    }
+                }
             }))
             vcChoise.addAction(UIAlertAction(title: "Nhạc chuông".localized(), style: .default, handler: { (UIAlertAction) in
                 self.exporType = .ringtone
-                vcChoise.dismiss(animated: true, completion: nil)
+                vcChoise.dismiss(animated: true) {
+                    if self.endPoint == 0 || self.playerState == .stop {
+                        self.endPoint = self.waveform.totalSamples
+                        self.playerState = .play
+                    }
+                }
             }))
             self.present(vcChoise, animated: true, completion: nil)
         }
@@ -181,7 +191,9 @@ class ActionCutViewController: UIViewController {
             } else {
                 if highlight > self.endPoint {
                     self.playerState = .stop
-                    self.waveform.highlightedSamples = (self.startPoint..<self.endPoint)
+                    if self.endPoint > self.startPoint {
+                        self.waveform.highlightedSamples = (self.startPoint..<self.endPoint)
+                    }
                 } else {
                     self.waveform.highlightedSamples = (self.startPoint..<highlight)
                 }
@@ -404,6 +416,7 @@ extension ActionCutViewController: FDWaveformViewDelegate {
             }
         }
         endPoint = waveform.totalSamples
+        print("endpoint: \(endPoint)")
         playerState = .play
     }
 

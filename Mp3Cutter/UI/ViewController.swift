@@ -12,6 +12,8 @@ import Localize_Swift
 
 class ViewController: UIViewController{
     
+    static var listAddition : [URL] = []
+    
     private let scrollMain = UIScrollView()
     private let viewContainer = UIView()
     private let btnLang = UIButton()

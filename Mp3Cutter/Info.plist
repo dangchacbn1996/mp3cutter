@@ -67,5 +67,13 @@
 	<true/>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>For user edit</string>
+    <key>NSCameraUsageDescription</key>
+    <string>This app wants to take videos.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>This app wants to use your video library.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This app wants to record sound.</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>This app wants to save videos to your library.</string>
 </dict>
 </plist>

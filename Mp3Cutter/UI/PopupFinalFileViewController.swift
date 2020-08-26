@@ -281,6 +281,7 @@ extension PopupFinalViewController {
         tfNewName.layer.cornerRadius = 4
         tfNewName.layer.borderWidth = 1
         tfNewName.setRightPaddingPoints(10)
+        tfNewName.setLeftPaddingPoints(10)
         tfNewName.layer.borderColor = Constant.viewBorder
         viewContainer.addSubview(lbTitleExportType)
         lbTitleExportType.snp.makeConstraints({
